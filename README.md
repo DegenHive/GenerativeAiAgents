@@ -59,7 +59,7 @@ Install everything listed in the `requirements.txt` file (I strongly recommend f
 Open up another command line. Navigate to `/smart_agents` and run `degenhive.py`.
 
 ```
-    python reverie.py
+    python degenhive.py
 ```
 
 
