@@ -105,6 +105,13 @@ class Persona:
 
 
 
+  def getGlobalTimeStreamInfo(self, protocol_config):
+    getTimeStreamInfo(self.rpc_url, self.private_key, protocol_config)
+
+
+
+
+
 
 
 

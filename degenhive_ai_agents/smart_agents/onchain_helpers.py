@@ -115,6 +115,62 @@ class TimeStreamUserInfo(canoser.Struct):
         ('total_points_sum', canoser.Uint128),
     ]
 
+class TimeStreamConfigParams(canoser.Struct):
+    _fields = [
+        ('are_live', bool),
+        ('cur_auction_stream', canoser.Uint64),
+        ('stream_init_ms', canoser.Uint64),
+        ('first_rank_assets_limit', canoser.Uint64),
+        ('second_rank_assets_limit', canoser.Uint64),
+        ('third_rank_assets_limit', canoser.Uint64),
+
+        ('max_streams_per_slot', canoser.Uint64),
+        ('choosen_buzzes_count', canoser.Uint64),
+        ('hive_per_ad_slot', canoser.Uint64),
+        ('bees_per_ad_slot', canoser.Uint64),
+        ('min_bid_limit', canoser.Uint64),
+        ('tax_on_bid', canoser.Uint64),
+    ]
+
+class TimeStreamerInfo(canoser.Struct):
+    _fields = [
+        ('profileID', SuiAddress),
+        ('streamer_name', str),
+        ('streams_count', canoser.Uint64),
+        ('access_type', canoser.Uint8),
+        ('sui_per_buzz', canoser.Uint64),
+        ('buzz_cost_in_hive', canoser.Uint64),
+        ('remaining_buzzes_count', canoser.Uint64),
+        ('engagement_points', canoser.Uint128),
+        ('collection_name', str),
+    ]
+
+
+class LeadingBidsInfo(canoser.Struct):
+    _fields = [
+        ('o_profile_addr', SuiAddress),
+        ('o_bid_amt', str),
+        ('s_profile_addr', canoser.Uint64),
+        ('s_bid_amt', canoser.Uint8),
+        ('t_profile_addr', canoser.Uint64),
+        ('t_bid_amt', canoser.Uint64)
+    ]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 """
 Initialize a new account by generating a mnemonic phrase and recovering the keypair and address
@@ -477,7 +533,6 @@ def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, user_
 Fetch a profile's Time-Stream state information from chain 
 """
 def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_config, user_profile) :
-    print("verbverver")
     user_profile = "0xe24e9496973e907453b308b940015a269ff16da0d720342e967aab6d8600f4dc"
     try:
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
@@ -504,11 +559,78 @@ def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_c
         return None
     
 
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+
+def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_streamer_buzzes_params",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"]) ],
+                            type_arguments=[SUI_TYPE])
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_streamer_info",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"]), SuiU64(0) ],
+                            type_arguments=[SUI_TYPE])
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_streamer_info",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"]), SuiU64(1) ],
+                            type_arguments=[SUI_TYPE])
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_streamer_info",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"]), SuiU64(2) ],
+                            type_arguments=[SUI_TYPE])
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_leading_bids_info",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"])  ],
+                            type_arguments=[SUI_TYPE])
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_streamer_pol_info",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"])  ],
+                            type_arguments=[SUI_TYPE])
+        txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_engagement_scores_state",
+                            arguments=[    ObjectID(protocol_config["HIVE_VAULT"])  ],
+                            type_arguments=[SUI_TYPE])
+                
+        simulation = txBlock.inspect_all()
+        simulation_json = json.loads(simulation.to_json())
+        print(simulation_json)
+        
+        time_stream_config_params = TimeStreamConfigParams.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
+                                            + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
+                                                + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
+                                                    + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
+                                                    + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
+                                                )
+        time_streamer1_info = TimeStreamerInfo.deserialize( simulation_json["results"][1]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][1][0]
+                                            + simulation_json["results"][1]["returnValues"][2][0] + simulation_json["results"][1]["returnValues"][3][0]
+                                                + simulation_json["results"][1]["returnValues"][4][0] + simulation_json["results"][1]["returnValues"][5][0]
+                                                    + simulation_json["results"][1]["returnValues"][6][0] + simulation_json["results"][1]["returnValues"][7][0]
+                                                    + simulation_json["results"][1]["returnValues"][8][0] )
+        time_streamer2_info = TimeStreamerInfo.deserialize( simulation_json["results"][2]["returnValues"][0][0] + simulation_json["results"][2]["returnValues"][1][0]
+                                            + simulation_json["results"][2]["returnValues"][2][0] + simulation_json["results"][2]["returnValues"][3][0]
+                                                + simulation_json["results"][2]["returnValues"][4][0] + simulation_json["results"][2]["returnValues"][5][0]
+                                                    + simulation_json["results"][2]["returnValues"][6][0] + simulation_json["results"][2]["returnValues"][7][0]
+                                                    + simulation_json["results"][2]["returnValues"][8][0] )
+        time_streamer3_info = TimeStreamerInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
+                                            + simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
+                                                + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0]
+                                                    + simulation_json["results"][3]["returnValues"][6][0] + simulation_json["results"][3]["returnValues"][7][0]
+                                                    + simulation_json["results"][3]["returnValues"][8][0] )
+        
+        leading_bids_info = TimeStreamUserInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
 
 
 
-
-
+        # time_stream_state_info = TimeStreamUserInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
+        #                                     + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
+        #                                         + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
+        #                                             + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
+        #                                             + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
+        #                                             + simulation_json["results"][0]["returnValues"][10][0] # + simulation_json["results"][0]["returnValues"][11][0]
+        #                                         ) 
+        # return time_stream_state_info
+    except Exception as e:
+        color_print(f"onchain_helpers/getTimeStreamStateForProfileInfo: Error -  {e}", RED)
+        return None
+ 
 
 
 
