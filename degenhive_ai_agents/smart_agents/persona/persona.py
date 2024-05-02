@@ -96,6 +96,13 @@ class Persona:
 
 
 
+  def getTimeStreamInfo_OnChain(self, protocol_config):
+    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"
+    getTimeStreamStateForProfileInfo(self.rpc_url, self.private_key, protocol_config, profileID)
+
+
+
+
 
 
 

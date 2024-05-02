@@ -148,7 +148,8 @@ class DegenHiveAiAgents:
       # timeline_feed = agent_persona.getTimeline()
 
       # Get current persona's overall state 
-      agent_persona.getHiveChronicleInfo_OnChain(simulations_state["configuration"])
+      # agent_persona.getHiveChronicleInfo_OnChain(simulations_state["configuration"])
+      agent_persona.getTimeStreamInfo_OnChain(simulations_state["configuration"])
 
 
 

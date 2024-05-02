@@ -16,7 +16,7 @@ from pysui.sui.sui_txresults.single_tx import SuiCoinObjects, SuiCoinObject
 from pysui.sui.sui_txresults.complex_tx import TxInspectionResult
 from pysui.abstracts import SignatureScheme
 
-from canoser import Struct, Uint8, Uint64
+import canoser 
 
 from pysui.sui.sui_crypto import (
     SuiAddress,
@@ -71,31 +71,48 @@ def color_print(text, color_code):
     print(color_code + text + END_COLOR)
 
 
-class HiveChronicleState(Struct):
+class HiveChronicleUserInfo(canoser.Struct):
     _fields = [
-        ('active_epoch', Uint64),
-        ('max_entropy_for_cur_epoch', Uint64),
-        ('remaining_entropy', Uint64),
-        ('total_hive_gems', Uint64),
-        ('usable_hive_gems', Uint64),
-        ('entropy_inbound', Uint64),
-        ('entropy_outbound', Uint64),
-        ('total_bees_farmed', Uint64),
-        ('simulated_bees_from_entropy', Uint64),
-        ('rebuzzes_count', Uint64),
-        ('noise_buzzes_count', Uint64),
-        ('last_noise_epoch', Uint64),
-        ('noise_count', Uint64),
-        ('chronicle_buzzes_count', Uint64),
-        ('last_chronicle_epoch', Uint64),
-        ('chronicle_count', Uint64),
-        ('buzz_chains_count', Uint64),
-        ('last_buzz_epoch', Uint64),
-        ('buzz_count', Uint64),
-        ('subscribers_only', Uint8),
-        ('infusion_buzzes_count', Uint64),
-        ('infusion_count', Uint64),
+        ('active_epoch', canoser.Uint64),
+        ('max_entropy_for_cur_epoch', canoser.Uint64),
+        ('remaining_entropy', canoser.Uint64),
+        ('total_hive_gems', canoser.Uint64),
+        ('usable_hive_gems', canoser.Uint64),
+        ('entropy_inbound', canoser.Uint64),
+        ('entropy_outbound', canoser.Uint64),
+        ('total_bees_farmed', canoser.Uint64),
+        ('simulated_bees_from_entropy', canoser.Uint64),
+        ('rebuzzes_count', canoser.Uint64),
+        ('noise_buzzes_count', canoser.Uint64),
+        ('last_noise_epoch', canoser.Uint64),
+        ('noise_count', canoser.Uint64),
+        ('chronicle_buzzes_count', canoser.Uint64),
+        ('last_chronicle_epoch', canoser.Uint64),
+        ('chronicle_count', canoser.Uint64),
+        ('buzz_chains_count', canoser.Uint64),
+        ('last_buzz_epoch', canoser.Uint64),
+        ('buzz_count', canoser.Uint64),
+        ('subscribers_only', canoser.Uint8),
+        ('infusion_buzzes_count', canoser.Uint64),
+        ('infusion_count', canoser.Uint64),        
 
+    ]
+
+
+class TimeStreamUserInfo(canoser.Struct):
+    _fields = [
+        ('stream_epoch', canoser.Uint64),
+        ('points', canoser.Uint64),
+        ('flag', bool),
+        ('sui_bidded', canoser.Uint64),
+        ('buzz_cost_in_hive', canoser.Uint64),
+        ('access_type', canoser.Uint8),
+        # ('collection_name', str),
+        ('user_total_points', canoser.Uint64),
+        ('hive_earned', canoser.Uint64),
+        ('bees_earned', canoser.Uint64),
+        ('rewards_final', bool),
+        ('total_points_sum', canoser.Uint128),
     ]
 
 
@@ -420,35 +437,77 @@ async def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, u
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
 
+"""
+Fetch HiveChronicle state information for a user profile from chain 
+"""
 def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, user_profile) :
-    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::get_hive_chronicle_for_profile",
+            arguments=[
+                        ObjectID(CLOCK),
+                            ObjectID(protocol_config["HIVE_MANAGER"]),
+                            ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                            ObjectID(user_profile),
+                ],
+                type_arguments=[],
+            )
+        simulation = txBlock.inspect_all()
+        simulation_json = json.loads(simulation.to_json())
+        hive_chronicle_info = HiveChronicleUserInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
+                                            + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
+                                                + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
+                                                    + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
+                                                    + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
+                                                    + simulation_json["results"][0]["returnValues"][10][0] + simulation_json["results"][0]["returnValues"][11][0]
+                                                    + simulation_json["results"][0]["returnValues"][12][0] + simulation_json["results"][0]["returnValues"][13][0]
+                                                    + simulation_json["results"][0]["returnValues"][14][0] + simulation_json["results"][0]["returnValues"][15][0]
+                                                    + simulation_json["results"][0]["returnValues"][16][0] + simulation_json["results"][0]["returnValues"][17][0]
+                                                    + simulation_json["results"][0]["returnValues"][18][0] + simulation_json["results"][0]["returnValues"][19][0]
+                                                    + simulation_json["results"][0]["returnValues"][20][0] + simulation_json["results"][0]["returnValues"][21][0]
+                                                ) 
+        return hive_chronicle_info
+    except Exception as e:
+        color_print(f"onchain_helpers/getHiveChronicleInfo: Error -  {e}", RED)
+        return None
 
-    print(f"HIVE_MANAGER: {protocol_config["HIVE_MANAGER"]}")
-    print(f"HIVE_CHRONICLES_VAULT: {protocol_config["HIVE_CHRONICLES_VAULT"]}")
-    print(f"user_profile: {user_profile}")
-
-
-    txBlock = SyncTransaction(client=suiClient)
-    txBlock.move_call(
-        target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::get_hive_chronicle_for_profile",
-        arguments=[
-                     ObjectID(CLOCK),
-                        ObjectID(protocol_config["HIVE_MANAGER"]),
-                        ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
-                        ObjectID(user_profile),
-            ],
-            type_arguments=[],
-        )
-    simulation = txBlock.inspect_all()
-    simulation_json = json.loads(simulation.to_json())
-    print(simulation_json["results"][0]["returnValues"][0] )
-
-    obj = HiveChronicleState.deserialize(simulation_json["results"][0]["returnValues"][0])
-    print(obj)
-
-    # user_hive_chronicle = {}
-    # user_hive_chronicle.active_epoch = bcs.
+"""
+Fetch a profile's Time-Stream state information from chain 
+"""
+def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_config, user_profile) :
+    print("verbverver")
+    user_profile = "0xe24e9496973e907453b308b940015a269ff16da0d720342e967aab6d8600f4dc"
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_points_for_profile",
+            arguments=[    ObjectID(protocol_config["HIVE_VAULT"]),
+                            SuiAddress(user_profile),
+                ],
+                type_arguments=[SUI_TYPE],
+            )
+        simulation = txBlock.inspect_all()
+        simulation_json = json.loads(simulation.to_json())
+        time_stream_state_info = TimeStreamUserInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
+                                            + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
+                                                + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
+                                                    + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
+                                                    + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
+                                                    + simulation_json["results"][0]["returnValues"][10][0] # + simulation_json["results"][0]["returnValues"][11][0]
+                                                ) 
+        return time_stream_state_info
+    except Exception as e:
+        color_print(f"onchain_helpers/getTimeStreamStateForProfileInfo: Error -  {e}", RED)
+        return None
     
+
+
+
+
+
 
 
 
