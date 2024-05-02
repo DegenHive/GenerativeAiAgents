@@ -137,8 +137,8 @@ class TimeStreamConfigParams(canoser.Struct):
 
 class TimeStreamerInfo(canoser.Struct):
     _fields = [
-        ('profileID', SuiAddress),
-        ('streamer_name', str),
+        # ('profileID', canoser.RustOptional(canoser.StrT)),
+        # ('streamer_name', canoser.RustOptional(str)),
         ('streams_count', canoser.Uint64),
         ('access_type', canoser.Uint8),
         ('sui_per_buzz', canoser.Uint64),
@@ -162,7 +162,7 @@ class LeadingBidsInfo(canoser.Struct):
 class TimeStreamPolInfo(canoser.Struct):
     _fields = [
         ('bid_pool', canoser.Uint64),
-        ('sui_avail_for_pol', canoser.Uint8)
+        ('sui_avail_for_pol', canoser.Uint64)
     ]
 
 
@@ -179,12 +179,14 @@ class TimeStreamEngagementScoresState(canoser.Struct):
         ('points_per_sui_bidded', canoser.Uint128),
     ]
 
-
-
-
-
-
-
+class BeeFarmSnapshotInfo(canoser.Struct):
+    _fields = [
+        ('epoch', canoser.Uint64),
+        ('bees_distributed', canoser.Uint64),
+        ('entropy_during_epoch', canoser.Uint64),
+        ('bees_per_entropy', SuiU256),
+        ('bees_burnt', canoser.Uint64),
+    ]
 
 
 
@@ -614,54 +616,85 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
                                                 + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
                                                     + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
                                                     + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
+                                                    + simulation_json["results"][0]["returnValues"][10][0] + simulation_json["results"][0]["returnValues"][11][0]
                                                 )
         print(f"time_stream_config_params: {time_stream_config_params}")
         
-        # time_streamer1_info = TimeStreamerInfo.deserialize( simulation_json["results"][1]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][1][0]
-        #                                     + simulation_json["results"][1]["returnValues"][2][0] + simulation_json["results"][1]["returnValues"][3][0]
-        #                                         + simulation_json["results"][1]["returnValues"][4][0] + simulation_json["results"][1]["returnValues"][5][0]
-        #                                             + simulation_json["results"][1]["returnValues"][6][0] + simulation_json["results"][1]["returnValues"][7][0]
-        #                                             + simulation_json["results"][1]["returnValues"][8][0] )
-        # time_streamer2_info = TimeStreamerInfo.deserialize( simulation_json["results"][2]["returnValues"][0][0] + simulation_json["results"][2]["returnValues"][1][0]
-        #                                     + simulation_json["results"][2]["returnValues"][2][0] + simulation_json["results"][2]["returnValues"][3][0]
-        #                                         + simulation_json["results"][2]["returnValues"][4][0] + simulation_json["results"][2]["returnValues"][5][0]
-        #                                             + simulation_json["results"][2]["returnValues"][6][0] + simulation_json["results"][2]["returnValues"][7][0]
-        #                                             + simulation_json["results"][2]["returnValues"][8][0] )
-        # time_streamer3_info = TimeStreamerInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
-        #                                     + simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
-        #                                         + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0]
-        #                                             + simulation_json["results"][3]["returnValues"][6][0] + simulation_json["results"][3]["returnValues"][7][0]
-        #                                             + simulation_json["results"][3]["returnValues"][8][0] )
+        time_streamer1_info = TimeStreamerInfo.deserialize(# simulation_json["results"][1]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][1][0]
+                                            simulation_json["results"][1]["returnValues"][2][0] + simulation_json["results"][1]["returnValues"][3][0]
+                                                + simulation_json["results"][1]["returnValues"][4][0] + simulation_json["results"][1]["returnValues"][5][0]
+                                                    + simulation_json["results"][1]["returnValues"][6][0] + simulation_json["results"][1]["returnValues"][7][0]
+                                                    + simulation_json["results"][1]["returnValues"][8][0] )
+        print(f"time_streamer1_info: {time_streamer1_info}")
+
+        time_streamer2_info = TimeStreamerInfo.deserialize( # simulation_json["results"][2]["returnValues"][0][0] + simulation_json["results"][2]["returnValues"][1][0]
+                                                simulation_json["results"][2]["returnValues"][2][0] + simulation_json["results"][2]["returnValues"][3][0]
+                                                + simulation_json["results"][2]["returnValues"][4][0] + simulation_json["results"][2]["returnValues"][5][0]
+                                                    + simulation_json["results"][2]["returnValues"][6][0] + simulation_json["results"][2]["returnValues"][7][0]
+                                                    + simulation_json["results"][2]["returnValues"][8][0] )
+        print(f"time_streamer2_info: {time_streamer2_info}")
+
+        time_streamer3_info = TimeStreamerInfo.deserialize( # simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
+                                                simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
+                                                + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0]
+                                                    + simulation_json["results"][3]["returnValues"][6][0] + simulation_json["results"][3]["returnValues"][7][0]
+                                                    + simulation_json["results"][3]["returnValues"][8][0] )
+        print(f"time_streamer3_info: {time_streamer3_info}")
         
-        # leading_bids_info = TimeStreamUserInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0], 
-        #                                     + simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
-        #                                         + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0] )
+        # leading_bids_info = LeadingBidsInfo.deserialize( simulation_json["results"][4]["returnValues"][0][0] + simulation_json["results"][4]["returnValues"][1][0], 
+        #                                     + simulation_json["results"][4]["returnValues"][2][0] + simulation_json["results"][4]["returnValues"][3][0]
+        #                                         + simulation_json["results"][4]["returnValues"][4][0] + simulation_json["results"][4]["returnValues"][5][0] )
 
-        # time_stream_pol_info = TimeStreamPolInfo.deserialize( simulation_json["results"][4]["returnValues"][0][0] + simulation_json["results"][4]["returnValues"][1][0] )
-        # time_stream_engagement_scores_state = TimeStreamEngagementScoresState.deserialize( simulation_json["results"][5]["returnValues"][0][0] + simulation_json["results"][5]["returnValues"][1][0]
-        #                                     + simulation_json["results"][5]["returnValues"][2][0] + simulation_json["results"][5]["returnValues"][3][0]
-        #                                         + simulation_json["results"][5]["returnValues"][4][0] + simulation_json["results"][5]["returnValues"][5][0]
-        #                                             + simulation_json["results"][5]["returnValues"][6][0] + simulation_json["results"][5]["returnValues"][7][0]
-        #                                             + simulation_json["results"][5]["returnValues"][8][0] )
+        time_stream_pol_info = TimeStreamPolInfo.deserialize( simulation_json["results"][5]["returnValues"][0][0] + simulation_json["results"][5]["returnValues"][1][0] )
+        print(f"time_stream_pol_info: {time_stream_pol_info}")
 
+        time_stream_engagement_scores_state = TimeStreamEngagementScoresState.deserialize( simulation_json["results"][6]["returnValues"][0][0] + simulation_json["results"][6]["returnValues"][1][0]
+                                            + simulation_json["results"][6]["returnValues"][2][0] + simulation_json["results"][6]["returnValues"][3][0]
+                                                + simulation_json["results"][6]["returnValues"][4][0] + simulation_json["results"][6]["returnValues"][5][0]
+                                                    + simulation_json["results"][6]["returnValues"][6][0] + simulation_json["results"][6]["returnValues"][7][0]
+                                                    + simulation_json["results"][6]["returnValues"][8][0] )
+        print(f"time_stream_engagement_scores_state: {time_stream_engagement_scores_state}")
 
-        # print(f"time_streamer1_info: {time_streamer1_info}")
-        # print(f"time_streamer2_info: {time_streamer2_info}")
-        # print(f"time_streamer3_info: {time_streamer3_info}")
-        # print(f"leading_bids_info: {leading_bids_info}")
-        # print(f"time_stream_pol_info: {time_stream_pol_info}")
-        # print(f"time_stream_engagement_scores_state: {time_stream_engagement_scores_state}")
+        return {
+            "config_params": time_stream_config_params,
+            "streamer1_info": time_streamer1_info,
+            "streamer2_info": time_streamer2_info,
+            "streamer3_info": time_streamer3_info,
+            # "leading_bids_info": leading_bids_info,
+            "pol_info": time_stream_pol_info,
+            "engagement_state": time_stream_engagement_scores_state
+        }
 
+    except Exception as e:
+        color_print(f"onchain_helpers/getTimeStreamInfo: Error -  {e}", RED)
+        return None
+ 
 
+def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, epoch) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        
+        hiveChronicleVault = (suiClient.get_object(id))
+        hiveChronicleVault = hiveChronicleVault.result_data.to_dict()["content"]["fields"]
+        
 
-        # time_stream_state_info = TimeStreamUserInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
-        #                                     + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
-        #                                         + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
-        #                                             + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
-        #                                             + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
-        #                                             + simulation_json["results"][0]["returnValues"][10][0] # + simulation_json["results"][0]["returnValues"][11][0]
-        #                                         ) 
-        # return time_stream_state_info
+        if (epoch > 0):
+            txBlock.move_call( target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_entry::query_bees_farming_snampshot",
+                                arguments=[    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]), SuiU64(epoch) ],
+                                type_arguments=[])                
+            simulation = txBlock.inspect_all()
+            simulation_json = json.loads(simulation.to_json())
+            print(simulation_json)
+            bee_farm_snapshot_info = BeeFarmSnapshotInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
+                                            + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
+                                                + simulation_json["results"][0]["returnValues"][4][0] )
+            print(f"bee_farm_snapshot_info: {bee_farm_snapshot_info}")
+            hiveChronicleVault["bee_farm_snapshot_info"] = bee_farm_snapshot_info
+       
+
+        return hiveChronicleVault
+
     except Exception as e:
         color_print(f"onchain_helpers/getTimeStreamInfo: Error -  {e}", RED)
         return None
@@ -669,101 +702,11 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
 
 
 
-# [{'mutableReferenceOutputs': [[{'Input': 2}, [168, 3, 51, 152, 207, 32, 37, 186, 184, 170, 189, 207, 9, 218, 235, 147, 23, 158, 234, 155, 245, 181, 236, 176, 165, 221, 103, 59, 172, 170, 186, 162, 162, 148, 255, 234, 76, 211, 30, 169, 186, 241, 66, 24, 176, 73, 56, 33, 231, 195, 33, 60, 225, 3, 33, 15, 7, 129, 83, 216, 251, 229, 49, 174, 100, 113, 145, 199, 25, 241, 71, 10, 53, 90, 32, 230, 16, 250, 128, 12, 118, 18, 94, 50, 221, 55, 143, 247, 30, 17, 99, 188, 134, 220, 243, 186, 14, 72, 105, 118, 101, 67, 104, 114, 111, 110, 105, 99, 108, 101, 115, 1, 0, 1, 159, 58, 168, 170, 42, 159, 176, 127, 68, 111, 145, 141, 197, 43, 116, 29, 200, 153, 173, 240, 244, 27, 84, 80, 229, 124, 125, 49, 195, 151, 12, 102, 16, 67, 69, 76, 69, 83, 84, 73, 65, 76, 95, 66, 69, 73, 78, 71, 83, 53, 98, 175, 185, 166, 204, 49, 28, 224, 203, 193, 112, 105, 80, 252, 178, 143, 156, 57, 138, 85, 71, 74, 210, 168, 253, 224, 163, 48, 173, 132, 67, 12, 86, 65, 77, 80, 73, 82, 69, 83, 95, 68, 69, 78, 73, 64, 205, 157, 8, 17, 166, 251, 188, 116, 237, 200, 47, 243, 210, 138, 109, 155, 98, 110, 18, 208, 244, 84, 154, 93, 46, 116, 150, 226, 18, 140, 15, 66, 69, 69, 95, 72, 73, 86, 69, 95, 83, 84, 82, 69, 65, 77, 24, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 64, 150, 54, 225, 86, 214, 48, 66, 200, 151, 35, 33, 46, 62, 252, 107, 24, 64, 234, 33, 6, 218, 249, 74, 79, 91, 251, 53, 215, 88, 88, 136, 20, 0, 0, 0, 0, 0, 0, 0, 1, 24, 73, 78, 73, 84, 73, 65, 76, 73, 90, 69, 95, 65, 73, 82, 68, 82, 79, 80, 95, 86, 65, 85, 76, 84, 1, 22, 67, 76, 65, 73, 77, 95, 73, 78, 70, 85, 83, 73, 79, 78, 95, 82, 69, 87, 65, 82, 68, 83, 18, 173, 142, 216, 228, 99, 236, 109, 111, 254, 155, 194, 133, 109, 208, 3, 97, 187, 218, 123, 89, 25, 145, 158, 128, 250, 10, 149, 240, 47, 247, 146, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 203, 68, 98, 19, 202, 82, 29, 189, 95, 52, 74, 103, 166, 112, 31, 186, 143, 18, 162, 116, 227, 184, 185, 89, 14, 151, 129, 55, 39, 162, 142, 88, 9, 0, 0, 0, 0, 0, 0, 0, 1, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 49, 1, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 57, 9, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 49, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 50, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 51, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 52, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 53, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 54, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 55, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 56, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 57, 202, 22, 253, 52, 251, 156, 0, 0, 99, 1, 0, 0, 0, 0, 0, 0, 238, 92, 84, 188, 83, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 72, 176, 71, 156, 73, 41, 49, 229, 209, 205, 191, 144, 173, 181, 186, 157, 118, 115, 192, 70, 66, 142, 231, 71, 230, 137, 157, 213, 218, 173, 69, 216, 3, 0, 0, 0, 0, 0, 0, 0, 1, 96, 1, 0, 0, 0, 0, 0, 0, 1, 98, 1, 0, 0, 0, 0, 0, 0], '0xcbdb23195ae9d63a492d0257ea32e707973db35eebf09b3f6e9388414a8b39a::hive_chronicles::HiveChroniclesVault']], 
-#   'returnValues': [[[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[1, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[1, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[1, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0], 'u8'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64']]}]
 
 
 
 
 
-
-#     let user_hive_chronicle: any = {};
-#     user_hive_chronicle.active_epoch = deserializeValue(0, BCS.U64, resp);
-#     user_hive_chronicle.max_entropy_for_cur_epoch = deserializeValue(
-#       1,
-#       BCS.U64,
-#       resp
-#     );
-#     user_hive_chronicle.remaining_entropy = deserializeValue(2, BCS.U64, resp);
-#     user_hive_chronicle.total_hive_gems = deserializeValue(3, BCS.U64, resp);
-#     user_hive_chronicle.usable_hive_gems = deserializeValue(4, BCS.U64, resp);
-
-#     user_hive_chronicle.entropy_inbound = deserializeValue(5, BCS.U64, resp);
-#     user_hive_chronicle.entropy_outbound = deserializeValue(6, BCS.U64, resp);
-
-#     user_hive_chronicle.total_bees_farmed = deserializeValue(7, BCS.U64, resp);
-
-#     user_hive_chronicle.simulated_bees_from_entropy = deserializeValue(
-#       8,
-#       BCS.U64,
-#       resp
-#     );
-#     user_hive_chronicle.rebuzzes_count = deserializeValue(9, BCS.U64, resp);
-
-#     user_hive_chronicle.noise_buzzes_count = deserializeValue(
-#       10,
-#       BCS.U64,
-#       resp
-#     );
-#     user_hive_chronicle.last_noise_epoch = deserializeValue(11, BCS.U64, resp);
-#     user_hive_chronicle.noise_count = deserializeValue(12, BCS.U64, resp);
-#     user_hive_chronicle.chronicle_buzzes_count = deserializeValue(
-#       13,
-#       BCS.U64,
-#       resp
-#     );
-#     user_hive_chronicle.last_chronicle_epoch = deserializeValue(
-#       14,
-#       BCS.U64,
-#       resp
-#     );
-
-#     user_hive_chronicle.chronicle_count = deserializeValue(15, BCS.U64, resp);
-
-#     user_hive_chronicle.buzz_chains_count = deserializeValue(16, BCS.U64, resp);
-#     user_hive_chronicle.last_buzz_epoch = deserializeValue(17, BCS.U64, resp);
-#     user_hive_chronicle.buzz_count = deserializeValue(18, BCS.U64, resp);
-#     user_hive_chronicle.subscribers_only = deserializeValue(19, BCS.U8, resp);
-#     user_hive_chronicle.infusion_buzzes_count = deserializeValue(
-#       20,
-#       BCS.U64,
-#       resp
-#     );
-#     user_hive_chronicle.infusion_count = deserializeValue(21, BCS.U64, resp);
-
-#     return user_hive_chronicle;
-#   } catch (e) {
-#     console.log("Error in sui_get_hive_chronicle_info");
-#     console.log(e);
-#     return {
-#       active_epoch: 0,
-#       max_entropy_for_cur_epoch: 0,
-#       remaining_entropy: 0,
-#       total_hive_gems: 0,
-#       usable_hive_gems: 0,
-
-#       entropy_inbound: 0,
-#       entropy_outbound: 0,
-#       total_bees_farmed: 0,
-
-#       simulated_bees_from_entropy: 0,
-#       rebuzzes_count: 0,
-
-#       noise_buzzes_count: 0,
-#       last_noise_epoch: 0,
-#       noise_count: 0,
-#       chronicle_buzzes_count: 0,
-#       last_chronicle_epoch: 0,
-#       chronicle_count: 0,
-#       buzz_chains_count: 0,
-#       last_buzz_epoch: 0,
-#       buzz_count: 0,
-#       subscribers_only: 0,
-#       infusion_buzzes_count: 0,
-#       infusion_count: 0,
-#     };
-#   }
-# }
 
 
 

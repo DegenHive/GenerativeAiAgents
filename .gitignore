@@ -1,2 +1,9 @@
 /scripts/node_modules/*
 /myenv/*
+/degenhive_ai_agents/smart_agents/__pycache__/*
+/degenhive_ai_agents/smart_agents/persona/__pycache__/*
+/degenhive_ai_agents/smart_agents/persona/cognitive_modules/__pycache__/*
+*/__pycache__/*
+*.pyc
+*.pyc
+degenhive_ai_agents/smart_agents/__pycache__/global_methods.cpython-312.pyc
