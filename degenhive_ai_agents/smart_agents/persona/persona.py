@@ -22,6 +22,7 @@ from persona.cognitive_modules.plan import *
 from persona.cognitive_modules.reflect import *
 from persona.cognitive_modules.execute import *
 from onchain_helpers import *
+from backend_api import *
 
 class Persona: 
 
@@ -59,12 +60,59 @@ class Persona:
       await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
   
     
+  """
+  Like a time-stream Buzz
+  """
+  async def likeTimeStream(self, protocol_config):
+    profileID = self.scratch.get_hiveProfileID()
+    if not profileID or profileID == "":
+      color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+      await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
+  
+    
 
-    # print(suiClient)
-    # print(suiClient.config)
+
+
+
+
+
+  def getTimeline(self):
+    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"  #self.scratch.get_hiveProfileID())
+    # get_profileTimeline(profileID)
+    # timeStream = getHiveAnnocements(False)
+    # getFeedData(profileID)
+
+    # for streamBuzz in timeStream["completeFeed"]:
+    #   print(streamBuzz)
+    #   print("\n\n\n")
+
+    # return timeStream
+
+  def getHiveChronicleInfo_OnChain(self, protocol_config):
+    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"
+    getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, profileID)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   def get_private_key(self):
     return self.private_key
+
+  def get_HiveProfileId(self):
+    return self.scratch.get_hiveProfileID()
+
+
 
   # def save(self, save_folder): 
   #   """

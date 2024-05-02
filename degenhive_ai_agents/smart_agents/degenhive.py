@@ -58,6 +58,7 @@ class DegenHiveAiAgents:
       if "username" in account:
         self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"../storage/simulations/personas/{account["username"]}")
         self.persona_names.append(account["username"])
+        break
 
 
         
@@ -124,6 +125,39 @@ class DegenHiveAiAgents:
       agent_persona = self.personas[username]
       
       await agent_persona.kraftHiveProfileForAgent(simulations_state["configuration"])
+
+      break
+
+
+
+  
+  def make_bees_fly(self):
+
+    with open(f"../storage/simulations/state/meta.json") as json_file:  
+      simulations_state = json.load(json_file)
+
+    # Start the simulation
+    for username in ["AIExplorer99"]: #]self.persona_names:
+      agent_persona = self.personas[username]
+
+      # profileID = agent_persona.get_HiveProfileId()
+      # if not profileID or profileID == "":
+      #   continue
+
+      # Get the timeline for the persona
+      # timeline_feed = agent_persona.getTimeline()
+
+      # Get current persona's overall state 
+      agent_persona.getHiveChronicleInfo_OnChain(simulations_state["configuration"])
+
+
+
+
+
+
+
+
+
 
       break
 
@@ -289,7 +323,6 @@ class DegenHiveAiAgents:
 
   #       # elif ("call -- load history" 
   #       #       in sim_command.lower()): 
-  #       #   curr_file = maze_assets_loc + "/" + sim_command[len("call -- load history"):].strip() 
   #       #   # call -- load history the_ville/agent_history_init_n3.csv
 
   #         # rows = read_file_to_list(curr_file, header=True, strip_trail=True)[1]
@@ -312,20 +345,22 @@ class DegenHiveAiAgents:
 
 
 if __name__ == '__main__':
-  # rs = DegenHiveAiAgents("base_the_ville_isabella_maria_klaus", 
+  # ai_agents_simulation = DegenHiveAiAgents("base_the_ville_isabella_maria_klaus", 
   #                    "July1_the_ville_isabella_maria_klaus-step-3-1")
-  # rs = DegenHiveAiAgents("July1_the_ville_isabella_maria_klaus-step-3-20", 
+  # ai_agents_simulation = DegenHiveAiAgents("July1_the_ville_isabella_maria_klaus-step-3-20", 
   #                    "July1_the_ville_isabella_maria_klaus-step-3-21")
-  # rs.open_server()
+  # ai_agents_simulation.open_server()
 
   rpc_url = ""# input("Enter the name of the new simulation: ").strip()
-  SUI_RPC = "https://fullnode.testnet.sui.io:443/"
+  # SUI_RPC = "https://fullnode.testnet.sui.io:443/"
+  SUI_RPC =  "https://sui-testnet-endpoint.blockvision.org"
 
-  rs = DegenHiveAiAgents(SUI_RPC)
+  ai_agents_simulation = DegenHiveAiAgents(SUI_RPC)
 
 
   # rs.initialize_ai_agents(SUI_RPC)
-  asyncio.run(rs.kraftHiveProfileForAllAgents())
+  ai_agents_simulation.make_bees_fly( )
+  # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
   
 
 

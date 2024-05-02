@@ -16,6 +16,8 @@ from pysui.sui.sui_txresults.single_tx import SuiCoinObjects, SuiCoinObject
 from pysui.sui.sui_txresults.complex_tx import TxInspectionResult
 from pysui.abstracts import SignatureScheme
 
+from canoser import Struct, Uint8, Uint64
+
 from pysui.sui.sui_crypto import (
     SuiAddress,
     as_keystrings,
@@ -68,6 +70,35 @@ def color_print(text, color_code):
     END_COLOR = '\033[0m'  # Reset color code
     print(color_code + text + END_COLOR)
 
+
+class HiveChronicleState(Struct):
+    _fields = [
+        ('active_epoch', Uint64),
+        ('max_entropy_for_cur_epoch', Uint64),
+        ('remaining_entropy', Uint64),
+        ('total_hive_gems', Uint64),
+        ('usable_hive_gems', Uint64),
+        ('entropy_inbound', Uint64),
+        ('entropy_outbound', Uint64),
+        ('total_bees_farmed', Uint64),
+        ('simulated_bees_from_entropy', Uint64),
+        ('rebuzzes_count', Uint64),
+        ('noise_buzzes_count', Uint64),
+        ('last_noise_epoch', Uint64),
+        ('noise_count', Uint64),
+        ('chronicle_buzzes_count', Uint64),
+        ('last_chronicle_epoch', Uint64),
+        ('chronicle_count', Uint64),
+        ('buzz_chains_count', Uint64),
+        ('last_buzz_epoch', Uint64),
+        ('buzz_count', Uint64),
+        ('subscribers_only', Uint8),
+        ('infusion_buzzes_count', Uint64),
+        ('infusion_count', Uint64),
+
+    ]
+
+
 """
 Initialize a new account by generating a mnemonic phrase and recovering the keypair and address
 """
@@ -88,7 +119,7 @@ def initialize_new_account(rpc_url):
             # Must be a valid Sui keystring (i.e. 'key_type_flag | private_key_seed' )
             # prv_keys=["AOvsnh0guUmbheI3MHqWL/nFBABXkamx+UqwsrMRbGMt"],
         ######################################################################################################################################################################################################################################
-            prv_keys=[ {'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
+            prv_keys=[ { 'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
         ######################################################################################################################################################################################################################################
         )
 
@@ -105,7 +136,7 @@ def getSuiSyncClient(rpc_url, private_key_hex_string ):
     print(f"rpc_url: {rpc_url}")
     suiClient = SyncClient(SuiConfig.user_config(
             rpc_url=rpc_url,
-            prv_keys=[ {'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
+            prv_keys=[{'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
         ))
     print(suiClient)
     return suiClient
@@ -113,34 +144,39 @@ def getSuiSyncClient(rpc_url, private_key_hex_string ):
 
 async def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, name, bio) :
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+
+    print(suiClient._config.active_address)
+    # return
+
     txBlock = SyncTransaction(client=suiClient)
 
     # spendable_sui = await getSpendableSui(suiClient, txBlock, 0)
 
-    # spendable_sui = txBlock.move_call(
-    #     target=f"0x2::coin::zero",
-    #     arguments=[],
-    #     type_arguments=[SUI_TYPE],
-    # )
+    spendable_sui = txBlock.move_call(
+        target=f"0x2::coin::zero",
+        arguments=[],
+        type_arguments=[SUI_TYPE],
+    )
 
-    # txBlock.move_call(
-    #     target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::kraft_hive_profile",
-    #     arguments=[
-    #                ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
-    #                ObjectID(CLOCK),
-    #                ObjectID(SUI_SYSTEM_STATE),
-    #                ObjectID(protocol_config["DSUI_VAULT"]),
-    #                ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
-    #                ObjectID(protocol_config["HIVE_MANAGER"]),
-    #                ObjectID(protocol_config["DSUI_DISPERSER"]),
-    #                spendable_sui,
-    #                SuiString(name),
-    #                SuiString(bio),
-    #         ],
-    #         type_arguments=[],
-    #     )
+    txBlock.move_call(
+        target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::kraft_hive_profile",
+        arguments=[
+                   ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                   ObjectID(CLOCK),
+                   ObjectID(SUI_SYSTEM_STATE),
+                   ObjectID(protocol_config["DSUI_VAULT"]),
+                   ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                   ObjectID(protocol_config["HIVE_MANAGER"]),
+                   ObjectID(protocol_config["DSUI_DISPERSER"]),
+                   spendable_sui,
+                   SuiString(name),
+                   SuiString(bio),
+            ],
+            type_arguments=[],
+        )
 
-    txBlock.transfer_sui(recipient=SuiAddress("0xd13648ab4f9eecac1daec0b6a6316320237102362a5595838bbac9409c984bfd"), from_coin=ObjectID("0x630738e1189f0c7d3261869b6c4da3c42666a20f12bf9afcb18161679f3d5421"), amount=SuiInteger(1000000))
+    # txBlock.transfer_sui(recipient=SuiAddress("0xa23060b3c164838b892eaaea10c41cd95c13c7da32bd8f6b5d584da5251f9b77"), from_coin=ObjectID("0x01fa15f663674dd3a16e897f287098bff1a07b174b5b7245233cecde77faa904"), amount=SuiInteger(10000))
+    # txBlock.transfer_objects(recipient=SuiAddress("0xa23060b3c164838b892eaaea10c41cd95c13c7da32bd8f6b5d584da5251f9b77"), transfers=[ObjectID("0x5e8e6e8198d8b203f343b8ef190ccd4621bcf6810b5599e10ff9f3ba887a71f1")])
 
 
 #   recipient: Union[ObjectID, SuiAddress],
@@ -150,13 +186,12 @@ async def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, n
 
     if (simulation_response):
         print(f"Simulation successful")
-        print(txBlock)
 
         # res = txBlock.execute(gas_budget="10000000")
-        kind = txBlock.raw_kind()
-        print(f"Kind: {kind}")
+        # kind = txBlock.raw_kind()
+        # print(f"Kind: {kind}")
 
-        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = handle_result(txBlock.execute(gas_budget="100000000" ))
         print(f"Result: {exec_result.to_json()}")
         # print(res.result_string)
         # print(res.result_string.to_dict())
@@ -250,7 +285,106 @@ def simulate_tx(txb: SyncTransaction):
         return False, txb
 
 
+"""
+Execute a transaction to like a stream buzz Post
+"""
+async def like_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, stream_index, stream_inner_index) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::like_stream_buzz",
+        arguments=[
+                   ObjectID(CLOCK),
+                   ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                   ObjectID(protocol_config["HIVE_MANAGER"]),
+                   ObjectID(protocol_config["HIVE_VAULT"]),
+                   ObjectID(protocol_config["BEE_CAP"]),
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                     ObjectID(user_profile),
+                    SuiU64(stream_index),
+                    SuiU64(stream_inner_index),
+            ],
+            type_arguments=[SUI_TYPE],
+        )
 
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        print(txBlock)
+        # res = txBlock.execute(gas_budget="10000000")
+        kind = txBlock.raw_kind()
+        print(f"Kind: {kind}")
+
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        print(f"Result: {exec_result.to_json()}")
+        # print(res.result_string)
+        # print(res.result_string.to_dict())
+        # print(f"Result: {res.to_json()}")    
+    else: 
+        print(f"Simulation failed")
+
+
+"""
+Execute a transaction to upvote a Hive Buzz Post
+"""
+async def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, stream_index, stream_inner_index) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::upvote_hive_buzz",
+        arguments=[
+                     ObjectID(CLOCK),
+                        ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                        ObjectID(protocol_config["HIVE_MANAGER"]),
+                        ObjectID(protocol_config["HIVE_VAULT"]),
+                        ObjectID(user_profile),
+                        ObjectID(protocol_config["BEE_CAP"]),
+                        ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                        ObjectID(poster_profile),
+                        SuiU64(stream_index),
+                        SuiU64(stream_inner_index),
+            ],
+            type_arguments=[SUI_TYPE],
+        )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        print(txBlock)
+        # res = txBlock.execute(gas_budget="10000000")
+        kind = txBlock.raw_kind()
+        print(f"Kind: {kind}")
+
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        print(f"Result: {exec_result.to_json()}")
+        # print(res.result_string)
+        # print(res.result_string.to_dict())
+        # print(f"Result: {res.to_json()}")    
+    else: 
+        print(f"Simulation failed")
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 # async def objects_joined(client: SuiClient, txb: SuiTransactionAsync) -> Tuple[SuiTransactionAsync, dict]:
 #     # weakness: if a coin identifier is A::B::C, C must be unique for a type of coin (each coin has a different symbol). else this fails.
 #     objects = (await client.get_objects(fetch_all=True)).result_data.to_dict()["data"]
@@ -282,14 +416,138 @@ def simulate_tx(txb: SyncTransaction):
 
 
 
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+
+def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, user_profile) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+
+    print(f"HIVE_MANAGER: {protocol_config["HIVE_MANAGER"]}")
+    print(f"HIVE_CHRONICLES_VAULT: {protocol_config["HIVE_CHRONICLES_VAULT"]}")
+    print(f"user_profile: {user_profile}")
+
+
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::get_hive_chronicle_for_profile",
+        arguments=[
+                     ObjectID(CLOCK),
+                        ObjectID(protocol_config["HIVE_MANAGER"]),
+                        ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                        ObjectID(user_profile),
+            ],
+            type_arguments=[],
+        )
+    simulation = txBlock.inspect_all()
+    simulation_json = json.loads(simulation.to_json())
+    print(simulation_json["results"][0]["returnValues"][0] )
+
+    obj = HiveChronicleState.deserialize(simulation_json["results"][0]["returnValues"][0])
+    print(obj)
+
+    # user_hive_chronicle = {}
+    # user_hive_chronicle.active_epoch = bcs.
+    
+
+
+
+
+# [{'mutableReferenceOutputs': [[{'Input': 2}, [168, 3, 51, 152, 207, 32, 37, 186, 184, 170, 189, 207, 9, 218, 235, 147, 23, 158, 234, 155, 245, 181, 236, 176, 165, 221, 103, 59, 172, 170, 186, 162, 162, 148, 255, 234, 76, 211, 30, 169, 186, 241, 66, 24, 176, 73, 56, 33, 231, 195, 33, 60, 225, 3, 33, 15, 7, 129, 83, 216, 251, 229, 49, 174, 100, 113, 145, 199, 25, 241, 71, 10, 53, 90, 32, 230, 16, 250, 128, 12, 118, 18, 94, 50, 221, 55, 143, 247, 30, 17, 99, 188, 134, 220, 243, 186, 14, 72, 105, 118, 101, 67, 104, 114, 111, 110, 105, 99, 108, 101, 115, 1, 0, 1, 159, 58, 168, 170, 42, 159, 176, 127, 68, 111, 145, 141, 197, 43, 116, 29, 200, 153, 173, 240, 244, 27, 84, 80, 229, 124, 125, 49, 195, 151, 12, 102, 16, 67, 69, 76, 69, 83, 84, 73, 65, 76, 95, 66, 69, 73, 78, 71, 83, 53, 98, 175, 185, 166, 204, 49, 28, 224, 203, 193, 112, 105, 80, 252, 178, 143, 156, 57, 138, 85, 71, 74, 210, 168, 253, 224, 163, 48, 173, 132, 67, 12, 86, 65, 77, 80, 73, 82, 69, 83, 95, 68, 69, 78, 73, 64, 205, 157, 8, 17, 166, 251, 188, 116, 237, 200, 47, 243, 210, 138, 109, 155, 98, 110, 18, 208, 244, 84, 154, 93, 46, 116, 150, 226, 18, 140, 15, 66, 69, 69, 95, 72, 73, 86, 69, 95, 83, 84, 82, 69, 65, 77, 24, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0, 0, 5, 0, 0, 0, 0, 0, 0, 0, 64, 150, 54, 225, 86, 214, 48, 66, 200, 151, 35, 33, 46, 62, 252, 107, 24, 64, 234, 33, 6, 218, 249, 74, 79, 91, 251, 53, 215, 88, 88, 136, 20, 0, 0, 0, 0, 0, 0, 0, 1, 24, 73, 78, 73, 84, 73, 65, 76, 73, 90, 69, 95, 65, 73, 82, 68, 82, 79, 80, 95, 86, 65, 85, 76, 84, 1, 22, 67, 76, 65, 73, 77, 95, 73, 78, 70, 85, 83, 73, 79, 78, 95, 82, 69, 87, 65, 82, 68, 83, 18, 173, 142, 216, 228, 99, 236, 109, 111, 254, 155, 194, 133, 109, 208, 3, 97, 187, 218, 123, 89, 25, 145, 158, 128, 250, 10, 149, 240, 47, 247, 146, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 203, 68, 98, 19, 202, 82, 29, 189, 95, 52, 74, 103, 166, 112, 31, 186, 143, 18, 162, 116, 227, 184, 185, 89, 14, 151, 129, 55, 39, 162, 142, 88, 9, 0, 0, 0, 0, 0, 0, 0, 1, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 49, 1, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 57, 9, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 49, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 50, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 51, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 52, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 53, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 54, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 55, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 56, 14, 87, 69, 76, 67, 79, 77, 69, 95, 66, 85, 90, 90, 95, 57, 202, 22, 253, 52, 251, 156, 0, 0, 99, 1, 0, 0, 0, 0, 0, 0, 238, 92, 84, 188, 83, 52, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 72, 176, 71, 156, 73, 41, 49, 229, 209, 205, 191, 144, 173, 181, 186, 157, 118, 115, 192, 70, 66, 142, 231, 71, 230, 137, 157, 213, 218, 173, 69, 216, 3, 0, 0, 0, 0, 0, 0, 0, 1, 96, 1, 0, 0, 0, 0, 0, 0, 1, 98, 1, 0, 0, 0, 0, 0, 0], '0xcbdb23195ae9d63a492d0257ea32e707973db35eebf09b3f6e9388414a8b39a::hive_chronicles::HiveChroniclesVault']], 
+#   'returnValues': [[[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[1, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[1, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[1, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[99, 1, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0], 'u8'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64'], [[0, 0, 0, 0, 0, 0, 0, 0], 'u64']]}]
 
 
 
 
 
 
+#     let user_hive_chronicle: any = {};
+#     user_hive_chronicle.active_epoch = deserializeValue(0, BCS.U64, resp);
+#     user_hive_chronicle.max_entropy_for_cur_epoch = deserializeValue(
+#       1,
+#       BCS.U64,
+#       resp
+#     );
+#     user_hive_chronicle.remaining_entropy = deserializeValue(2, BCS.U64, resp);
+#     user_hive_chronicle.total_hive_gems = deserializeValue(3, BCS.U64, resp);
+#     user_hive_chronicle.usable_hive_gems = deserializeValue(4, BCS.U64, resp);
 
+#     user_hive_chronicle.entropy_inbound = deserializeValue(5, BCS.U64, resp);
+#     user_hive_chronicle.entropy_outbound = deserializeValue(6, BCS.U64, resp);
 
+#     user_hive_chronicle.total_bees_farmed = deserializeValue(7, BCS.U64, resp);
+
+#     user_hive_chronicle.simulated_bees_from_entropy = deserializeValue(
+#       8,
+#       BCS.U64,
+#       resp
+#     );
+#     user_hive_chronicle.rebuzzes_count = deserializeValue(9, BCS.U64, resp);
+
+#     user_hive_chronicle.noise_buzzes_count = deserializeValue(
+#       10,
+#       BCS.U64,
+#       resp
+#     );
+#     user_hive_chronicle.last_noise_epoch = deserializeValue(11, BCS.U64, resp);
+#     user_hive_chronicle.noise_count = deserializeValue(12, BCS.U64, resp);
+#     user_hive_chronicle.chronicle_buzzes_count = deserializeValue(
+#       13,
+#       BCS.U64,
+#       resp
+#     );
+#     user_hive_chronicle.last_chronicle_epoch = deserializeValue(
+#       14,
+#       BCS.U64,
+#       resp
+#     );
+
+#     user_hive_chronicle.chronicle_count = deserializeValue(15, BCS.U64, resp);
+
+#     user_hive_chronicle.buzz_chains_count = deserializeValue(16, BCS.U64, resp);
+#     user_hive_chronicle.last_buzz_epoch = deserializeValue(17, BCS.U64, resp);
+#     user_hive_chronicle.buzz_count = deserializeValue(18, BCS.U64, resp);
+#     user_hive_chronicle.subscribers_only = deserializeValue(19, BCS.U8, resp);
+#     user_hive_chronicle.infusion_buzzes_count = deserializeValue(
+#       20,
+#       BCS.U64,
+#       resp
+#     );
+#     user_hive_chronicle.infusion_count = deserializeValue(21, BCS.U64, resp);
+
+#     return user_hive_chronicle;
+#   } catch (e) {
+#     console.log("Error in sui_get_hive_chronicle_info");
+#     console.log(e);
+#     return {
+#       active_epoch: 0,
+#       max_entropy_for_cur_epoch: 0,
+#       remaining_entropy: 0,
+#       total_hive_gems: 0,
+#       usable_hive_gems: 0,
+
+#       entropy_inbound: 0,
+#       entropy_outbound: 0,
+#       total_bees_farmed: 0,
+
+#       simulated_bees_from_entropy: 0,
+#       rebuzzes_count: 0,
+
+#       noise_buzzes_count: 0,
+#       last_noise_epoch: 0,
+#       noise_count: 0,
+#       chronicle_buzzes_count: 0,
+#       last_chronicle_epoch: 0,
+#       chronicle_count: 0,
+#       buzz_chains_count: 0,
+#       last_buzz_epoch: 0,
+#       buzz_count: 0,
+#       subscribers_only: 0,
+#       infusion_buzzes_count: 0,
+#       infusion_count: 0,
+#     };
+#   }
+# }
 
 
 
