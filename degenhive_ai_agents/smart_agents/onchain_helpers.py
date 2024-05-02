@@ -115,6 +115,9 @@ class TimeStreamUserInfo(canoser.Struct):
         ('total_points_sum', canoser.Uint128),
     ]
 
+
+# 0-------1-------- TIME STREAM GLOBAL STATE INFO ---------1--------0
+
 class TimeStreamConfigParams(canoser.Struct):
     _fields = [
         ('are_live', bool),
@@ -149,19 +152,32 @@ class TimeStreamerInfo(canoser.Struct):
 class LeadingBidsInfo(canoser.Struct):
     _fields = [
         ('o_profile_addr', SuiAddress),
-        ('o_bid_amt', str),
+        ('o_bid_amt', canoser.Uint64),
         ('s_profile_addr', canoser.Uint64),
-        ('s_bid_amt', canoser.Uint8),
+        ('s_bid_amt', canoser.Uint64),
         ('t_profile_addr', canoser.Uint64),
-        ('t_bid_amt', canoser.Uint64)
+        ('t_bid_amt', canoser.Uint64),
+    ]
+
+class TimeStreamPolInfo(canoser.Struct):
+    _fields = [
+        ('bid_pool', canoser.Uint64),
+        ('sui_avail_for_pol', canoser.Uint8)
     ]
 
 
-
-
-
-
-
+class TimeStreamEngagementScoresState(canoser.Struct):
+    _fields = [
+        ('hive_gems_available', canoser.Uint64),
+        ('hive_per_ad_slot', canoser.Uint64),
+        ('bees_available', canoser.Uint64),
+        ('bees_per_ad_slot', canoser.Uint64),
+        ('total_sui_bidded', canoser.Uint64),
+        ('ongoing_points_sum', canoser.Uint128),
+        ('user_points_score', canoser.Uint64),
+        ('leading_bid_amt', canoser.Uint64),
+        ('points_per_sui_bidded', canoser.Uint128),
+    ]
 
 
 
@@ -599,23 +615,42 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
                                                     + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
                                                     + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
                                                 )
-        time_streamer1_info = TimeStreamerInfo.deserialize( simulation_json["results"][1]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][1][0]
-                                            + simulation_json["results"][1]["returnValues"][2][0] + simulation_json["results"][1]["returnValues"][3][0]
-                                                + simulation_json["results"][1]["returnValues"][4][0] + simulation_json["results"][1]["returnValues"][5][0]
-                                                    + simulation_json["results"][1]["returnValues"][6][0] + simulation_json["results"][1]["returnValues"][7][0]
-                                                    + simulation_json["results"][1]["returnValues"][8][0] )
-        time_streamer2_info = TimeStreamerInfo.deserialize( simulation_json["results"][2]["returnValues"][0][0] + simulation_json["results"][2]["returnValues"][1][0]
-                                            + simulation_json["results"][2]["returnValues"][2][0] + simulation_json["results"][2]["returnValues"][3][0]
-                                                + simulation_json["results"][2]["returnValues"][4][0] + simulation_json["results"][2]["returnValues"][5][0]
-                                                    + simulation_json["results"][2]["returnValues"][6][0] + simulation_json["results"][2]["returnValues"][7][0]
-                                                    + simulation_json["results"][2]["returnValues"][8][0] )
-        time_streamer3_info = TimeStreamerInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
-                                            + simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
-                                                + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0]
-                                                    + simulation_json["results"][3]["returnValues"][6][0] + simulation_json["results"][3]["returnValues"][7][0]
-                                                    + simulation_json["results"][3]["returnValues"][8][0] )
+        print(f"time_stream_config_params: {time_stream_config_params}")
         
-        leading_bids_info = TimeStreamUserInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
+        # time_streamer1_info = TimeStreamerInfo.deserialize( simulation_json["results"][1]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][1][0]
+        #                                     + simulation_json["results"][1]["returnValues"][2][0] + simulation_json["results"][1]["returnValues"][3][0]
+        #                                         + simulation_json["results"][1]["returnValues"][4][0] + simulation_json["results"][1]["returnValues"][5][0]
+        #                                             + simulation_json["results"][1]["returnValues"][6][0] + simulation_json["results"][1]["returnValues"][7][0]
+        #                                             + simulation_json["results"][1]["returnValues"][8][0] )
+        # time_streamer2_info = TimeStreamerInfo.deserialize( simulation_json["results"][2]["returnValues"][0][0] + simulation_json["results"][2]["returnValues"][1][0]
+        #                                     + simulation_json["results"][2]["returnValues"][2][0] + simulation_json["results"][2]["returnValues"][3][0]
+        #                                         + simulation_json["results"][2]["returnValues"][4][0] + simulation_json["results"][2]["returnValues"][5][0]
+        #                                             + simulation_json["results"][2]["returnValues"][6][0] + simulation_json["results"][2]["returnValues"][7][0]
+        #                                             + simulation_json["results"][2]["returnValues"][8][0] )
+        # time_streamer3_info = TimeStreamerInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
+        #                                     + simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
+        #                                         + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0]
+        #                                             + simulation_json["results"][3]["returnValues"][6][0] + simulation_json["results"][3]["returnValues"][7][0]
+        #                                             + simulation_json["results"][3]["returnValues"][8][0] )
+        
+        # leading_bids_info = TimeStreamUserInfo.deserialize( simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0], 
+        #                                     + simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
+        #                                         + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0] )
+
+        # time_stream_pol_info = TimeStreamPolInfo.deserialize( simulation_json["results"][4]["returnValues"][0][0] + simulation_json["results"][4]["returnValues"][1][0] )
+        # time_stream_engagement_scores_state = TimeStreamEngagementScoresState.deserialize( simulation_json["results"][5]["returnValues"][0][0] + simulation_json["results"][5]["returnValues"][1][0]
+        #                                     + simulation_json["results"][5]["returnValues"][2][0] + simulation_json["results"][5]["returnValues"][3][0]
+        #                                         + simulation_json["results"][5]["returnValues"][4][0] + simulation_json["results"][5]["returnValues"][5][0]
+        #                                             + simulation_json["results"][5]["returnValues"][6][0] + simulation_json["results"][5]["returnValues"][7][0]
+        #                                             + simulation_json["results"][5]["returnValues"][8][0] )
+
+
+        # print(f"time_streamer1_info: {time_streamer1_info}")
+        # print(f"time_streamer2_info: {time_streamer2_info}")
+        # print(f"time_streamer3_info: {time_streamer3_info}")
+        # print(f"leading_bids_info: {leading_bids_info}")
+        # print(f"time_stream_pol_info: {time_stream_pol_info}")
+        # print(f"time_stream_engagement_scores_state: {time_stream_engagement_scores_state}")
 
 
 
@@ -628,7 +663,7 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
         #                                         ) 
         # return time_stream_state_info
     except Exception as e:
-        color_print(f"onchain_helpers/getTimeStreamStateForProfileInfo: Error -  {e}", RED)
+        color_print(f"onchain_helpers/getTimeStreamInfo: Error -  {e}", RED)
         return None
  
 
