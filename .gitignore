@@ -7,3 +7,5 @@
 *.pyc
 *.pyc
 degenhive_ai_agents/smart_agents/__pycache__/global_methods.cpython-312.pyc
+*.pyc
+degenhive_ai_agents/smart_agents/utils.py

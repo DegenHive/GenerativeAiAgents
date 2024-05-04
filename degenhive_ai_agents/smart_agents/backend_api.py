@@ -1,6 +1,43 @@
 from graphqlclient import GraphQLClient
 from utils import *
 import json
+import base64
+import requests
+import asyncio
+
+
+
+
+async def file_to_base64(file):
+    try:
+        with open(file, "rb") as file:
+            base64_string = base64.b64encode(file.read()).decode('utf-8')
+            return base64_string
+    except FileNotFoundError:
+        raise FileNotFoundError("No file provided")
+
+
+
+async def upload_media_to_be(img_str):
+    headers = {"Content-Type": "application/json"}
+    payload = json.dumps({
+        "api_key": BE_API_KEY,
+        "media": img_str
+    })
+    # print(payload["api_key"])
+    # return
+    try:
+        response = requests.post(BACKEND_API, headers=headers, json=payload)
+        response.raise_for_status()
+        return {"status": "success", "data": response.json()}
+    except requests.exceptions.RequestException as e:
+        print(e)
+        return {"status": "error", "data": None}
+
+
+
+
+
 
 
 def getHiveAnnocements( isStream, last_key = None, limit = 15):
@@ -165,3 +202,17 @@ def getHiveThread(pk: any, sk: any, network: any):
     #     }
     # }
 
+
+
+async def main():
+    file_path = "../storage/content/welcome_imgs/degenHiveIntro1.png"  # Specify the path to your image file
+    img_str = await file_to_base64(file_path)
+    # print(img_str)
+    result = await upload_media_to_be(img_str)
+    # print(result)
+
+
+
+if __name__ == '__main__':
+
+    asyncio.run(main())

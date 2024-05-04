@@ -188,6 +188,12 @@ class BeeFarmSnapshotInfo(canoser.Struct):
         ('bees_burnt', canoser.Uint64),
     ]
 
+class EpochInfo(canoser.Struct):
+    _fields = [
+        ('epoch', canoser.Uint64),
+        ('epoch_timestamp_ms', canoser.Uint64)
+    ]
+
 
 
 """
@@ -224,12 +230,10 @@ def initialize_new_account(rpc_url):
 
 
 def getSuiSyncClient(rpc_url, private_key_hex_string ):
-    print(f"rpc_url: {rpc_url}")
     suiClient = SyncClient(SuiConfig.user_config(
             rpc_url=rpc_url,
             prv_keys=[{'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
         ))
-    print(suiClient)
     return suiClient
 
 
@@ -372,8 +376,11 @@ def simulate_tx(txb: SyncTransaction):
         print(f"Transaction will be successful")
         return True, txb
     else:
-        print(f"Transaction will fail")
+        print(f"Transaction will fail - Error")
+        print(simulation_json["effects"]["status"]["error"])
         return False, txb
+
+
 
 
 """
@@ -455,6 +462,113 @@ async def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, u
         print(f"Simulation failed")
     
 
+#  ---------------- UPDATE GLOBAL CYCLIC FUNCTIONS ----------------
+# ---------------- UPDATE GLOBAL CYCLIC FUNCTIONS ----------------
+
+"""
+Execute a transaction to increment the BEE farm epoch in HiveChronicle APP
+"""
+def increment_bee_farm_epoch(rpc_url, private_key_hex_string, protocol_config) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::increment_bee_farm_epoch",
+        arguments=[
+                        ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                        ObjectID(protocol_config["HIVE_MANAGER"]),
+                        ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                        ObjectID(protocol_config["BEE_CAP"]),
+            ],
+            type_arguments=[SUI_TYPE],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        color_print(f"BEE-Farm Epoch Incremented successfuly: {exec_result["digest"]}", GREEN)
+        return exec_result
+    else: 
+        print(f"Simulation failed")
+        return False
+    
+
+"""
+Execute a transaction to increment the Time-Stream Cycle (first half)
+"""
+def increment_timeStream_part_1(rpc_url, private_key_hex_string, protocol_config, prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+
+    # print(f"prev_streamer_rank1_profile: {prev_streamer_rank1_profile}")
+    # print(f"prev_streamer_rank2_profile: {prev_streamer_rank2_profile}")
+    # print(f"prev_streamer_rank3_profile: {prev_streamer_rank3_profile}")
+    # return
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["HIVE_PACKAGE"]}::hive::increment_stream_part_1",
+        arguments=[     ObjectID(CLOCK),
+                        ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                        ObjectID(protocol_config["HIVE_VAULT"]),
+                        ObjectID(prev_streamer_rank1_profile),
+                        ObjectID(prev_streamer_rank2_profile),
+                        ObjectID(prev_streamer_rank3_profile),
+            ],
+            type_arguments=[SUI_TYPE],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        color_print(f"Time-Stream Cycle Incremented successfuly (part 1): {exec_result["digest"]}", GREEN)
+        return exec_result
+    else: 
+        print(f"Simulation failed")
+        return False
+
+"""
+Execute a transaction to increment the Time-Stream Cycle (2nd half)
+"""
+def increment_timeStream_part_2(rpc_url, private_key_hex_string, protocol_config, new_streamer_rank1, new_streamer_rank2, new_streamer_rank3) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::hive::increment_stream_part_2",
+        arguments=[     ObjectID(CLOCK),
+                        ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                        ObjectID(protocol_config["HIVE_VAULT"]),
+                        ObjectID(new_streamer_rank1),
+                        ObjectID(new_streamer_rank2),
+                        ObjectID(new_streamer_rank3),
+                        ObjectID(protocol_config["BEE_CAP"]),                        
+                        ObjectID(protocol_config["BEE_TOKEN_POLICY"])
+            ],
+            type_arguments=[SUI_TYPE],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        color_print(f"Time-Stream Cycle Incremented successfuly (part 2): {exec_result["digest"]}", GREEN)
+        return exec_result
+    else: 
+        print(f"Simulation failed")
+        return False
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -510,6 +624,10 @@ async def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, u
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
+
+
+
+  
 
 """
 Fetch HiveChronicle state information for a user profile from chain 
@@ -581,9 +699,56 @@ def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_c
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
 
+"""
+Get current epoch
+"""
+def getEpochInfo(rpc_url, private_key_hex_string):
+    try: 
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"0x2::tx_context::epoch",
+            arguments=[],
+            type_arguments=[],
+        )
+        txBlock.move_call(
+            target=f"0x2::tx_context::epoch_timestamp_ms",
+            arguments=[],
+            type_arguments=[],
+        )
+        simulation = txBlock.inspect_all()
+        simulation_json = json.loads(simulation.to_json())
+        current_epochInfo = EpochInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][0][0] )
+        return json.loads(current_epochInfo.to_json())
+    except Exception as e:
+        color_print(f"onchain_helpers/getEpochInfo: Error -  {e}", RED)
+        return None
+
+"""
+Get GLobal TimeStream Info
+"""
 def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
     try:
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+
+        StreamerBuzzObject = (suiClient.get_object(protocol_config["STREAMER_BUZZ_OBJECT"]))
+        StreamerBuzzObject = StreamerBuzzObject.result_data.to_dict()["content"]["fields"]
+
+        # Current streamers
+        streamerProfile1 = StreamerBuzzObject["streamers_info"]["fields"]["rank1_profile"]
+        streamerProfile2 = StreamerBuzzObject["streamers_info"]["fields"]["rank2_profile"]
+        streamerProfile3 = StreamerBuzzObject["streamers_info"]["fields"]["rank3_profile"]
+
+        # Current leading bids
+        leadingBidsInfo = {
+            "o_profile_addr": StreamerBuzzObject["leading_bids"]["fields"]["o_profile_addr"],
+            "o_bid_amt": StreamerBuzzObject["leading_bids"]["fields"]["o_bid_amt"],
+            "s_profile_addr": StreamerBuzzObject["leading_bids"]["fields"]["s_profile_addr"],
+            "s_bid_amt": StreamerBuzzObject["leading_bids"]["fields"]["s_bid_amt"],
+            "t_profile_addr": StreamerBuzzObject["leading_bids"]["fields"]["t_profile_addr"],
+            "t_bid_amt": StreamerBuzzObject["leading_bids"]["fields"]["t_bid_amt"],
+        }
+
         txBlock = SyncTransaction(client=suiClient)
         txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_streamer_buzzes_params",
                             arguments=[    ObjectID(protocol_config["HIVE_VAULT"]) ],
@@ -606,10 +771,11 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
         txBlock.move_call( target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_engagement_scores_state",
                             arguments=[    ObjectID(protocol_config["HIVE_VAULT"])  ],
                             type_arguments=[SUI_TYPE])
-                
+
+
         simulation = txBlock.inspect_all()
         simulation_json = json.loads(simulation.to_json())
-        print(simulation_json)
+        # print(simulation_json)
         
         time_stream_config_params = TimeStreamConfigParams.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
                                             + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
@@ -618,51 +784,54 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
                                                     + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
                                                     + simulation_json["results"][0]["returnValues"][10][0] + simulation_json["results"][0]["returnValues"][11][0]
                                                 )
-        print(f"time_stream_config_params: {time_stream_config_params}")
+        # print(f"time_stream_config_params: {time_stream_config_params}")
         
         time_streamer1_info = TimeStreamerInfo.deserialize(# simulation_json["results"][1]["returnValues"][0][0] + simulation_json["results"][1]["returnValues"][1][0]
                                             simulation_json["results"][1]["returnValues"][2][0] + simulation_json["results"][1]["returnValues"][3][0]
                                                 + simulation_json["results"][1]["returnValues"][4][0] + simulation_json["results"][1]["returnValues"][5][0]
                                                     + simulation_json["results"][1]["returnValues"][6][0] + simulation_json["results"][1]["returnValues"][7][0]
                                                     + simulation_json["results"][1]["returnValues"][8][0] )
-        print(f"time_streamer1_info: {time_streamer1_info}")
+        time_streamer1_info = json.loads(time_streamer1_info.to_json())
+        time_streamer1_info["profile_addr"] = streamerProfile1
 
         time_streamer2_info = TimeStreamerInfo.deserialize( # simulation_json["results"][2]["returnValues"][0][0] + simulation_json["results"][2]["returnValues"][1][0]
                                                 simulation_json["results"][2]["returnValues"][2][0] + simulation_json["results"][2]["returnValues"][3][0]
                                                 + simulation_json["results"][2]["returnValues"][4][0] + simulation_json["results"][2]["returnValues"][5][0]
                                                     + simulation_json["results"][2]["returnValues"][6][0] + simulation_json["results"][2]["returnValues"][7][0]
                                                     + simulation_json["results"][2]["returnValues"][8][0] )
-        print(f"time_streamer2_info: {time_streamer2_info}")
+        time_streamer2_info = json.loads(time_streamer2_info.to_json())
+        time_streamer2_info["profile_addr"] = streamerProfile2
 
         time_streamer3_info = TimeStreamerInfo.deserialize( # simulation_json["results"][3]["returnValues"][0][0] + simulation_json["results"][3]["returnValues"][1][0]
                                                 simulation_json["results"][3]["returnValues"][2][0] + simulation_json["results"][3]["returnValues"][3][0]
                                                 + simulation_json["results"][3]["returnValues"][4][0] + simulation_json["results"][3]["returnValues"][5][0]
                                                     + simulation_json["results"][3]["returnValues"][6][0] + simulation_json["results"][3]["returnValues"][7][0]
                                                     + simulation_json["results"][3]["returnValues"][8][0] )
-        print(f"time_streamer3_info: {time_streamer3_info}")
+        time_streamer3_info = json.loads(time_streamer3_info.to_json())
+        time_streamer3_info["profile_addr"] = streamerProfile3
         
         # leading_bids_info = LeadingBidsInfo.deserialize( simulation_json["results"][4]["returnValues"][0][0] + simulation_json["results"][4]["returnValues"][1][0], 
         #                                     + simulation_json["results"][4]["returnValues"][2][0] + simulation_json["results"][4]["returnValues"][3][0]
         #                                         + simulation_json["results"][4]["returnValues"][4][0] + simulation_json["results"][4]["returnValues"][5][0] )
 
         time_stream_pol_info = TimeStreamPolInfo.deserialize( simulation_json["results"][5]["returnValues"][0][0] + simulation_json["results"][5]["returnValues"][1][0] )
-        print(f"time_stream_pol_info: {time_stream_pol_info}")
+        # print(f"time_stream_pol_info: {time_stream_pol_info}")
 
         time_stream_engagement_scores_state = TimeStreamEngagementScoresState.deserialize( simulation_json["results"][6]["returnValues"][0][0] + simulation_json["results"][6]["returnValues"][1][0]
                                             + simulation_json["results"][6]["returnValues"][2][0] + simulation_json["results"][6]["returnValues"][3][0]
                                                 + simulation_json["results"][6]["returnValues"][4][0] + simulation_json["results"][6]["returnValues"][5][0]
                                                     + simulation_json["results"][6]["returnValues"][6][0] + simulation_json["results"][6]["returnValues"][7][0]
                                                     + simulation_json["results"][6]["returnValues"][8][0] )
-        print(f"time_stream_engagement_scores_state: {time_stream_engagement_scores_state}")
+        # print(f"time_stream_engagement_scores_state: {time_stream_engagement_scores_state}")
 
         return {
-            "config_params": time_stream_config_params,
-            "streamer1_info": time_streamer1_info,
+            "config_params": json.loads(time_stream_config_params.to_json()),
+            "streamer1_info": time_streamer1_info, 
             "streamer2_info": time_streamer2_info,
             "streamer3_info": time_streamer3_info,
-            # "leading_bids_info": leading_bids_info,
-            "pol_info": time_stream_pol_info,
-            "engagement_state": time_stream_engagement_scores_state
+            "leading_bids_info": leadingBidsInfo,
+            "pol_info": json.loads(time_stream_pol_info.to_json()),
+            "engagement_state": json.loads(time_stream_engagement_scores_state.to_json()),
         }
 
     except Exception as e:
@@ -670,34 +839,48 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
         return None
  
 
-def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, epoch) :
+"""
+Get Global HiveChronicle Info
+"""
+def getGlobalHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, epoch) :
     try:
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
-        txBlock = SyncTransaction(client=suiClient)
         
-        hiveChronicleVault = (suiClient.get_object(id))
+        
+        hiveChronicleVault = (suiClient.get_object(protocol_config["HIVE_CHRONICLES_VAULT"]))
         hiveChronicleVault = hiveChronicleVault.result_data.to_dict()["content"]["fields"]
-        
-
-        if (epoch > 0):
-            txBlock.move_call( target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_entry::query_bees_farming_snampshot",
-                                arguments=[    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]), SuiU64(epoch) ],
-                                type_arguments=[])                
-            simulation = txBlock.inspect_all()
-            simulation_json = json.loads(simulation.to_json())
-            print(simulation_json)
-            bee_farm_snapshot_info = BeeFarmSnapshotInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
-                                            + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
-                                                + simulation_json["results"][0]["returnValues"][4][0] )
-            print(f"bee_farm_snapshot_info: {bee_farm_snapshot_info}")
-            hiveChronicleVault["bee_farm_snapshot_info"] = bee_farm_snapshot_info
+        hiveChronicleVaultToReturn = { 
+            "bee_farm_info": hiveChronicleVault["bee_farm_info"]["fields"],
+            "config_params": hiveChronicleVault["config_params"]["fields"],
+            "total_bees_available": hiveChronicleVault["total_bees_available"],
+            "welcome_buzzes_count" : hiveChronicleVault["welcome_buzzes"]["fields"]["size"],
+            "system_infusion_buzzes_count" : hiveChronicleVault["system_infusion_buzzes"]["fields"]["size"],
+            "lockdrop_vault_dof_manager_cap": { "name" : hiveChronicleVault["lockdrop_vault_dof_manager_cap"]["fields"]["app_name"] , "id": hiveChronicleVault["lockdrop_vault_dof_manager_cap"]["fields"]["id"]["id"] },
+            "infusion_vault_dof_manager_cap": { "name" : hiveChronicleVault["infusion_vault_dof_manager_cap"]["fields"]["app_name"] , "id": hiveChronicleVault["infusion_vault_dof_manager_cap"]["fields"]["id"]["id"] },
+            "hive_entry_capID": hiveChronicleVault["hive_entry_cap"]["fields"]["id"]["id"],
+            "hive_chronicle_dof_cap":  { "name" : hiveChronicleVault["hive_chronicle_dof_cap"]["fields"]["app_name"] , "id": hiveChronicleVault["hive_chronicle_dof_cap"]["fields"]["id"]["id"] },
+        }
+        # print(hiveChronicleVaultToReturn)
+                
+        # if (epoch > 0):
+            # txBlock = SyncTransaction(client=suiClient)
+        #     txBlock.move_call( target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_entry::query_bees_farming_snampshot",
+        #                         arguments=[    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]), SuiU64(epoch) ],
+        #                         type_arguments=[])                
+        #     simulation = txBlock.inspect_all()
+        #     simulation_json = json.loads(simulation.to_json())
+        #     print(simulation_json)
+        #     bee_farm_snapshot_info = BeeFarmSnapshotInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0]
+        #                                     + simulation_json["results"][0]["returnValues"][2][0] + simulation_json["results"][0]["returnValues"][3][0]
+        #                                         + simulation_json["results"][0]["returnValues"][4][0] )
+        #     print(f"bee_farm_snapshot_info: {bee_farm_snapshot_info}")
+        #     hiveChronicleVault["bee_farm_snapshot_info"] = bee_farm_snapshot_info
        
-
-        return hiveChronicleVault
+        return hiveChronicleVaultToReturn, None
 
     except Exception as e:
-        color_print(f"onchain_helpers/getTimeStreamInfo: Error -  {e}", RED)
-        return None
+        color_print(f"onchain_helpers/getGlobalHiveChronicleInfo: Error -  {e}", RED)
+        return None, None
  
 
 

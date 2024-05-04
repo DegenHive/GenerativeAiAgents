@@ -168,6 +168,7 @@
     "last_epoch_stream2_incremented": "355",
     "is_hive_per_epoch_set_in_dex_dao": true,
     "are_points_for_pool_hives_set": true,
-    "HIVE_DAO_GOVERNOR": "0xf62b013bc82d46ffb74fc6fb14aaaae47e3d8dc24fdb8fa02bca1213e0b814ec"
+    "HIVE_DAO_GOVERNOR": "0xf62b013bc82d46ffb74fc6fb14aaaae47e3d8dc24fdb8fa02bca1213e0b814ec",
+    "STREAMER_BUZZ_OBJECT": "0x8bf151904932a1045e63750ea9c1db4d16b28fc2f2286815fc52d65849905439"
   }
 }
