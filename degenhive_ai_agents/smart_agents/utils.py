@@ -4,7 +4,8 @@ key_owner = "Rahul"
 
 SUI_RPC = "https://fullnode.testnet.sui.io:443/"
 BE_API = "https://z2a9d0jtq5.execute-api.eu-central-1.amazonaws.com/api/v1"
-
+BE_API_KEY = "KV7clk4iEyjdA46hIdVIBOOGzdFqjEP1"
+BACKEND_API = "https://f3hlsrunv2.execute-api.eu-central-1.amazonaws.com/dev/api/v1/socials/upload-media"
 
 # Verbose 
 debug = True
