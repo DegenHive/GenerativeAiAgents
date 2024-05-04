@@ -22,6 +22,7 @@ from persona.cognitive_modules.plan import *
 from persona.cognitive_modules.reflect import *
 from persona.cognitive_modules.execute import *
 from onchain_helpers import *
+from backend_api import *
 
 class Persona: 
 
@@ -59,12 +60,101 @@ class Persona:
       await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
   
     
+  """
+  Like a time-stream Buzz
+  """
+  async def likeTimeStream(self, protocol_config):
+    profileID = self.scratch.get_hiveProfileID()
+    if not profileID or profileID == "":
+      color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+      await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
+  
+    
+    
+  """
+  Increment GLobal BEE FARM EPOCH FOR HIVE CHRONICLE
+  """
+  def increment_bee_farm_epoch(self, protocol_config):
+    color_print(f"\nIncrementing Bee Farm Epoch via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+    return increment_bee_farm_epoch(self.rpc_url, self.private_key, protocol_config)
+  
+    
+  """
+  Increment GLobal TIME-STREAM ( PART 1)
+  """
+  def increment_timeStream_part_1(self, protocol_config, prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile):
+    color_print(f"\nIncrementing Time-Stream (part 1) via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+    return increment_timeStream_part_1(self.rpc_url, self.private_key, protocol_config, prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile)
+    
 
-    # print(suiClient)
-    # print(suiClient.config)
+  """
+  Increment GLobal TIME-STREAM ( PART 2)
+  """
+  def increment_timeStream_part_2(self, protocol_config, new_streamer_rank1, new_streamer_rank2, new_streamer_rank3):
+    color_print(f"\nIncrementing Time-Stream (part 1) via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+    return increment_timeStream_part_2(self.rpc_url, self.private_key, protocol_config, new_streamer_rank1, new_streamer_rank2, new_streamer_rank3)
+
+
+
+
+  def getTimeline(self):
+    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"  #self.scratch.get_hiveProfileID())
+    # get_profileTimeline(profileID)
+    # timeStream = getHiveAnnocements(False)
+    # getFeedData(profileID)
+
+    # for streamBuzz in timeStream["completeFeed"]:
+    #   print(streamBuzz)
+    #   print("\n\n\n")
+
+    # return timeStream
+
+  def getHiveChronicleInfo_OnChain(self, protocol_config):
+    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"
+    return getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, profileID)
+
+
+
+
+
+  def getTimeStreamInfo_OnChain(self, protocol_config):
+    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"
+    return getTimeStreamStateForProfileInfo(self.rpc_url, self.private_key, protocol_config, profileID)
+
+
+
+
+
+
+  def getGlobalTimeStreamInfo(self, protocol_config):
+    return getTimeStreamInfo(self.rpc_url, self.private_key, protocol_config)
+
+
+  def getGlobalHiveChronicleInfoOnChain(self, protocol_config, epoch = 0):
+    return getGlobalHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, epoch)
+
+
+
+  def getEpochInfoOnChain(self):
+    return getEpochInfo(self.rpc_url, self.private_key)
+
+
+
+
+
+
+
+
+
+
 
   def get_private_key(self):
     return self.private_key
+
+  def get_HiveProfileId(self):
+    return self.scratch.get_hiveProfileID()
+
+
 
   # def save(self, save_folder): 
   #   """
