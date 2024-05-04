@@ -168,6 +168,27 @@ class DegenHiveAiAgents:
 
 
 
+  """
+  Transfer SUI tokens to all AI agents which currently have less than amount SUI balance
+  """
+  def transferSuiTokensToAllAgents(self, min_amount, transfer_amount):
+    with open(f"../storage/simulations/state/meta.json") as json_file:  
+      simulations_state = json.load(json_file)
+
+
+    deployer_agent = self.personas[simulations_state["main_agent"]]
+
+    for agentInfo in simulations_state["persona_accounts"][1:]:
+      if agentInfo["username"] == simulations_state["main_agent"]:
+        continue
+      
+      # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
+      availableSui = deployer_agent.getSuiBalanceForAddressOnChain(agentInfo["address"])
+      if (availableSui < min_amount):
+        color_print(f"Agent {agentInfo['username']} has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
+        deployer_agent.transferSuiOnChain( agentInfo["address"], transfer_amount)
+        time.sleep(1)
+
 
   
   def activate_ai_agents_swarm(self):
@@ -462,7 +483,11 @@ if __name__ == '__main__':
 
 
   # rs.initialize_ai_agents(SUI_RPC)
-  ai_agents_simulation.activate_ai_agents_swarm( )
+  # ai_agents_simulation.activate_ai_agents_swarm( )
+
+  sui_to_transfer = 1.5 * 1e9
+  min_sui_bal = 1 * 1e9
+  ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
   # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
   
 

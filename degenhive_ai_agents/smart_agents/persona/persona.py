@@ -50,6 +50,28 @@ class Persona:
     self.scratch = Scratch(scratch_saved)
 
 
+
+  def getSuiBalanceForAddressOnChain(self, for_address=None):
+    if for_address:
+      return getSuiBalanceForAddress(self.rpc_url, self.private_key, for_address)
+    else:
+      return getSuiBalanceForAddress(self.rpc_url, self.private_key, self.scratch.get_str_address())
+
+
+
+
+
+
+  """
+  Transfer SUI to another address
+  """
+  def transferSuiOnChain(self, recepient_address, amount):
+    color_print(f"\nTransferring {round(amount/1e9, 2)} SUI to {recepient_address}...", GREEN)
+    transferSui(self.rpc_url, self.private_key, recepient_address, amount)
+
+
+
+
   """
   Kraft Hive Profile for Agent
   """

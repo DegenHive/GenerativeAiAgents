@@ -297,10 +297,61 @@ async def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, n
 
 
 
-async def getSpendableSui(client: AsyncClient, txBlock: AsyncTransaction, spendableVal):
-    objects = (await client.get_objects(fetch_all=True)).result_data.to_dict()["data"]
-    # print('got objects')
-    # print(objects)
+def transferSui(rpc_url, private_key_hex_string, recipient_address, amount):
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+
+
+    spendableSui, use_gas_object = getSpendableSui(suiClient, txBlock, amount)
+    txBlock.transfer_objects(recipient=SuiAddress(recipient_address), transfers=[spendableSui] )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        if use_gas_object:
+            exec_result = handle_result(txBlock.execute(gas_budget="10000000", use_gas_object=use_gas_object))
+        else:
+            exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"SUI transferred successfuly: {exec_result["digest"]}", GREEN)
+            color_print(f"SUI transferred successfuly: {exec_result["digest"]}", GREEN)
+            return exec_result
+        else:
+            color_print(f"Error transferring SUI: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else: 
+        print(f"Simulation failed")
+        return False
+    
+
+def getSuiBalanceForAddress(rpc_url, private_key_hex_string, user_address):
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)    
+    sui_objs = suiClient.get_gas(address=user_address)
+    sui_objs = sui_objs.result_data.to_dict()["data"]
+    total_balance = 0
+    for obj in sui_objs:
+        total_balance += int(obj["balance"])
+    return total_balance
+
+
+
+
+
+
+
+"""
+Used to get SUI coin to be spent, 
+
+Returns - 
+- spendableSui: SUI coin to be spent
+- CoinID: CoinID of the SUI coin to be used for covering gas fees
+"""
+def getSpendableSui(client: SyncClient, txBlock: SyncTransaction, spendableVal):
+    objects = client.get_objects(fetch_all=True)
+    objects = objects.result_data.to_dict()["data"]
     sui_objects = []
 
     for obj in objects:
@@ -310,22 +361,19 @@ async def getSpendableSui(client: AsyncClient, txBlock: AsyncTransaction, spenda
             if symbol == 'SUI':
                 sui_objects.append(obj['objectId'])
 
-
     if len(sui_objects) == 1:
         print(f"Only one coin Object found")
         print(f"spendableVal: {spendableVal}")
         print((txBlock.gas).to_json())
-        return await txBlock.split_coin(coin=txBlock.gas, amounts=[0])
-    # else:
-    #     print(f"{len(coinVec)} coins of type {type} found")
-    #     coin = coinVec[0]
-    #     coin_id = coin.object_id
-    #     coin_amount = coin.amount
-    #     if coin_amount > spendableVal:
-    #         await txer.merge_coins(merge_to=coin_id, merge_from=[coin.object_id])
-    #         return spendableVal
-    #     else:
-    #         return coin_amount
+        return txBlock.split_coin(coin=txBlock.gas, amounts=[spendableVal]), None
+    else:
+        print(f"{len(sui_objects)} coins of type SUI found")
+        # for obj in sui_objects:
+        #     print(obj)
+        sui_coin_id = sui_objects[0]
+        merge_coins = [coin for coin in sui_objects[1:]]  
+        txBlock.merge_coins(merge_to=txBlock.gas, merge_from=merge_coins)
+        return txBlock.split_coin(coin=txBlock.gas, amounts=[spendableVal]), sui_coin_id
 
 
 

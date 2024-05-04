@@ -1,5 +1,6 @@
 {
   "supported_agents_count": 4,
+  "main_agent": "AIExplorer99",
   "persona_accounts": [
     {
       "username": "AIExplorer99",
