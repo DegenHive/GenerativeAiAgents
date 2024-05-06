@@ -7,6 +7,7 @@ Description: Defines the short-term memory module for generative agents.
 import datetime
 import json
 import sys
+from utils import *
 sys.path.append('../../')
 
 from global_methods import *
@@ -28,6 +29,13 @@ class Scratch:
     self.currently = None
     self.o_acc_nativeness = None
     self.native_country = None
+
+    self.last_stream_interaction = None
+    self.last_dex_dao_interaction = None
+    self.last_hive_dao_interaction = None
+
+    self.hiveChronicleState = None
+    self.timeStreamState = None
 
     self.att_bandwidth = 3
     self.retention = 5
@@ -75,6 +83,13 @@ class Scratch:
       self.o_acc_nativeness = scratch_load["o_acc_nativeness"]
       self.native_country = scratch_load["native_country"]
 
+      self.last_stream_interaction = scratch_load.get("last_stream_interaction", None)
+      self.last_dex_dao_interaction = scratch_load.get("last_dex_dao_interaction", None)
+      self.last_hive_dao_interaction = scratch_load.get("last_hive_dao_interaction", None)
+
+      self.hiveChronicleState = scratch_load.get("hiveChronicleState", None)
+      self.timeStreamState = scratch_load.get("timeStreamState", None)
+
       self.att_bandwidth = scratch_load["att_bandwidth"]
       self.retention = scratch_load["retention"]
 
@@ -95,7 +110,7 @@ class Scratch:
       self.thought_count = scratch_load["thought_count"]
 
 
-  def save(self, out_json):
+  def save(self, out_json=None):
     """
     Save persona's scratch. 
 
@@ -118,7 +133,13 @@ class Scratch:
     scratch["degen_nativeness"] = self.currently
     scratch["o_acc_nativeness"] = self.o_acc_nativeness
     scratch["native_country"] = self.native_country
-    scratch["daily_finances"] = self.daily_finances
+
+    scratch["last_stream_interaction"] = self.last_stream_interaction
+    scratch["last_dex_dao_interaction"] = self.last_dex_dao_interaction
+    scratch["last_hive_dao_interaction"] = self.last_hive_dao_interaction
+
+    scratch["hiveChronicleState"] = self.hiveChronicleState
+    scratch["timeStreamState"] = self.timeStreamState
 
     scratch["att_bandwidth"] = self.att_bandwidth
     scratch["retention"] = self.retention
@@ -139,11 +160,19 @@ class Scratch:
     scratch["importance_ele_n"] = self.importance_ele_n
     scratch["thought_count"] = self.thought_count
 
-    scratch["curr_time"] = self.curr_time.strftime("%B %d, %Y, %H:%M:%S")
-
-
+    if not out_json:
+      out_json = CUR_PATH_PERSONAS + self.username + "/scratch.json"
     with open(out_json, "w") as outfile:
       json.dump(scratch, outfile, indent=2) 
+
+
+  def set_hiveProfileID(self, profileId):
+    self.hiveProfileID = profileId
+
+
+
+
+
 
 
   def get_str_iss(self): 
@@ -175,6 +204,9 @@ class Scratch:
     commonset += f"HiveProfileID: {self.hiveProfileID}\n"
     commonset += f"Daily Finances: {self.daily_finances}\n"
     commonset += f"Bio: {self.bio}\n"
+    commonset += f"last_stream_interaction: {self.last_stream_interaction}\n"
+    commonset += f"last_dex_dao_interaction: {self.last_dex_dao_interaction}\n"
+    commonset += f"last_hive_dao_interaction: {self.last_hive_dao_interaction}\n"
     
     commonset += f"Age: {self.age}\n"
     commonset += f"personality traits: {self.personality}\n"
@@ -182,7 +214,52 @@ class Scratch:
     commonset += f"Currently: {self.currently}\n"
     commonset += f"o_acc_nativeness: {self.o_acc_nativeness}\n"
     commonset += f"Daily plan requirement: {self.daily_finances}\n"
+
+
     return commonset
+
+
+
+  def set_hiveChronicleState(self, hiveChronicleState):
+    self.hiveChronicleState = hiveChronicleState
+
+  def set_timeStreamState(self, timeStreamState):
+    self.timeStreamState = timeStreamState
+
+
+  def set_last_interacted_buzz(self, type_, buzz_index):
+    if type_ == "stream":
+      self.last_stream_interaction = buzz_index
+    elif type_ == "dex_dao":
+      self.last_dex_dao_interaction = buzz_index
+    elif type_ == "hive_dao":
+      self.last_hive_dao_interaction = buzz_index
+
+
+
+
+  def get_hiveChronicleState(self):
+    return self.hiveChronicleState
+  
+  def get_timeStreamState(self):
+    return self.timeStreamState
+
+
+
+
+
+
+
+
+
+  def get_last_interacted_buzz(self, type_):
+    if type_ == "stream":
+      return self.last_stream_interaction
+    elif type_ == "dex_dao":
+      return self.last_dex_dao_interaction
+    elif type_ == "hive_dao":
+      return self.last_hive_dao_interaction
+
 
 
   def get_str_name(self): 

@@ -11,7 +11,7 @@ import time
 
 from utils import *
 
-openai.api_key = openai_api_key
+openai.api_key = OPEN_AI_API_KEY
 
 def temp_sleep(seconds=0.1):
   time.sleep(seconds)

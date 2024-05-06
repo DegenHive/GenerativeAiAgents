@@ -1,9 +1,9 @@
 {
-  "ongoing_epoch": 359,
-  "ongoing_epoch_start_ms": 1714749813864,
+  "ongoing_epoch": 361,
+  "ongoing_epoch_start_ms": 1714922619377,
   "ongoingHiveChronicleInfo": {
     "bee_farm_info": {
-      "active_epoch": "359",
+      "active_epoch": "361",
       "bees_for_epoch": "57534246575342",
       "entropy_during_epoch": "0"
     },
@@ -14,7 +14,7 @@
       "max_noises": "24",
       "max_rebuzzes": "24"
     },
-    "total_bees_available": "287671232876710",
+    "total_bees_available": "402739726027394",
     "welcome_buzzes_count": "9",
     "system_infusion_buzzes_count": "20",
     "lockdrop_vault_dof_manager_cap": {
@@ -34,8 +34,8 @@
   "ongoingTimeStreamInfo": {
     "config_params": {
       "are_live": true,
-      "cur_auction_stream": 355,
-      "stream_init_ms": 1714463573571,
+      "cur_auction_stream": 361,
+      "stream_init_ms": 1714967992402,
       "first_rank_assets_limit": 100,
       "second_rank_assets_limit": 69,
       "third_rank_assets_limit": 42,
@@ -47,18 +47,18 @@
       "tax_on_bid": 500
     },
     "streamer1_info": {
-      "streams_count": 1,
+      "streams_count": 2,
       "access_type": 1,
       "sui_per_buzz": 0,
       "buzz_cost_in_hive": 0,
       "remaining_buzzes_count": 10,
       "engagement_points": 0,
-      "collection_name": "Pokdfes",
-      "profile_addr": "0x534ae8e6be436148bfcdfba21b3412ea86b1414f107def2815f9a9e3f1605f5d"
+      "collection_name": "PepeNew5",
+      "profile_addr": "0xfdc9ab2d857f3b6760d44381976f2645e626a4fa7493b74921a8866c0cd1330c"
     },
     "streamer2_info": {
       "streams_count": 0,
-      "access_type": 1,
+      "access_type": 0,
       "sui_per_buzz": 0,
       "buzz_cost_in_hive": 0,
       "remaining_buzzes_count": 0,
@@ -68,7 +68,7 @@
     },
     "streamer3_info": {
       "streams_count": 0,
-      "access_type": 1,
+      "access_type": 0,
       "sui_per_buzz": 0,
       "buzz_cost_in_hive": 0,
       "remaining_buzzes_count": 0,
@@ -86,7 +86,7 @@
     },
     "pol_info": {
       "bid_pool": 0,
-      "sui_avail_for_pol": 4580000000
+      "sui_avail_for_pol": 4980000000
     },
     "engagement_state": {
       "hive_gems_available": 79999999940000,
@@ -99,5 +99,6 @@
       "leading_bid_amt": 0,
       "points_per_sui_bidded": 0
     }
-  }
+  },
+  "last_platform_state_update": 1714976005481.3992
 }

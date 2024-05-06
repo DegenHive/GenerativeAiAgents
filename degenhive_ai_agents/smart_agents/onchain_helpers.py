@@ -7,6 +7,7 @@ from typing import Union, Tuple
 # from pysui.sui.sui_builders.get_builders import GetCoins
 import binascii
 from pysui import SyncClient, SuiConfig, handle_result, ObjectID, SuiAddress, AsyncClient
+from pysui.sui.sui_bcs import bcs
 from pysui.sui.sui_txn import SyncTransaction, AsyncTransaction
 
 from pysui.abstracts import SignatureScheme
@@ -15,9 +16,10 @@ from pysui.sui.sui_utils import partition
 from pysui.sui.sui_txresults.single_tx import SuiCoinObjects, SuiCoinObject
 from pysui.sui.sui_txresults.complex_tx import TxInspectionResult
 from pysui.abstracts import SignatureScheme
+from utils import *
 
 import canoser 
-
+import time
 from pysui.sui.sui_crypto import (
     SuiAddress,
     as_keystrings,
@@ -64,11 +66,19 @@ CLOCK = "0x6"
 SUI_SYSTEM_STATE = "0x5"
 SUI_TYPE = "0x2::sui::SUI"
 
-
+_ADDRESS_LENGTH = 32
 
 def color_print(text, color_code):
     END_COLOR = '\033[0m'  # Reset color code
     print(color_code + text + END_COLOR)
+
+
+class HiveProfileIdInfo(canoser.Struct):
+    _fields = [
+        ('has_profile', canoser.BoolT),
+        ('profile_id', canoser.ArrayT(canoser.Uint8, _ADDRESS_LENGTH, False)) # SUI address
+    ]
+
 
 
 class HiveChronicleUserInfo(canoser.Struct):
@@ -237,22 +247,15 @@ def getSuiSyncClient(rpc_url, private_key_hex_string ):
     return suiClient
 
 
-async def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, name, bio) :
+def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, address, name, bio) :
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
-
-    print(suiClient._config.active_address)
-    # return
-
     txBlock = SyncTransaction(client=suiClient)
-
-    # spendable_sui = await getSpendableSui(suiClient, txBlock, 0)
 
     spendable_sui = txBlock.move_call(
         target=f"0x2::coin::zero",
         arguments=[],
         type_arguments=[SUI_TYPE],
     )
-
     txBlock.move_call(
         target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::kraft_hive_profile",
         arguments=[
@@ -269,31 +272,68 @@ async def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, n
             ],
             type_arguments=[],
         )
-
-    # txBlock.transfer_sui(recipient=SuiAddress("0xa23060b3c164838b892eaaea10c41cd95c13c7da32bd8f6b5d584da5251f9b77"), from_coin=ObjectID("0x01fa15f663674dd3a16e897f287098bff1a07b174b5b7245233cecde77faa904"), amount=SuiInteger(10000))
-    # txBlock.transfer_objects(recipient=SuiAddress("0xa23060b3c164838b892eaaea10c41cd95c13c7da32bd8f6b5d584da5251f9b77"), transfers=[ObjectID("0x5e8e6e8198d8b203f343b8ef190ccd4621bcf6810b5599e10ff9f3ba887a71f1")])
-
-
-#   recipient: Union[ObjectID, SuiAddress],
-#         from_coin: Union[str, ObjectID, ObjectRead, SuiCoinObject, bcs.Argument],
-#         amount: Optional[Union[
     simulation_response, txBlock = simulate_tx(txBlock)
-
     if (simulation_response):
         print(f"Simulation successful")
-
-        # res = txBlock.execute(gas_budget="10000000")
-        # kind = txBlock.raw_kind()
-        # print(f"Kind: {kind}")
-
-        exec_result = handle_result(txBlock.execute(gas_budget="100000000" ))
-        print(f"Result: {exec_result.to_json()}")
-        # print(res.result_string)
-        # print(res.result_string.to_dict())
-        # print(f"Result: {res.to_json()}")
-    
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Hive Profile Krafted successfuly: {exec_result["digest"]}", GREEN)
+            time.sleep(3)
+            profileInfo = getHiveProfileIdForUser(rpc_url, private_key_hex_string, protocol_config, address)
+            return True, profileInfo
+        else:
+            color_print(f"Error Krafting Hive Profile: {exec_result["effects"]["status"]["error"]}", RED)
+            return False, None
     else: 
         print(f"Simulation failed")
+        return False, None
+    
+
+
+"""
+Transfer Tokens (non SUI) from one address to another
+"""
+def transferTokens(rpc_url, private_key_hex_string, type_, from_address, recipient_address, amount):
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+
+    objects = suiClient._get_coins_for_type(address= from_address, coin_type=type_)
+    objects = objects.result_data.to_dict()["data"]
+    coinObjectIds = []
+    
+    avail_balance = 0
+    for obj in objects:
+        avail_balance += int(obj["balance"])
+        coinObjectIds.append(obj["coinObjectId"])
+    
+    if avail_balance < amount:
+        send_telegram_message(f"Insufficient balance for token type ${type_}: {avail_balance} < {amount} \
+                              \nFrom: {from_address} \nTo: {recipient_address} \nAmount: {amount}")
+    
+    if len(objects) > 1:
+        merge_coins = [coin for coin in objects[1:]]  
+        txBlock.merge_coins(merge_to=coinObjectIds[0], merge_from=merge_coins)
+    
+    transferObject = txBlock.split_coin(coin=coinObjectIds[0], amounts=[amount])
+    txBlock.transfer_objects(recipient=SuiAddress(recipient_address), transfers=[transferObject] )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Tokens transferred successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error transferring Tokens: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else:
+        print(f"Simulation failed")
+        return False
 
 
 
@@ -317,7 +357,6 @@ def transferSui(rpc_url, private_key_hex_string, recipient_address, amount):
 
         if (exec_result["effects"]["status"]["status"] == "success"):
             color_print(f"SUI transferred successfuly: {exec_result["digest"]}", GREEN)
-            color_print(f"SUI transferred successfuly: {exec_result["digest"]}", GREEN)
             return exec_result
         else:
             color_print(f"Error transferring SUI: {exec_result["effects"]["status"]["error"]}", RED)
@@ -337,7 +376,58 @@ def getSuiBalanceForAddress(rpc_url, private_key_hex_string, user_address):
     return total_balance
 
 
+"""
+Deposit HIVE in a Hive Profile
+"""
+def depositHiveInProfile(rpc_url, private_key_hex_string, protocol_config, type_, userAddress, userProfileID, amount):
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
 
+    objects = suiClient._get_coins_for_type(address= userAddress, coin_type=type_)
+    objects = objects.result_data.to_dict()["data"]
+    coinObjectIds = []
+    
+    avail_balance = 0
+    for obj in objects:
+        avail_balance += int(obj["balance"])
+        coinObjectIds.append(obj["coinObjectId"])
+    
+    if avail_balance < amount:
+        amount = avail_balance
+
+    if len(objects) > 1:
+        merge_coins = [coin for coin in coinObjectIds[1:]]  
+        txBlock.merge_coins(merge_to=coinObjectIds[0], merge_from=merge_coins)
+    
+    if amount == 0:
+        color_print(f"Zero balance for token type {type_}: Unable to deposit HIVE in Profile ${userProfileID} | userAddress = ${userAddress}", RED)
+        return False
+        
+    txBlock.move_call(
+        target=f"{protocol_config["HIVE_PACKAGE"]}::hive::burn_hive_for_gems",
+        arguments=[
+                   ObjectID(protocol_config["HIVE_VAULT"]),
+                   ObjectID(userProfileID),
+                    ObjectID(coinObjectIds[0]),
+                    SuiU64(amount),
+            ],
+        )
+ 
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"HIVE deposited successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error depositing HIVE: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else:
+        print(f"Simulation failed")
+        return False
 
 
 
@@ -377,10 +467,11 @@ def getSpendableSui(client: SyncClient, txBlock: SyncTransaction, spendableVal):
 
 
 
-async def objects_joined(client: AsyncClient, txb: AsyncTransaction) -> Tuple[AsyncTransaction, dict]:
+async def objects_joined(client: SyncClient, txb: SyncTransaction) -> Tuple[SyncTransaction, dict]:
     # weakness: if a coin identifier is A::B::C, C must be unique for a type of coin (each coin has a different symbol). else this fails.
-    objects = (await client.get_objects(fetch_all=True)).result_data.to_dict()["data"]
-    print('got objects')
+    objects = client.get_objects(fetch_all=True)
+    objects = objects.result_data.to_dict()["data"]
+
     coin_objects = {}
     join_objects = {}
     for obj in objects:
@@ -394,8 +485,6 @@ async def objects_joined(client: AsyncClient, txb: AsyncTransaction) -> Tuple[As
             else:
                 coin_objects[symbol] = obj['objectId']
                 join_objects[symbol] = []
-    # print(json.dumps(coin_objects, indent=4))
-    # print(json.dumps(join_objects, indent=4))
 
     for key, value in coin_objects.items():
         if len(join_objects[key]) > 0:
@@ -426,7 +515,7 @@ def simulate_tx(txb: SyncTransaction):
     else:
         print(f"Transaction will fail - Error")
         print(simulation_json["effects"]["status"]["error"])
-        return False, txb
+        return False, simulation_json["effects"]["status"]["error"]
 
 
 
@@ -434,7 +523,7 @@ def simulate_tx(txb: SyncTransaction):
 """
 Execute a transaction to like a stream buzz Post
 """
-async def like_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, stream_index, stream_inner_index) :
+def like_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, stream_index, stream_inner_index) :
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
     txBlock = SyncTransaction(client=suiClient)
     txBlock.move_call(
@@ -456,24 +545,74 @@ async def like_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, u
     simulation_response, txBlock = simulate_tx(txBlock)
     if (simulation_response):
         print(f"Simulation successful")
-        print(txBlock)
-        # res = txBlock.execute(gas_budget="10000000")
-        kind = txBlock.raw_kind()
-        print(f"Kind: {kind}")
-
-        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
-        print(f"Result: {exec_result.to_json()}")
-        # print(res.result_string)
-        # print(res.result_string.to_dict())
-        # print(f"Result: {res.to_json()}")    
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Stream Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error Liking Stream Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error Liking Stream Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return False
     else: 
         print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error Liking Stream Buzz: {txBlock}")
+        return False
+
+
+
+"""
+Execute a transaction to comment on a stream buzz Post
+"""
+def interact_with_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, streamer_profile, stream_index, stream_inner_index, user_buzz, n_gen_ai_url) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::interact_with_stream_buzz",
+        arguments=[
+                   ObjectID(CLOCK),
+                   ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                   ObjectID(protocol_config["HIVE_MANAGER"]),
+                   ObjectID(protocol_config["HIVE_VAULT"]),
+                   ObjectID(protocol_config["BEE_CAP"]),
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                   ObjectID(protocol_config["HIVE_DISPERSER"]),
+                   ObjectID(user_profile), ObjectID(streamer_profile),
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                    SuiU64(stream_index),
+                    SuiU64(stream_inner_index),
+                    SuiString(user_buzz),
+                    SuiString([n_gen_ai_url]),
+            ],
+            type_arguments=[SUI_TYPE],
+        )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Commented on Stream Buzz successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error commenting on Stream Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error commenting on Stream Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return False
+    else: 
+        print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error commenting on Stream Buzz: {txBlock}")
+        return False
+
 
 
 """
 Execute a transaction to upvote a Hive Buzz Post
 """
-async def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, stream_index, stream_inner_index) :
+def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, stream_index, stream_inner_index) :
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
     txBlock = SyncTransaction(client=suiClient)
     txBlock.move_call(
@@ -496,18 +635,20 @@ async def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, u
     simulation_response, txBlock = simulate_tx(txBlock)
     if (simulation_response):
         print(f"Simulation successful")
-        print(txBlock)
-        # res = txBlock.execute(gas_budget="10000000")
-        kind = txBlock.raw_kind()
-        print(f"Kind: {kind}")
-
-        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
-        print(f"Result: {exec_result.to_json()}")
-        # print(res.result_string)
-        # print(res.result_string.to_dict())
-        # print(f"Result: {res.to_json()}")    
-    else: 
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Hive Buzz Upvoted successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error Upvoting Hive Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error Upvoting Hive Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return False
+    else:
         print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error Upvoting Hive Buzz: {txBlock}")
+        return False
     
 
 #  ---------------- UPDATE GLOBAL CYCLIC FUNCTIONS ----------------
@@ -535,11 +676,19 @@ def increment_bee_farm_epoch(rpc_url, private_key_hex_string, protocol_config) :
         exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
         exec_result = exec_result.to_json()
         exec_result = json.loads(exec_result)
-        color_print(f"BEE-Farm Epoch Incremented successfuly: {exec_result["digest"]}", GREEN)
-        return exec_result
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"BEE-Farm Epoch Incremented successfuly: {exec_result["digest"]}", GREEN)
+            send_telegram_message(f"BEE-Farm Epoch Incremented successfuly: <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return True, None
+        else:
+            color_print(f"Error Incrementing BEE-Farm Epoch: {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error Incrementing BEE-Farm Epoch : {exec_result["effects"]["status"]["error"]}")
+            return False, None
     else: 
         print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error Incrementing BEE-Farm Epoch : {txBlock}")
         return False
+    
     
 
 """
@@ -547,11 +696,6 @@ Execute a transaction to increment the Time-Stream Cycle (first half)
 """
 def increment_timeStream_part_1(rpc_url, private_key_hex_string, protocol_config, prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile) :
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
-
-    # print(f"prev_streamer_rank1_profile: {prev_streamer_rank1_profile}")
-    # print(f"prev_streamer_rank2_profile: {prev_streamer_rank2_profile}")
-    # print(f"prev_streamer_rank3_profile: {prev_streamer_rank3_profile}")
-    # return
     txBlock = SyncTransaction(client=suiClient)
     txBlock.move_call(
         target=f"{protocol_config["HIVE_PACKAGE"]}::hive::increment_stream_part_1",
@@ -567,13 +711,20 @@ def increment_timeStream_part_1(rpc_url, private_key_hex_string, protocol_config
     simulation_response, txBlock = simulate_tx(txBlock)
     if (simulation_response):
         print(f"Simulation successful")
-        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = handle_result(txBlock.execute())
         exec_result = exec_result.to_json()
         exec_result = json.loads(exec_result)
-        color_print(f"Time-Stream Cycle Incremented successfuly (part 1): {exec_result["digest"]}", GREEN)
-        return exec_result
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Time-Stream Cycle Incremented successfuly (part 1): {exec_result["digest"]}", GREEN)
+            send_telegram_message(f"Time-Stream Cycle Incremented successfuly (part 1): <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return True
+        else:
+            color_print(f"Error Incrementing Time-Stream Cycle (part 1): {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error Incrementing Time-Stream Cycle (part 1): {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return False
     else: 
         print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error Incrementing Time-Stream Cycle (part 1): {txBlock}")
         return False
 
 """
@@ -583,7 +734,7 @@ def increment_timeStream_part_2(rpc_url, private_key_hex_string, protocol_config
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
     txBlock = SyncTransaction(client=suiClient)
     txBlock.move_call(
-        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::hive::increment_stream_part_2",
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::increment_stream_part_2",
         arguments=[     ObjectID(CLOCK),
                         ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
                         ObjectID(protocol_config["HIVE_VAULT"]),
@@ -601,37 +752,18 @@ def increment_timeStream_part_2(rpc_url, private_key_hex_string, protocol_config
         exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
         exec_result = exec_result.to_json()
         exec_result = json.loads(exec_result)
-        color_print(f"Time-Stream Cycle Incremented successfuly (part 2): {exec_result["digest"]}", GREEN)
-        return exec_result
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Time-Stream Cycle Incremented successfuly (part 2): {exec_result["digest"]}", GREEN)
+            send_telegram_message(f"Time-Stream Cycle Incremented successfuly (part 2): <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return True
+        else:
+            color_print(f"Error Incrementing Time-Stream Cycle (part 2): {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error Incrementing Time-Stream Cycle (part 2): {exec_result["effects"]["status"]["error"]}")
+            return False
     else: 
         print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error Incrementing Time-Stream Cycle (part 2): {txBlock}")
         return False
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -674,6 +806,28 @@ def increment_timeStream_part_2(rpc_url, private_key_hex_string, protocol_config
 # --------------------- x -----------------------------------
 
 
+"""
+Fetch HiveChronicle state information for a user profile from chain 
+"""
+def getHiveProfileIdForUser(rpc_url, private_key_hex_string, protocol_config, user_address) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVEPROFILE_PACKAGE"]}::hive_profile::does_user_own_profile",
+            arguments=[  ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),  SuiAddress(user_address) ],
+                type_arguments=[],
+            )
+        simulation = txBlock.inspect_all()
+        simulation_json = json.loads(simulation.to_json())
+        hive_profile_info = HiveProfileIdInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0] + simulation_json["results"][0]["returnValues"][1][0] ) 
+        hive_profile_info = json.loads(hive_profile_info.to_json())
+        return "0x" + hive_profile_info["profile_id"]
+    except Exception as e:
+        color_print(f"onchain_helpers/getHiveProfileIdForUser: Error -  {e}", RED)
+        return None
+
+
 
   
 
@@ -708,7 +862,7 @@ def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, user_
                                                     + simulation_json["results"][0]["returnValues"][18][0] + simulation_json["results"][0]["returnValues"][19][0]
                                                     + simulation_json["results"][0]["returnValues"][20][0] + simulation_json["results"][0]["returnValues"][21][0]
                                                 ) 
-        return hive_chronicle_info
+        return json.loads(hive_chronicle_info.to_json())
     except Exception as e:
         color_print(f"onchain_helpers/getHiveChronicleInfo: Error -  {e}", RED)
         return None
@@ -717,7 +871,6 @@ def getHiveChronicleInfo(rpc_url, private_key_hex_string, protocol_config, user_
 Fetch a profile's Time-Stream state information from chain 
 """
 def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_config, user_profile) :
-    user_profile = "0xe24e9496973e907453b308b940015a269ff16da0d720342e967aab6d8600f4dc"
     try:
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
         txBlock = SyncTransaction(client=suiClient)
@@ -737,7 +890,7 @@ def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_c
                                                     + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
                                                     + simulation_json["results"][0]["returnValues"][10][0] # + simulation_json["results"][0]["returnValues"][11][0]
                                                 ) 
-        return time_stream_state_info
+        return json.loads(time_stream_state_info.to_json())
     except Exception as e:
         color_print(f"onchain_helpers/getTimeStreamStateForProfileInfo: Error -  {e}", RED)
         return None

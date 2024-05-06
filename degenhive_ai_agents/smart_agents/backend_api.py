@@ -42,17 +42,14 @@ async def upload_media_to_be(img_str):
 
 def getHiveAnnocements( isStream, last_key = None, limit = 15):
     print("Getting Hive Announcements...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     
-
     final_data = graphQLClient.execute(
         GET_HIVE_ANNOUNCEMENT,
         variables={"stream": True, "hiveAnnouncements":  not isStream, "lastKey": last_key, "limit": limit}
     )    
     print("Hive Announcements Data: ", final_data)
     final_data = json.loads(final_data)
-    print(type(final_data))
-    print(final_data)
 
     return {
         "status": "sucess",
@@ -71,7 +68,7 @@ def getHiveAnnocements( isStream, last_key = None, limit = 15):
 
 def get_profileTimeline(hiveProfileID, last_key = None, limit = 15):
     print("Getting Profile Timeline...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     final_data = graphQLClient.execute(
         GET_USER_TIMELINES,
         variables={"timeline": {"profile_id": hiveProfileID}, "lastKey": last_key, "limit": limit}
@@ -86,7 +83,7 @@ def get_profileTimeline(hiveProfileID, last_key = None, limit = 15):
 
 def getFeedData(hiveProfileID, last_key = None, limit = 15):
     print("Getting Profile Feed...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     final_data = graphQLClient.execute(
         GET_FEED_DATA,
         variables={"feed": {"profile_id": hiveProfileID}, "lastKey": last_key, "limit": limit}
@@ -102,7 +99,7 @@ def getFeedData(hiveProfileID, last_key = None, limit = 15):
 
 def getFeedById( pk: any, sk: any):
     print("Getting Feed By ID...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     final_data = graphQLClient.execute(
         GET_POST_BY_ID,
         variables={"postById": {"PK": pk, "SK": sk, }}
@@ -119,7 +116,7 @@ def getFeedById( pk: any, sk: any):
 
 def getCommentsForPost(pk: any, sk: any, limit: any, lastKey: None, network: any):
     print("Getting Comments For Post...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     final_data = graphQLClient.execute(
         GET_COMMENTS_FOR_POST,
         variables={"dialoguesForPost": {"PK": pk, "SK": sk}, "limit": limit, "lastKey": lastKey}
@@ -152,7 +149,7 @@ def getCommentsForPost(pk: any, sk: any, limit: any, lastKey: None, network: any
 
 def getLikesAndDialogues(user_id: any, network: any):
     print("Getting Likes And Dialogues...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     likeData = graphQLClient.execute(
         LIKES_FOR_USER,
         variables={"likesByUser": {"profile_id": user_id}}
@@ -172,7 +169,7 @@ def getLikesAndDialogues(user_id: any, network: any):
 
 def getHiveThread(pk: any, sk: any, network: any):
     print("Getting Hive Thread...")
-    graphQLClient = GraphQLClient(GRAPHQL_ENDPOINT)
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
     final_data = graphQLClient.execute(
         GET_HIVE_THREAD,
         variables={"threadByAnyId": {"SK": sk, "PK": pk}}
@@ -205,14 +202,14 @@ def getHiveThread(pk: any, sk: any, network: any):
 
 
 async def main():
-    file_path = "../storage/content/welcome_imgs/example.png"  # Specify the path to your image file
+    file_path = "../storage/content/welcome_imgs/degenHiveIntro1.png"  # Specify the path to your image file
     print("Uploading Image to BE... file_to_base64")
     img_str = await file_to_base64(file_path)
     img_str = "data:image/png;base64," + img_str
     print(img_str)
     print("Uploading Image to BE... upload_media_to_be")
     result = await upload_media_to_be(img_str)
-    # print(result)
+    print(result)
 
 
 

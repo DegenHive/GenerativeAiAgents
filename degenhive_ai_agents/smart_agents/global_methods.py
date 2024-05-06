@@ -56,6 +56,10 @@ def create_persona_folder_if_not_there(curr_path, persona_json):
   scratch["native_country"] = persona_json["native_country"]
   scratch["daily_finances"] = ""
 
+  scratch["last_stream_interaction"] = None
+  scratch["last_dex_dao_interaction"] = None
+  scratch["last_hive_dao_interaction"] = None
+
   scratch["att_bandwidth"] = 8
   scratch["retention"] = 8
   scratch["att_bandwidth"] = 8

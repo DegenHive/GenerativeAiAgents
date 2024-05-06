@@ -12,6 +12,7 @@ import random
 sys.path.append('../')
 
 from global_methods import *
+from utils import *
 
 from persona.memory_structures.social_memory import *
 from persona.memory_structures.associative_memory import *
@@ -51,14 +52,112 @@ class Persona:
 
 
 
-  def getSuiBalanceForAddressOnChain(self, for_address=None):
-    if for_address:
-      return getSuiBalanceForAddress(self.rpc_url, self.private_key, for_address)
-    else:
-      return getSuiBalanceForAddress(self.rpc_url, self.private_key, self.scratch.get_str_address())
+    """
+    Transfer tokens to another address. 
+    """
+  def transferTokens(self, type_, to_address, amount):
+    userAddress = self.scratch.get_str_address()
+    return transferTokens(self.rpc_url, self.private_key, type_, userAddress, to_address, amount)
 
 
 
+  def depositHiveGemsToProfileOnChain(self, protocol_config, type_, amount):
+    userAddress = self.scratch.get_str_address()
+    profileID = self.scratch.get_hiveProfileID()
+    return depositHiveInProfile(self.rpc_url, self.private_key, protocol_config, type_, userAddress, profileID, amount)
+
+
+
+  """
+  Fetch userProfile's HiveChronicle state and TimeStream state
+  """
+  def handle_profile_state_update(self, protocol_config):
+    profileID = self.scratch.get_hiveProfileID()
+    if profileID and profileID != "0x0000000000000000000000000000000000000000000000000000000000000000":
+      hiveChronicleState = getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, profileID)
+      timeStreamState = getTimeStreamStateForProfileInfo(self.rpc_url, self.private_key, protocol_config, profileID)
+      # print(hiveChronicleState)
+      # print(timeStreamState)
+      is_updated = 0
+
+      if hiveChronicleState and "active_epoch" in hiveChronicleState:
+        print("Updating Hive Chronicle State...")
+        self.scratch.set_hiveChronicleState(hiveChronicleState)
+        is_updated += 1
+
+      if timeStreamState and "stream_epoch" in timeStreamState:
+        print("Updating Time Stream State...")
+        self.scratch.set_timeStreamState(timeStreamState)
+        is_updated += 1
+
+      if is_updated > 0:
+        print("Saving Updated Profile State...")
+        self.scratch.save()
+
+
+
+  """
+  This function is called when the persona perceives a stream. 
+  """
+  def handle_new_buzz_on_feed(self, protocol_config, type_, index, inner_index, buzzInfo ):
+    color_print(f"\nHandling New Buzz on Feed for {self.name}... | Address: {self.scratch.get_str_address()} \n", YELLOW)
+    profileID = self.scratch.get_hiveProfileID()
+    last_buzz_interacted_with = self.scratch.get_last_interacted_buzz(type_)
+    prev_index = 0
+    prev_inner_index = 0
+
+    if last_buzz_interacted_with: 
+      prev_index, prev_inner_index = extract_buzz_numbers(type_, last_buzz_interacted_with)
+
+    if (type_ == "stream" and int(index) > prev_index):
+      like_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, profileID, index, inner_index)
+      return True
+      time.sleep(3)
+      is_success = interact_with_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, profileID, buzzInfo["profile_id"], index, inner_index, "Great Buzz!", "" )
+
+      if is_success:
+        self.scratch.set_last_interacted_buzz(type_, buzzInfo["SK"] )
+        self.scratch.save()
+        return True
+    pass
+
+
+
+
+
+
+
+
+
+
+  # ----  ### -------- TRANSACTION FUNCTIONS ------------ ### ----
+  # ----  ### -------- TRANSACTION FUNCTIONS ------------ ### ----
+
+
+  """
+  Kraft Hive Profile for Agent
+  """
+  def kraftHiveProfileForAgent(self, protocol_config):
+    profileID = self.scratch.get_hiveProfileID()
+    address = self.scratch.get_str_address()
+
+    if not profileID or profileID == "0x0000000000000000000000000000000000000000000000000000000000000000":
+      profileId = getHiveProfileIdForUser(self.rpc_url, self.private_key, protocol_config, address)
+      print("Profile ID: ", profileId)
+      # return
+      if profileId and profileId != "0x0000000000000000000000000000000000000000000000000000000000000000": 
+          self.scratch.set_hiveProfileID(profileId)
+          self.scratch.save()
+          return profileId
+      else:
+        color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+        response, profileId =  kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.scratch.get_str_address(), self.name, self.scratch.get_bio() )        
+        color_print(f"\nProfile ID: {profileId} \n", GREEN)
+        if response:
+          self.scratch.set_hiveProfileID(profileId)
+          self.scratch.save()
+          return profileId
+  
 
 
 
@@ -71,32 +170,12 @@ class Persona:
 
 
 
-
-  """
-  Kraft Hive Profile for Agent
-  """
-  async def kraftHiveProfileForAgent(self, protocol_config):
-    profileID = self.scratch.get_hiveProfileID()
-    if not profileID or profileID == "":
-      color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
-      await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
-  
-    
-  """
-  Like a time-stream Buzz
-  """
-  async def likeTimeStream(self, protocol_config):
-    profileID = self.scratch.get_hiveProfileID()
-    if not profileID or profileID == "":
-      color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
-      await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
-  
-    
+  # GLOBAL TRANSACTION FUNCTIONS --> Incrementing Hive Chronicle, Time-Stream, etc.
     
   """
   Increment GLobal BEE FARM EPOCH FOR HIVE CHRONICLE
   """
-  def increment_bee_farm_epoch(self, protocol_config):
+  def increment_global_bee_farm_epoch(self, protocol_config):
     color_print(f"\nIncrementing Bee Farm Epoch via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
     return increment_bee_farm_epoch(self.rpc_url, self.private_key, protocol_config)
   
@@ -119,11 +198,59 @@ class Persona:
 
 
 
+
+  # ----  ### -------- QUERY FUNCTIONS ------------ ### ----
+  # ----  ### -------- QUERY FUNCTIONS ------------ ### ----
+
+  def getSuiBalanceForAddressOnChain(self, for_address=None):
+    if for_address:
+      return getSuiBalanceForAddress(self.rpc_url, self.private_key, for_address)
+    else:
+      return getSuiBalanceForAddress(self.rpc_url, self.private_key, self.scratch.get_str_address())
+
+
+
+
+
+
+
+
+
+
+    
+  """
+  Like a time-stream Buzz
+  """
+  async def likeTimeStream(self, protocol_config):
+    profileID = self.scratch.get_hiveProfileID()
+    if not profileID or profileID == "":
+      color_print(f"\nLiking Time-Stream Buzz for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+      await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
+  
+    
+
+
+
   def getTimeline(self):
-    profileID = "0x3d8811ac07fef26acf8e957daf160e948e30c336db99ed793cadf492eac88335"  #self.scratch.get_hiveProfileID())
-    # get_profileTimeline(profileID)
-    # timeStream = getHiveAnnocements(False)
-    # getFeedData(profileID)
+    profileID = self.scratch.get_hiveProfileID()
+    # response = get_profileTimeline(profileID)
+    # print(response)
+    # print(type(response))
+    # return response
+
+    timeStream = getHiveAnnocements(False)
+    # print(timeStream)
+    # print(type(timeStream))
+    return timeStream
+
+    completeFeed = timeStream["completeFeed"]
+    for streamBuzz in completeFeed:
+      print(streamBuzz)
+      print("\n\n\n")
+
+    # feedInfo = getFeedData(profileID)
+    # print(feedInfo)
+    # print(type(feedInfo))
 
     # for streamBuzz in timeStream["completeFeed"]:
     #   print(streamBuzz)

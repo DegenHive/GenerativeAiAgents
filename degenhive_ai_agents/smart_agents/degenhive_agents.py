@@ -24,6 +24,7 @@ import math
 import os
 import shutil
 import traceback
+from datetime import datetime
 
 from global_methods import *
 from utils import *
@@ -45,7 +46,6 @@ class DegenHiveAiAgents:
     # SETTING UP PERSONAS IN REVERIE
     # <personas> is a dictionary that takes the persona's full name as its keys, and the actual persona instance as its values.
     # This dictionary is meant to keep track of all personas who are instances of AI smart agents.
-    # e.g., ["Isabella Rodriguez"] = Persona("Isabella Rodriguezs")
     self.personas = dict()
     self.persona_names = []
 
@@ -56,9 +56,8 @@ class DegenHiveAiAgents:
     for account in simulations_state['persona_accounts']:
 
       if "username" in account:
-        self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"../storage/simulations/personas/{account["username"]}")
+        self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}{account["username"]}")
         self.persona_names.append(account["username"])
-        break
 
 
         
@@ -93,7 +92,7 @@ class DegenHiveAiAgents:
       # Loop over the output_json and create the persona folders.
       for agent_persona in output_json:        
         if "username" in agent_persona and "bio" in agent_persona:
-          file_name = f"../storage/simulations/personas/{agent_persona["username"]}"
+          file_name = f"{CUR_PATH_PERSONAS}{agent_persona["username"]}"
           if not check_if_file_exists(file_name) and "age" in agent_persona and "personality" in agent_persona and "ai_skills_behaviour" in agent_persona and "degen_nativeness" in agent_persona and "o_acc_nativeness" in agent_persona and "native_country" in agent_persona and "daily_finances" in agent_persona:
             color_print("All keys are present in the agent_persona", YELLOW)
             print(agent_persona)            
@@ -148,6 +147,28 @@ class DegenHiveAiAgents:
       if ("ongoing_epoch" in platform_state):
         color_print(f"\nAgent: {username} | Epoch: {platform_state['ongoing_epoch']} | Epoch Start: {platform_state['ongoing_epoch_start_ms']}", GREEN)
 
+      # Update HiveChronicleFarm
+      if int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingHiveChronicleInfo"]["bee_farm_info"]["active_epoch"]):
+        agent_persona.increment_global_bee_farm_epoch(simulations_state["configuration"])
+
+      def getValidProfileId(addr1, addr2):
+        if addr1:
+          return addr1
+        else:
+          return addr2
+
+      # Update TimeStream
+      if int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]):
+        prev_streamer_rank1_profile = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer1_info"]["profile_addr"], dummyProfileID1)
+        prev_streamer_rank2_profile = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer2_info"]["profile_addr"], dummyProfileID2)
+        prev_streamer_rank3_profile = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer3_info"]["profile_addr"], dummyProfileID3)
+        agent_persona.increment_timeStream_part_1(simulations_state["configuration"], prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile)
+
+        new_streamer_rank1 = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer1_info"]["profile_addr"], dummyProfileID1)
+        new_streamer_rank2 = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer2_info"]["profile_addr"], dummyProfileID2)
+        new_streamer_rank3 = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer3_info"]["profile_addr"], dummyProfileID3)
+        agent_persona.increment_timeStream_part_2(simulations_state["configuration"], new_streamer_rank1, new_streamer_rank2, new_streamer_rank3)
+
 
       # 2. Get the Global HiveChronicle Info
       # -----------------------------
@@ -175,7 +196,6 @@ class DegenHiveAiAgents:
     with open(f"../storage/simulations/state/meta.json") as json_file:  
       simulations_state = json.load(json_file)
 
-
     deployer_agent = self.personas[simulations_state["main_agent"]]
 
     for agentInfo in simulations_state["persona_accounts"][1:]:
@@ -188,6 +208,45 @@ class DegenHiveAiAgents:
         color_print(f"Agent {agentInfo['username']} has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
         deployer_agent.transferSuiOnChain( agentInfo["address"], transfer_amount)
         time.sleep(1)
+
+
+
+  """
+  Transfer HIVE tokens to all AI agents which currently have less than amount HIVE balance in their HiveProfile
+  """
+  def transferHiveTokensToAllAgents(self, min_hive_in_profile, transfer_amount, deposit_amount):
+    with open(f"../storage/simulations/state/meta.json") as json_file:  
+      simulations_state = json.load(json_file)
+
+    HIVE_TOKEN_TYPE = f"{simulations_state["configuration"]["HIVE_PACKAGE"]}::hive::HIVE"
+
+    deployer_agent = self.personas[simulations_state["main_agent"]]
+
+    for agentInfo in simulations_state["persona_accounts"][1:]:
+      
+      if agentInfo["username"] == simulations_state["main_agent"]:
+        continue
+      
+      # Update user's HiveChronicle state
+      user_agent = self.personas[agentInfo["username"]]
+      user_agent.handle_profile_state_update(simulations_state["configuration"])
+      hiveChronicleInfo = user_agent.scratch.get_hiveChronicleState()
+
+      color_print(f"\nAgent: {agentInfo['username']} | Address: {agentInfo['address']} | HIVE in profile = {round(int(hiveChronicleInfo["total_hive_gems"])/1e6, 2)}", GREEN)
+      # continue
+
+      # Check if the agent has atleast min_amount HIVE balance, and if not transfer transfer_amount HIVE tokens.
+      if min_hive_in_profile > int(hiveChronicleInfo["total_hive_gems"]):
+        color_print(f" Transferring {round(transfer_amount / 1e6, 2)} HIVE tokens...", GREEN)
+        deployer_agent.transferTokens( HIVE_TOKEN_TYPE, agentInfo["address"], int(transfer_amount))
+        time.sleep(1)
+
+      if deposit_amount > int(hiveChronicleInfo["total_hive_gems"]):  
+        color_print(f"Depositing {round(deposit_amount / 1e6, 2)} HIVE tokens...", GREEN)
+        user_agent.depositHiveGemsToProfileOnChain( simulations_state["configuration"], HIVE_TOKEN_TYPE, deposit_amount * 10)
+        time.sleep(1)    
+        user_agent.handle_profile_state_update(simulations_state["configuration"])
+
 
 
   
@@ -203,92 +262,62 @@ class DegenHiveAiAgents:
       platform_state["ongoing_epoch"] = 0
 
 
-
     # Start the simulation
-    for username in ["AIExplorer99"]: #]self.persona_names:
+    for username in self.persona_names:
+      color_print(f"\n\n----------------------\
+                  \nActivating AI Agent: {username}", BLUE)
       agent_persona = self.personas[username]
 
       # Update the overall protocol state --> Epoch, HiveChronicle, TimeStream
-      # self.updateProtocolStateInfo(simulations_state, agent_persona, platform_state)
-      # return
+      current_time = datetime.now().timestamp() * 1000 
 
-      # Update HiveChronicleFarm
-      if int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingHiveChronicleInfo"]["bee_farm_info"]["active_epoch"]):
-        result = agent_persona.increment_bee_farm_epoch(simulations_state["configuration"])
-        if result:
-          self.updateProtocolStateInfo(simulations_state, agent_persona, platform_state)
-
-      # Update TimeStream
-      if int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]):
-        if platform_state["ongoingTimeStreamInfo"]["streamer1_info"]["profile_addr"]:
-            prev_streamer_rank1_profile = platform_state["ongoingTimeStreamInfo"]["streamer1_info"]["profile_addr"]
-        else:
-            prev_streamer_rank1_profile = "0x8ed66b669ea1c1d441117993a6b0c064a33e38bc1e5d26e49fa475a11c602171"
-
-        if platform_state["ongoingTimeStreamInfo"]["streamer2_info"]["profile_addr"]:
-            prev_streamer_rank2_profile = platform_state["ongoingTimeStreamInfo"]["streamer2_info"]["profile_addr"]
-        else:
-            prev_streamer_rank2_profile = "0x7631643d1729e1a090dd0fc86ce424b8f2cb9d52c3f68383c317be7b618fd7bb"
-          
-        if platform_state["ongoingTimeStreamInfo"]["streamer3_info"]["profile_addr"]:
-            prev_streamer_rank3_profile = platform_state["ongoingTimeStreamInfo"]["streamer3_info"]["profile_addr"]
-        else:
-            prev_streamer_rank3_profile = "0xd6dd8edf8b60e57714224cc46c4987cb27aa5f5e74216b6fcfb8b11faf312f92"
+      
 
 
-        agent_persona.increment_timeStream_part_1(simulations_state["configuration"], prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile)
-        # agent_persona.increment_timeStream_part_2(simulations_state["configuration"], new_streamer_rank1, new_streamer_rank2, new_streamer_rank3)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      # agent_persona.handle_profile_state_update(simulations_state["configuration"])
       return
+      
+      # Update platform state info (every 5 min) ---> INTERNALLY INCREMENTS BEE FARM EPOCH + TIME-STREAM INFO
+      if "last_platform_state_update" not in platform_state or (current_time - platform_state["last_platform_state_update"]) > 15 * 60 * 1000 or (current_time - platform_state["ongoing_epoch_start_ms"]) > 23 * 1000 * 60 * 60 or int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]): 
+          platform_state["last_platform_state_update"] = current_time
+          self.updateProtocolStateInfo(simulations_state, agent_persona, platform_state)
+          color_print(f"Platform state successfully updated", GREEN)
 
-      # profileID = agent_persona.get_HiveProfileId()
-      # if not profileID or profileID == "":
-      #   continue
+
+      # Get the profile ID for the persona, if it does not exist, kraft it.
+      profileID = agent_persona.get_HiveProfileId()
+      color_print(f"Profile ID: {profileID}", GREEN)
+      if not profileID or profileID == "0x0000000000000000000000000000000000000000000000000000000000000000":
+        agent_persona.kraftHiveProfileForAgent(simulations_state["configuration"])
 
       # Get the timeline for the persona
-      # timeline_feed = agent_persona.getTimeline()
+      timeline_feed = agent_persona.getTimeline()
 
-      # Get current persona's overall state 
-      # agent_persona.getHiveChronicleInfo_OnChain(simulations_state["configuration"])
-      # agent_persona.getTimeStreamInfo_OnChain(simulations_state["configuration"])
+      for feedInfo in timeline_feed["completeFeed"]:
+        feedInfo = json.loads(feedInfo)
+        # print(feedInfo)
+        # print(type(feedInfo))
+        sk = feedInfo["SK"]
 
+        # If its a time-stream Buzz, handle accordingly
+        if "stream" in sk:
+          index, inner_index = extract_buzz_numbers("stream", sk)
+          print(f"Stream Buzz: {index} | {inner_index} = Likes = ${feedInfo["like_count"]} | Buzz = ${feedInfo["buzz"]} " )
+          # print(feedInfo)
+          if index > 14:
+            agent_persona.handle_new_buzz_on_feed(simulations_state["configuration"], "stream" , index, inner_index, feedInfo["buzz"])
 
-      agent_persona.getGlobalTimeStreamInfo(simulations_state["configuration"])
-
-
-
-
-
+        if "governor" in sk:
+          index, inner_index = extract_buzz_numbers("governor", sk)
+          print(f"Governor Buzz: {index} | {inner_index} = Likes = ${feedInfo["like_count"]} | Buzz = ${feedInfo["buzz"]} " )
+        # if "hiveProfileID" in feedInfo:
+        #   hiveProfileID = feedInfo["hiveProfileID"]
+        #   if not hiveProfileID or hiveProfileID == "0x
 
 
 
       break
-
-
-
-
-
+ 
 
 
   # def save(self): 
@@ -469,25 +498,26 @@ class DegenHiveAiAgents:
 
 
 if __name__ == '__main__':
-  # ai_agents_simulation = DegenHiveAiAgents("base_the_ville_isabella_maria_klaus", 
-  #                    "July1_the_ville_isabella_maria_klaus-step-3-1")
-  # ai_agents_simulation = DegenHiveAiAgents("July1_the_ville_isabella_maria_klaus-step-3-20", 
-  #                    "July1_the_ville_isabella_maria_klaus-step-3-21")
-  # ai_agents_simulation.open_server()
 
-  rpc_url = ""# input("Enter the name of the new simulation: ").strip()
+  # send_telegram_message("<a href='https://www.google.com/'>Google</a>")
+  
+
   # SUI_RPC = "https://fullnode.testnet.sui.io:443/"
   SUI_RPC =  "https://sui-testnet-endpoint.blockvision.org"
 
   ai_agents_simulation = DegenHiveAiAgents(SUI_RPC)
 
+  
+  min_hive_bal = 50 * 1e6
+  transfer_hive_bal = 100 * 1e6
 
-  # rs.initialize_ai_agents(SUI_RPC)
+  ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
+
   # ai_agents_simulation.activate_ai_agents_swarm( )
 
   sui_to_transfer = 1.5 * 1e9
   min_sui_bal = 1 * 1e9
-  ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
+  # ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
   # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
   
 

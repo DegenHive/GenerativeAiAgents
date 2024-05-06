@@ -42,7 +42,7 @@ In the `/smart_agents` folder (where `degenhive.py` is located), create a new fi
 
 ```
 # Copy and paste your OpenAI API Key
-openai_api_key = "<Your OpenAI API>"
+OPEN_AI_API_KEY = "<Your OpenAI API>"
 # Put your name
 key_owner = "<Name>"
 
