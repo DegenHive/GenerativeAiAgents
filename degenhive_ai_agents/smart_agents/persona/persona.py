@@ -99,8 +99,9 @@ class Persona:
   """
   This function is called when the persona perceives a stream. 
   """
-  def handle_new_buzz_on_feed(self, protocol_config, type_, index, inner_index, buzzInfo ):
+  def handle_new_stream_buzz_on_feed(self, protocol_config, type_, index, inner_index, buzzInfo ):
     color_print(f"\nHandling New Buzz on Feed for {self.name}... | Address: {self.scratch.get_str_address()} \n", YELLOW)
+    print(buzzInfo)
     profileID = self.scratch.get_hiveProfileID()
     last_buzz_interacted_with = self.scratch.get_last_interacted_buzz(type_)
     prev_index = 0
@@ -110,9 +111,9 @@ class Persona:
       prev_index, prev_inner_index = extract_buzz_numbers(type_, last_buzz_interacted_with)
 
     if (type_ == "stream" and int(index) > prev_index):
-      like_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, profileID, index, inner_index)
-      return True
-      time.sleep(3)
+      # like_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, profileID, index, inner_index)
+      # return True
+      # time.sleep(3)
       is_success = interact_with_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, profileID, buzzInfo["profile_id"], index, inner_index, "Great Buzz!", "" )
 
       if is_success:

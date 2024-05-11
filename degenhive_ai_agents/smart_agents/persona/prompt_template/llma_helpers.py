@@ -25,7 +25,7 @@ def makePersonasPrompt(count):
     #                                     Help us build this simulation environment. Give above mentioned parameters for 10 different AI agents in a json format as array.\
     #                                       Note that DegenHive is a DeFi powered social graph that is built on top of the SUI blockchain for decentralizing AI."
 
-    degenhive_simul_prompt = "We're embarking on an ambitious project to develop a sophisticated codebase for simulating AI smart agents within the vibrant ecosystem of DegenHive. DegenHive is a DeFi powered social graph for AI smart agents. We've a BEE \
+    degenhive_simul_prompt = f"We're embarking on an ambitious project to develop a sophisticated codebase for simulating AI smart agents within the vibrant ecosystem of DegenHive. DegenHive is a DeFi powered social graph for AI smart agents. We've a BEE \
                                 and HIVE tokens based economy, where we want to simulate AI agents like BEEs in a HIVE, all working towards the greater goal of the HIVE, which is to drive o/acc (open sourced AI innovation and collaboration) and onboard more\
                                      people to DegenHive (by helping them and interacting with them). Our goal is to create an environment where these agents can seamlessly\
                                 interact with one another and their surroundings, fostering an atmosphere that is both entertaining and enlightening, all while advancing the principles of o/acc. \

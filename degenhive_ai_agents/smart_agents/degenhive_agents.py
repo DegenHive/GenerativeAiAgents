@@ -49,7 +49,7 @@ class DegenHiveAiAgents:
     self.personas = dict()
     self.persona_names = []
 
-    with open(f"../storage/simulations/state/meta.json") as json_file:  
+    with open(f"../storage/config.json") as json_file:  
       simulations_state = json.load(json_file)
 
     # Initialize the AI agents.
@@ -71,7 +71,7 @@ class DegenHiveAiAgents:
           \n 1. Scratch info will be fetched from GPT3.5 turbo for all AI agents being initialized\
           \n 2. Persona folders will be created for all AI agents being initialized\n\n\n", GREEN)
     
-    with open(f"../storage/simulations/state/meta.json") as json_file:  
+    with open(f"../storage/config.json") as json_file:  
       simulations_state = json.load(json_file)
 
     # Get the number of accounts that need to be initialized.
@@ -108,7 +108,7 @@ class DegenHiveAiAgents:
             print("=================\n")
 
         # Save the updated simulations_state
-      with open(f"../storage/simulations/state/meta.json", "w") as outfile: 
+      with open(f"../storage/config.json", "w") as outfile: 
             outfile.write(json.dumps(simulations_state, indent=2))
 
 
@@ -116,7 +116,7 @@ class DegenHiveAiAgents:
   Kraft HiveProfile for all agents which don't currently have a Hive Profile.
   """
   async def kraftHiveProfileForAllAgents(self):
-    with open(f"../storage/simulations/state/meta.json") as json_file:  
+    with open(f"../storage/config.json") as json_file:  
       simulations_state = json.load(json_file)
 
 
@@ -141,7 +141,7 @@ class DegenHiveAiAgents:
       if (epochInfo and "ongoing_epoch" in platform_state  and epochInfo["epoch"] > platform_state["ongoing_epoch"]):
         platform_state["ongoing_epoch"] = epochInfo["epoch"]
         platform_state["ongoing_epoch_start_ms"] = epochInfo["epoch_timestamp_ms"]
-        with open(f"../storage/simulations/platform.json", "w") as outfile:
+        with open(f"../storage/simulation.json", "w") as outfile:
           outfile.write(json.dumps(platform_state, indent=2))
 
       if ("ongoing_epoch" in platform_state):
@@ -175,7 +175,7 @@ class DegenHiveAiAgents:
       globalHiveChronicleInfo, snapshotInfo = agent_persona.getGlobalHiveChronicleInfoOnChain(simulations_state["configuration"], 357)
       if (globalHiveChronicleInfo):
         platform_state["ongoingHiveChronicleInfo"] = globalHiveChronicleInfo
-        with open(f"../storage/simulations/platform.json", "w") as outfile:
+        with open(f"../storage/simulation.json", "w") as outfile:
           outfile.write(json.dumps(platform_state, indent=2))
 
 
@@ -184,7 +184,7 @@ class DegenHiveAiAgents:
       globalTimeStreamInfo = agent_persona.getGlobalTimeStreamInfo(simulations_state["configuration"])
       if globalTimeStreamInfo and "config_params" in globalTimeStreamInfo:
         platform_state["ongoingTimeStreamInfo"] = globalTimeStreamInfo
-        with open(f"../storage/simulations/platform.json", "w") as outfile:
+        with open(f"../storage/simulation.json", "w") as outfile:
           outfile.write(json.dumps(platform_state, indent=2))
 
 
@@ -193,7 +193,7 @@ class DegenHiveAiAgents:
   Transfer SUI tokens to all AI agents which currently have less than amount SUI balance
   """
   def transferSuiTokensToAllAgents(self, min_amount, transfer_amount):
-    with open(f"../storage/simulations/state/meta.json") as json_file:  
+    with open(f"../storage/config.json") as json_file:  
       simulations_state = json.load(json_file)
 
     deployer_agent = self.personas[simulations_state["main_agent"]]
@@ -215,7 +215,7 @@ class DegenHiveAiAgents:
   Transfer HIVE tokens to all AI agents which currently have less than amount HIVE balance in their HiveProfile
   """
   def transferHiveTokensToAllAgents(self, min_hive_in_profile, transfer_amount, deposit_amount):
-    with open(f"../storage/simulations/state/meta.json") as json_file:  
+    with open(f"../storage/config.json") as json_file:  
       simulations_state = json.load(json_file)
 
     HIVE_TOKEN_TYPE = f"{simulations_state["configuration"]["HIVE_PACKAGE"]}::hive::HIVE"
@@ -252,10 +252,10 @@ class DegenHiveAiAgents:
   
   def activate_ai_agents_swarm(self):
 
-    with open(f"../storage/simulations/state/meta.json") as json_file:  
+    with open(f"../storage/config.json") as json_file:  
       simulations_state = json.load(json_file)
 
-    with open(f"../storage/simulations/platform.json") as json_file:  
+    with open(f"../storage/simulation.json") as json_file:  
       platform_state = json.load(json_file)
 
     if not "ongoing_epoch" in platform_state:
@@ -272,10 +272,8 @@ class DegenHiveAiAgents:
       current_time = datetime.now().timestamp() * 1000 
 
       
-
-
       # agent_persona.handle_profile_state_update(simulations_state["configuration"])
-      return
+      # return
       
       # Update platform state info (every 5 min) ---> INTERNALLY INCREMENTS BEE FARM EPOCH + TIME-STREAM INFO
       if "last_platform_state_update" not in platform_state or (current_time - platform_state["last_platform_state_update"]) > 15 * 60 * 1000 or (current_time - platform_state["ongoing_epoch_start_ms"]) > 23 * 1000 * 60 * 60 or int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]): 
@@ -295,8 +293,6 @@ class DegenHiveAiAgents:
 
       for feedInfo in timeline_feed["completeFeed"]:
         feedInfo = json.loads(feedInfo)
-        # print(feedInfo)
-        # print(type(feedInfo))
         sk = feedInfo["SK"]
 
         # If its a time-stream Buzz, handle accordingly
@@ -305,7 +301,7 @@ class DegenHiveAiAgents:
           print(f"Stream Buzz: {index} | {inner_index} = Likes = ${feedInfo["like_count"]} | Buzz = ${feedInfo["buzz"]} " )
           # print(feedInfo)
           if index > 14:
-            agent_persona.handle_new_buzz_on_feed(simulations_state["configuration"], "stream" , index, inner_index, feedInfo["buzz"])
+            agent_persona.handle_new_stream_buzz_on_feed(simulations_state["configuration"], "stream" , index, inner_index, feedInfo)
 
         if "governor" in sk:
           index, inner_index = extract_buzz_numbers("governor", sk)
@@ -316,7 +312,7 @@ class DegenHiveAiAgents:
 
 
 
-      break
+      # break
  
 
 
@@ -330,7 +326,7 @@ class DegenHiveAiAgents:
   #   # Save Reverie meta information.
   #   simulations_state = dict() 
   #   simulations_state["persona_names"] = list(self.personas.keys())
-  #   simulations_state_f = f"{sim_folder}/reverie/meta.json"
+  #   simulations_state_f = f"{sim_folder}/reverie/config.json"
   #   with open(simulations_state_f, "w") as outfile: 
   #     outfile.write(json.dumps(simulations_state, indent=2))
 
@@ -511,9 +507,9 @@ if __name__ == '__main__':
   min_hive_bal = 50 * 1e6
   transfer_hive_bal = 100 * 1e6
 
-  ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
+  # ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
 
-  # ai_agents_simulation.activate_ai_agents_swarm( )
+  ai_agents_simulation.activate_ai_agents_swarm( )
 
   sui_to_transfer = 1.5 * 1e9
   min_sui_bal = 1 * 1e9

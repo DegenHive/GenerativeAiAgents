@@ -1,3 +1,4 @@
+import canoser.str_t
 import requests, json, argparse, asyncio
 from typing import Union, Tuple
 # from pysui.sui.sui_builders.exec_builders import MergeCoin, SplitCoin, ExecuteTransaction
@@ -17,7 +18,7 @@ from pysui.sui.sui_txresults.single_tx import SuiCoinObjects, SuiCoinObject
 from pysui.sui.sui_txresults.complex_tx import TxInspectionResult
 from pysui.abstracts import SignatureScheme
 from utils import *
-
+from pysui.sui.sui_types.collections import SuiArray
 import canoser 
 import time
 from pysui.sui.sui_crypto import (
@@ -36,6 +37,7 @@ from pysui.sui.sui_types.scalars import (
     SuiBoolean,
     SuiInteger,
     SuiString,
+    SuiNullType,
     SuiU128,
     SuiU16,
     SuiU256,
@@ -56,6 +58,7 @@ from pysui.sui.sui_constants import (
     SECP256R1_DEFAULT_KEYPATH,
 )
 
+
 # Define ANSI color codes
 RED = '\033[91m'
 GREEN = '\033[92m'
@@ -73,6 +76,13 @@ def color_print(text, color_code):
     print(color_code + text + END_COLOR)
 
 
+class OptionalSuiString(canoser.RustOptional):
+    """OptionalU16 Optional assignment of unsigned 16 bit int."""
+
+    _type = canoser.StrT
+
+
+
 class HiveProfileIdInfo(canoser.Struct):
     _fields = [
         ('has_profile', canoser.BoolT),
@@ -80,6 +90,15 @@ class HiveProfileIdInfo(canoser.Struct):
     ]
 
 
+# class OptionalTypeFactory:
+#     """Optional Optional assignment of any canoser type."""
+
+#     @classmethod
+#     def as_optional(cls, in_type: Any = canoser.Struct) -> canoser.RustOptional:
+#         """."""
+#         Optional._type = in_type.__class__
+#         return Optional(None)
+    
 
 class HiveChronicleUserInfo(canoser.Struct):
     _fields = [
@@ -566,6 +585,13 @@ def like_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_pr
 Execute a transaction to comment on a stream buzz Post
 """
 def interact_with_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, streamer_profile, stream_index, stream_inner_index, user_buzz, n_gen_ai_url) :
+    print(f"Interacting with Stream Buzz")
+    print(f"n_gen_ai_url: {n_gen_ai_url}")
+    print(f"user_profile: {user_profile}")
+    print(f"streamer_profile: {streamer_profile}")
+    print(f"stream_index: {stream_index}")
+    print(f"stream_inner_index: {stream_inner_index}")
+    print(f"user_buzz: {user_buzz}")
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
     txBlock = SyncTransaction(client=suiClient)
     txBlock.move_call(
@@ -584,10 +610,13 @@ def interact_with_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config
                     SuiU64(stream_index),
                     SuiU64(stream_inner_index),
                     SuiString(user_buzz),
-                    SuiString([n_gen_ai_url]),
+                    None
             ],
             type_arguments=[SUI_TYPE],
         )
+    
+
+
 
     simulation_response, txBlock = simulate_tx(txBlock)
     if (simulation_response):
@@ -653,6 +682,53 @@ def upvote_hive_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_pr
 
 #  ---------------- UPDATE GLOBAL CYCLIC FUNCTIONS ----------------
 # ---------------- UPDATE GLOBAL CYCLIC FUNCTIONS ----------------
+
+
+"""
+Execute a transaction to stake all SUI etc for degenSUI
+"""
+def handle_liquid_staking_functions(rpc_url, private_key_hex_string, protocol_config) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["DSUIVAULT_PACKAGE"]}::hsui_vault::process_unstake_sui_requests",
+        arguments=[ ObjectID(SUI_SYSTEM_STATE),   ObjectID(protocol_config["DSUI_VAULT"]) ],
+        )
+    txBlock.move_call(
+        target=f"{protocol_config["DSUIVAULT_PACKAGE"]}::hsui_vault::update_calculated_accrued_rewards",
+        arguments=[ ObjectID(SUI_SYSTEM_STATE),   ObjectID(protocol_config["DSUI_VAULT"]) ],
+        )    
+    txBlock.move_call(
+        target=f"{protocol_config["DSUIVAULT_PACKAGE"]}::hsui_vault::process_stake_sui_requests",
+        arguments=[ ObjectID(SUI_SYSTEM_STATE),   ObjectID(protocol_config["DSUI_VAULT"]) ],
+        )    
+    if "HIVE_DAO_GOVERNOR" in protocol_config:
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_DAO_PACKAGE"]}::hive_dao::claim_collected_degensui",
+            arguments=[ ObjectID(SUI_SYSTEM_STATE),   ObjectID(protocol_config["HIVE_DAO_GOVERNOR"]) 
+                       ,   ObjectID(protocol_config["DSUI_VAULT"]),   ObjectID(protocol_config["TREASURY_DSUI"])
+                        ,   ObjectID(protocol_config["DSUI_DISPERSER"]) ]
+            )            
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"LSD FUNCTIONS executed successfuly: {exec_result["digest"]}", GREEN)
+            send_telegram_message(f"LSD FUNCTIONS executed  successfuly: <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+            return True, None
+        else:
+            color_print(f"Error  executing LSD functions: {exec_result["effects"]["status"]["error"]}", RED)
+            send_telegram_message(f"Error executing LSD functions : {exec_result["effects"]["status"]["error"]}")
+            return False, None
+    else: 
+        print(f"Simulation failed")
+        send_telegram_message(f"Simulation -- Error  executing LSD functions : {txBlock}")
+        return False
+
+  
 
 """
 Execute a transaction to increment the BEE farm epoch in HiveChronicle APP
@@ -1011,9 +1087,9 @@ def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :
         time_streamer3_info = json.loads(time_streamer3_info.to_json())
         time_streamer3_info["profile_addr"] = streamerProfile3
         
-        # leading_bids_info = LeadingBidsInfo.deserialize( simulation_json["results"][4]["returnValues"][0][0] + simulation_json["results"][4]["returnValues"][1][0], 
-        #                                     + simulation_json["results"][4]["returnValues"][2][0] + simulation_json["results"][4]["returnValues"][3][0]
-        #                                         + simulation_json["results"][4]["returnValues"][4][0] + simulation_json["results"][4]["returnValues"][5][0] )
+        leading_bids_info = LeadingBidsInfo.deserialize( simulation_json["results"][4]["returnValues"][0][0] + simulation_json["results"][4]["returnValues"][1][0], 
+                                            + simulation_json["results"][4]["returnValues"][2][0] + simulation_json["results"][4]["returnValues"][3][0]
+                                                + simulation_json["results"][4]["returnValues"][4][0] + simulation_json["results"][4]["returnValues"][5][0] )
 
         time_stream_pol_info = TimeStreamPolInfo.deserialize( simulation_json["results"][5]["returnValues"][0][0] + simulation_json["results"][5]["returnValues"][1][0] )
         # print(f"time_stream_pol_info: {time_stream_pol_info}")

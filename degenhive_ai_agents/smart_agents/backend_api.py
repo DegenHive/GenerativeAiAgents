@@ -48,7 +48,7 @@ def getHiveAnnocements( isStream, last_key = None, limit = 15):
         GET_HIVE_ANNOUNCEMENT,
         variables={"stream": True, "hiveAnnouncements":  not isStream, "lastKey": last_key, "limit": limit}
     )    
-    print("Hive Announcements Data: ", final_data)
+    # print("Hive Announcements Data: ", final_data)
     final_data = json.loads(final_data)
 
     return {
@@ -202,11 +202,11 @@ def getHiveThread(pk: any, sk: any, network: any):
 
 
 async def main():
-    file_path = "../storage/content/welcome_imgs/degenHiveIntro1.png"  # Specify the path to your image file
+    file_path = "../storage/content/welcome_imgs/degenHiveIntro2.png"  # Specify the path to your image file
     print("Uploading Image to BE... file_to_base64")
     img_str = await file_to_base64(file_path)
     img_str = "data:image/png;base64," + img_str
-    print(img_str)
+    # print(img_str)
     print("Uploading Image to BE... upload_media_to_be")
     result = await upload_media_to_be(img_str)
     print(result)
