@@ -17,6 +17,7 @@ class Scratch:
   def __init__(self, f_saved): 
 
     # THE CORE IDENTITY OF THE PERSONA 
+    self.type = None
     self.address = None
     self.hiveProfileID = None
     self.daily_behavior = None
@@ -69,6 +70,11 @@ class Scratch:
       # If we have a bootstrap file, load that here. 
       scratch_load = json.load(open(f_saved))
 
+      if "type" not in scratch_load:
+        self.type = ""
+      else:
+        self.type = scratch_load["type"]  
+  
       self.address = scratch_load["address"]
       self.hiveProfileID = scratch_load["hiveProfileID"]
       self.daily_behavior = scratch_load["daily_behavior"]
@@ -119,6 +125,7 @@ class Scratch:
     """
     scratch = dict() 
 
+    scratch["type"] = self.type
     scratch["address"] = self.address
     scratch["hiveProfileID"] = self.hiveProfileID
     scratch["daily_behavior"] = self.daily_behavior
@@ -158,9 +165,9 @@ class Scratch:
     scratch["thought_count"] = self.thought_count
 
     if not out_json:
-      out_json = CUR_PATH_PERSONAS + self.username + "/scratch.json"
-    with open(out_json, "w") as outfile:
-      json.dump(scratch, outfile, indent=2) 
+      out_json = CUR_PATH_PERSONAS + self.type + "s/" + self.username + "/scratch.json"
+    with open(out_json, "w", encoding='utf-8') as outfile:
+      json.dump(scratch, outfile,  indent=2, ensure_ascii=False)
 
 
   def set_hiveProfileID(self, profileId):
@@ -172,7 +179,7 @@ class Scratch:
 
 
 
-  def get_str_iss(self): 
+  def get_iss(self): 
     """
     ISS stands for "identity stable set." This describes the commonset summary
     of this persona -- basically, the bare minimum description of the persona
@@ -196,6 +203,11 @@ class Scratch:
     return commonset
 
 
+  def set_type(self, type):
+    self.type = type
+
+  def set_bio(self, bio):
+    self.bio = bio
 
   def set_hiveChronicleState(self, hiveChronicleState):
     self.hiveChronicleState = hiveChronicleState
@@ -237,13 +249,14 @@ class Scratch:
     elif type_ == "hive_dao":
       return self.last_hive_dao_interaction
 
+  def get_type(self): 
+    return self.type
 
-
-  def get_str_name(self): 
+  def get_name(self): 
     return self.username
 
 
-  def get_str_address(self): 
+  def get_address(self): 
     return self.address
 
   def get_hiveProfileID(self):
@@ -252,27 +265,27 @@ class Scratch:
   def get_bio(self):
     return self.bio
 
-  def get_str_age(self): 
+  def get_age(self): 
     return str(self.age)
 
 
-  def get_str_personality(self): 
+  def get_personality(self): 
     return self.personality
 
 
-  def get_str_meme_expertise(self): 
+  def get_meme_expertise(self): 
     return self.meme_expertise
 
 
-  def get_str_currently(self): 
+  def get_currently(self): 
     return self.currently
 
 
-  def get_str_o_acc_commitment(self): 
+  def get_o_acc_commitment(self): 
     return self.o_acc_commitment
 
 
-  def get_str_daily_behavior(self): 
+  def get_daily_behavior(self): 
     return self.daily_behavior
 
 

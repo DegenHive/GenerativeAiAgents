@@ -52,12 +52,13 @@ def create_persona_folder_if_not_there(curr_path, persona_json):
   else: 
     scratch["bio"] = persona_json["bio"]
 
+  scratch["type"] = persona_json["type"]
   scratch["age"] = persona_json["age"]
   scratch["personality"] = persona_json["personality"]
   scratch["meme_expertise"] = persona_json["meme_expertise"]
   scratch["o_acc_commitment"] = persona_json["o_acc_commitment"]
   scratch["native_country"] = persona_json["native_country"]
-  scratch["daily_finances"] = ""
+  scratch["daily_behavior"] = persona_json["daily_behavior"]
 
   scratch["last_stream_interaction"] = None
   scratch["last_dex_dao_interaction"] = None

@@ -49,15 +49,25 @@ class DegenHiveAiAgents:
     self.personas = dict()
     self.persona_names = []
 
-    # with open(f"../storage/config.json") as json_file:  
-    #   simulation_config = json.load(json_file)
+    with open(f"../storage/config.json") as json_file:  
+      simulation_config = json.load(json_file)
 
     # Initialize the AI agents.
-    # for account in simulation_config['persona_accounts']:
+    for account in simulation_config['pepe_agents']:
+      if "username" in account:
+        self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}pepes/{account["username"]}")
+        self.persona_names.append(account["username"])
 
-    #   if "username" in account:
-    #     self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}{account["username"]}")
-    #     self.persona_names.append(account["username"])
+    for account in simulation_config['ape_agents']:
+      if "username" in account:
+        self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}apes/{account["username"]}")
+        self.persona_names.append(account["username"])
+ 
+    for account in simulation_config['bee_agents']:
+      if "username" in account:
+        self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}bees/{account["username"]}")
+        self.persona_names.append(account["username"])
+ 
 
 
   ##################################################################################################
@@ -122,16 +132,23 @@ class DegenHiveAiAgents:
           if "username" in agent_persona:
             file_name = f"{CUR_PATH_PERSONAS}{type_of_agent}s/{agent_persona["username"]}"
             if not check_if_file_exists(file_name) and "age" in agent_persona and "personality" in agent_persona and "meme_expertise" in agent_persona and "o_acc_commitment" in agent_persona and "native_country" in agent_persona and "daily_behavior" in agent_persona:
-              color_print(f"All keys are present in the {type_of_agent}_persona", YELLOW)
+              color_print(f"All keys are present in the {type_of_agent}_persona", YELLOW)        
+              print("Fetching bio...")
+              bio_prompt = makeFetchBioPrompt(type_of_agent, agent_persona["username"], agent_persona["age"], agent_persona["personality"], agent_persona["meme_expertise"], agent_persona["o_acc_commitment"], agent_persona["native_country"], agent_persona["daily_behavior"])
+              bio_output = ChatGPT_request(bio_prompt)
+                    
               if debug:
                 print(agent_persona)            
 
               # 1. Create the mnemonic and private key hex string for the persona.
               mnemonic, private_key_hex_string, address = initialize_new_account(rpc_url) 
-              simulation_config[f'{type_of_agent}_agents'].append({"username": agent_persona["username"], "private_key": private_key_hex_string, "address": address, "mnemonic": mnemonic})
+              simulation_config[f'{type_of_agent}_agents'].append({"username": agent_persona["username"], "private_key": private_key_hex_string, "address": address, "mnemonic": mnemonic, "bio": bio_output})
               agent_persona["address"] = address
+              agent_persona["bio"] = bio_output
+
 
               # 2. create the persona folder if it does not exist
+              agent_persona["type"] = type_of_agent
               create_persona_folder_if_not_there(file_name, agent_persona)
               agents_to_initialize -= 1
               print("=================\n")
@@ -141,6 +158,54 @@ class DegenHiveAiAgents:
               outfile.write(json.dumps(simulation_config, indent=2))
 
 
+  ##################################################################################################
+
+  """
+  Transfer SUI tokens to all AI agents which currently have less than amount SUI balance
+  """
+  def transferSuiTokensToAllAgents(self, min_amount, transfer_amount):
+    with open(f"../storage/config.json") as json_file:  
+      simulation_config = json.load(json_file)
+
+    deployer_agent = self.personas[simulation_config["main_agent"]]
+
+    for agentInfo in simulation_config["pepe_agents"]:
+      if agentInfo["username"] == simulation_config["main_agent"]:
+        continue
+      
+      # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
+      availableSui = deployer_agent.getSuiBalanceForAddressOnChain(agentInfo["address"])
+      if (availableSui < min_amount):
+        color_print(f"Agent {agentInfo['username']} has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
+        deployer_agent.transferSuiOnChain( agentInfo["address"], transfer_amount)
+        time.sleep(1)
+
+    for agentInfo in simulation_config["ape_agents"]:
+      if agentInfo["username"] == simulation_config["main_agent"]:
+        continue
+      
+      # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
+      availableSui = deployer_agent.getSuiBalanceForAddressOnChain(agentInfo["address"])
+      if (availableSui < min_amount):
+        color_print(f"Agent {agentInfo['username']} has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
+        deployer_agent.transferSuiOnChain( agentInfo["address"], transfer_amount)
+        time.sleep(1)
+
+    for agentInfo in simulation_config["bee_agents"]:
+      if agentInfo["username"] == simulation_config["main_agent"]:
+        continue
+      
+      # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
+      availableSui = deployer_agent.getSuiBalanceForAddressOnChain(agentInfo["address"])
+      if (availableSui < min_amount):
+        color_print(f"Agent {agentInfo['username']} has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
+        deployer_agent.transferSuiOnChain( agentInfo["address"], transfer_amount)
+        time.sleep(1)
+
+
+  ##################################################################################################
+
+
   """
   Kraft HiveProfile for all agents which don't currently have a Hive Profile.
   """
@@ -148,14 +213,12 @@ class DegenHiveAiAgents:
     with open(f"../storage/config.json") as json_file:  
       simulation_config = json.load(json_file)
 
-
     for username in self.persona_names:
       agent_persona = self.personas[username]
-      
-      await agent_persona.kraftHiveProfileForAgent(simulation_config["configuration"])
+      agent_persona.kraftHiveProfileForAgent(simulation_config["configuration"])
 
-      break
 
+  ##################################################################################################
 
 
   """
@@ -218,27 +281,7 @@ class DegenHiveAiAgents:
 
 
 
-  """
-  Transfer SUI tokens to all AI agents which currently have less than amount SUI balance
-  """
-  def transferSuiTokensToAllAgents(self, min_amount, transfer_amount):
-    with open(f"../storage/config.json") as json_file:  
-      simulation_config = json.load(json_file)
-
-    deployer_agent = self.personas[simulation_config["main_agent"]]
-
-    for agentInfo in simulation_config["pepe_agents"]:
-      if agentInfo["username"] == simulation_config["main_agent"]:
-        continue
-      
-      # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
-      availableSui = deployer_agent.getSuiBalanceForAddressOnChain(agentInfo["address"])
-      if (availableSui < min_amount):
-        color_print(f"Agent {agentInfo['username']} has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
-        deployer_agent.transferSuiOnChain( agentInfo["address"], transfer_amount)
-        time.sleep(1)
-
-
+  ##################################################################################################
 
   """
   Transfer HIVE tokens to all AI agents which currently have less than amount HIVE balance in their HiveProfile
@@ -250,29 +293,32 @@ class DegenHiveAiAgents:
     HIVE_TOKEN_TYPE = f"{simulation_config["configuration"]["HIVE_PACKAGE"]}::hive::HIVE"
 
     deployer_agent = self.personas[simulation_config["main_agent"]]
+    print(f"Deployer Agent: {deployer_agent.scratch.address}")
 
-    for agentInfo in simulation_config["persona_accounts"][1:]:
-      
-      if agentInfo["username"] == simulation_config["main_agent"]:
+    for username in self.persona_names:
+      if username == simulation_config["main_agent"]:
         continue
       
       # Update user's HiveChronicle state
-      user_agent = self.personas[agentInfo["username"]]
+      user_agent = self.personas[username]
       user_agent.handle_profile_state_update(simulation_config["configuration"])
       hiveChronicleInfo = user_agent.scratch.get_hiveChronicleState()
 
-      color_print(f"\nAgent: {agentInfo['username']} | Address: {agentInfo['address']} | HIVE in profile = {round(int(hiveChronicleInfo["total_hive_gems"])/1e6, 2)}", GREEN)
+      color_print(f"\nAgent: {username} | Address: {user_agent.scratch.address} HIVE in profile = {round(int(hiveChronicleInfo["total_hive_gems"])/1e6, 2)}", GREEN)
       # continue
+
+      # deployer_agent.transferTokens( HIVE_TOKEN_TYPE, user_agent.scratch.address, int(transfer_amount))
+      # user_agent.depositHiveGemsToProfileOnChain( simulation_config["configuration"], HIVE_TOKEN_TYPE, deposit_amount)
 
       # Check if the agent has atleast min_amount HIVE balance, and if not transfer transfer_amount HIVE tokens.
       if min_hive_in_profile > int(hiveChronicleInfo["total_hive_gems"]):
         color_print(f" Transferring {round(transfer_amount / 1e6, 2)} HIVE tokens...", GREEN)
-        deployer_agent.transferTokens( HIVE_TOKEN_TYPE, agentInfo["address"], int(transfer_amount))
+        deployer_agent.transferTokens( HIVE_TOKEN_TYPE, user_agent.scratch.address, int(transfer_amount))
         time.sleep(1)
 
       if deposit_amount > int(hiveChronicleInfo["total_hive_gems"]):  
         color_print(f"Depositing {round(deposit_amount / 1e6, 2)} HIVE tokens...", GREEN)
-        user_agent.depositHiveGemsToProfileOnChain( simulation_config["configuration"], HIVE_TOKEN_TYPE, deposit_amount * 10)
+        user_agent.depositHiveGemsToProfileOnChain( simulation_config["configuration"], HIVE_TOKEN_TYPE, deposit_amount)
         time.sleep(1)    
         user_agent.handle_profile_state_update(simulation_config["configuration"])
 
@@ -447,7 +493,7 @@ class DegenHiveAiAgents:
   #       #   # prompt.
   #       #   # Example: print persona schedule Isabella Rodriguez
   #       #   ret_str += (self.personas[" ".join(sim_command.split()[-2:])]
-  #       #               .scratch.get_str_daily_schedule_summary())
+  #       #               .scratch.get_daily_schedule_summary())
 
   #       # elif ("print all persona schedule" 
   #       #       in sim_command[:26].lower()): 
@@ -455,7 +501,7 @@ class DegenHiveAiAgents:
   #       #   # Example: print all persona schedule
   #       #   for persona_name, persona in self.personas.items(): 
   #       #     ret_str += f"{persona_name}\n"
-  #       #     ret_str += f"{persona.scratch.get_str_daily_schedule_summary()}\n"
+  #       #     ret_str += f"{persona.scratch.get_daily_schedule_summary()}\n"
   #       #     ret_str += f"---\n"
 
   #       # elif ("print persona associative memory (event)" 
@@ -533,21 +579,22 @@ if __name__ == '__main__':
   ai_agents_simulation = DegenHiveAiAgents(SUI_RPC)
 
   
-  min_hive_bal = 50 * 1e6
-  transfer_hive_bal = 100 * 1e6
-
-  ai_agents_simulation.initialize_ai_agents(SUI_RPC, True)
-
-  sui_to_transfer = 1.5 * 1e9
-  min_sui_bal = 1 * 1e9
-  ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
 
 
-  # ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
+  # ai_agents_simulation.initialize_ai_agents(SUI_RPC, True)
+
+  # sui_to_transfer = 1.5 * 1e9
+  # min_sui_bal = 0.5 * 1e9
+  # ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
+
+  # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
+
+  min_hive_bal = 500 * 1e6
+  transfer_hive_bal = 1000 * 1e6
+  ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
 
   # ai_agents_simulation.activate_ai_agents_swarm()
 
-  # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
   
 
 

@@ -62,7 +62,26 @@ def makePersonasPrompt(type, count):
                                    
                       
 
+def makeFetchBioPrompt(type, username, age, personality, meme_expertise, o_acc_commitment, daily_behavior):
+     simul_prompt = f"Below we have provided the username, age, personality, meme expertise, o/acc commitment, native country, and daily behavior for {type} character. Your task is to provide a fun and engaging bio for this character that reflects their unique traits and characteristics. \
+                              The bio will be used on DegenHive platform and is similar to how a user would describe themselves in a social media profile (instagram / twitter etc) It should capture the essence of the character and make them stand out in the DegenHive community. \
+                              Remember to incorporate elements of humor, playfulness, and creativity via emojis in the bio to make it engaging and entertaining for users. \
+                              Username: {username} \
+                              Age: {age} \
+                              Personality: {personality} \
+                              Meme Expertise: {meme_expertise} \
+                              o/acc Commitment: {o_acc_commitment} \
+                              Daily Behavior: {daily_behavior} \
+                              Your bio should end with (o/acc) to signify the character's commitment to open sourced AI innovation and collaboration and should not be too long. Return only the bio and nothing else."
+
+
+     # final_prompt = add_example_to_chatGPT( simul_prompt, f"prompt_template/degenhive_prompts/{type}_personas.txt")
+     return simul_prompt
+                                   
+                      
+
                             
+                             
  
 
 

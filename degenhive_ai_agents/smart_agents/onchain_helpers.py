@@ -136,7 +136,7 @@ class TimeStreamUserInfo(canoser.Struct):
         ('sui_bidded', canoser.Uint64),
         ('buzz_cost_in_hive', canoser.Uint64),
         ('access_type', canoser.Uint8),
-        # ('collection_name', str),
+        ('collection_name', str),
         ('user_total_points', canoser.Uint64),
         ('hive_earned', canoser.Uint64),
         ('bees_earned', canoser.Uint64),
@@ -361,7 +361,7 @@ def transferSui(rpc_url, private_key_hex_string, recipient_address, amount):
     txBlock = SyncTransaction(client=suiClient)
 
 
-    spendableSui, use_gas_object = getSpendableSui(suiClient, txBlock, amount)
+    spendableSui, use_gas_object = getSpendableSui(suiClient, txBlock, int(amount))
     txBlock.transfer_objects(recipient=SuiAddress(recipient_address), transfers=[spendableSui] )
 
     simulation_response, txBlock = simulate_tx(txBlock)
@@ -951,7 +951,7 @@ def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_c
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
         txBlock = SyncTransaction(client=suiClient)
         txBlock.move_call(
-            target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_points_for_profile",
+            target=f"{protocol_config["HIVE_PACKAGE"]}::hive::get_state_for_profile",
             arguments=[    ObjectID(protocol_config["HIVE_VAULT"]),
                             SuiAddress(user_profile),
                 ],
@@ -964,14 +964,13 @@ def getTimeStreamStateForProfileInfo(rpc_url, private_key_hex_string, protocol_c
                                                 + simulation_json["results"][0]["returnValues"][4][0] + simulation_json["results"][0]["returnValues"][5][0]
                                                     + simulation_json["results"][0]["returnValues"][6][0] + simulation_json["results"][0]["returnValues"][7][0]
                                                     + simulation_json["results"][0]["returnValues"][8][0] + simulation_json["results"][0]["returnValues"][9][0]
-                                                    + simulation_json["results"][0]["returnValues"][10][0] # + simulation_json["results"][0]["returnValues"][11][0]
+                                                    + simulation_json["results"][0]["returnValues"][10][0]  + simulation_json["results"][0]["returnValues"][11][0]
                                                 ) 
         return json.loads(time_stream_state_info.to_json())
     except Exception as e:
         color_print(f"onchain_helpers/getTimeStreamStateForProfileInfo: Error -  {e}", RED)
         return None
-    
-
+     
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------

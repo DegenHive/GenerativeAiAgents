@@ -56,13 +56,13 @@ class Persona:
     Transfer tokens to another address. 
     """
   def transferTokens(self, type_, to_address, amount):
-    userAddress = self.scratch.get_str_address()
+    userAddress = self.scratch.get_address()
     return transferTokens(self.rpc_url, self.private_key, type_, userAddress, to_address, amount)
 
 
 
   def depositHiveGemsToProfileOnChain(self, protocol_config, type_, amount):
-    userAddress = self.scratch.get_str_address()
+    userAddress = self.scratch.get_address()
     profileID = self.scratch.get_hiveProfileID()
     return depositHiveInProfile(self.rpc_url, self.private_key, protocol_config, type_, userAddress, profileID, amount)
 
@@ -76,8 +76,8 @@ class Persona:
     if profileID and profileID != "0x0000000000000000000000000000000000000000000000000000000000000000":
       hiveChronicleState = getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, profileID)
       timeStreamState = getTimeStreamStateForProfileInfo(self.rpc_url, self.private_key, protocol_config, profileID)
-      # print(hiveChronicleState)
-      # print(timeStreamState)
+      print(hiveChronicleState)
+      print(timeStreamState)
       is_updated = 0
 
       if hiveChronicleState and "active_epoch" in hiveChronicleState:
@@ -100,7 +100,7 @@ class Persona:
   This function is called when the persona perceives a stream. 
   """
   def handle_new_stream_buzz_on_feed(self, protocol_config, type_, index, inner_index, buzzInfo ):
-    color_print(f"\nHandling New Buzz on Feed for {self.name}... | Address: {self.scratch.get_str_address()} \n", YELLOW)
+    color_print(f"\nHandling New Buzz on Feed for {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
     print(buzzInfo)
     profileID = self.scratch.get_hiveProfileID()
     last_buzz_interacted_with = self.scratch.get_last_interacted_buzz(type_)
@@ -140,7 +140,7 @@ class Persona:
   """
   def kraftHiveProfileForAgent(self, protocol_config):
     profileID = self.scratch.get_hiveProfileID()
-    address = self.scratch.get_str_address()
+    address = self.scratch.get_address()
 
     if not profileID or profileID == "0x0000000000000000000000000000000000000000000000000000000000000000":
       profileId = getHiveProfileIdForUser(self.rpc_url, self.private_key, protocol_config, address)
@@ -151,8 +151,8 @@ class Persona:
           self.scratch.save()
           return profileId
       else:
-        color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
-        response, profileId =  kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.scratch.get_str_address(), self.name, self.scratch.get_bio() )        
+        color_print(f"\nKrafting Hive Profile for {self.name}... | Address: {self.scratch.get_address()} \n", GREEN)
+        response, profileId =  kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.scratch.get_address(), self.name, self.scratch.get_bio() )        
         color_print(f"\nProfile ID: {profileId} \n", GREEN)
         if response:
           self.scratch.set_hiveProfileID(profileId)
@@ -177,7 +177,7 @@ class Persona:
   Increment GLobal BEE FARM EPOCH FOR HIVE CHRONICLE
   """
   def increment_global_bee_farm_epoch(self, protocol_config):
-    color_print(f"\nIncrementing Bee Farm Epoch via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+    color_print(f"\nIncrementing Bee Farm Epoch via {self.name}... | Address: {self.scratch.get_address()} \n", GREEN)
     return increment_bee_farm_epoch(self.rpc_url, self.private_key, protocol_config)
   
     
@@ -185,7 +185,7 @@ class Persona:
   Increment GLobal TIME-STREAM ( PART 1)
   """
   def increment_timeStream_part_1(self, protocol_config, prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile):
-    color_print(f"\nIncrementing Time-Stream (part 1) via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+    color_print(f"\nIncrementing Time-Stream (part 1) via {self.name}... | Address: {self.scratch.get_address()} \n", GREEN)
     return increment_timeStream_part_1(self.rpc_url, self.private_key, protocol_config, prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile)
     
 
@@ -193,7 +193,7 @@ class Persona:
   Increment GLobal TIME-STREAM ( PART 2)
   """
   def increment_timeStream_part_2(self, protocol_config, new_streamer_rank1, new_streamer_rank2, new_streamer_rank3):
-    color_print(f"\nIncrementing Time-Stream (part 1) via {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+    color_print(f"\nIncrementing Time-Stream (part 1) via {self.name}... | Address: {self.scratch.get_address()} \n", GREEN)
     return increment_timeStream_part_2(self.rpc_url, self.private_key, protocol_config, new_streamer_rank1, new_streamer_rank2, new_streamer_rank3)
 
 
@@ -207,7 +207,7 @@ class Persona:
     if for_address:
       return getSuiBalanceForAddress(self.rpc_url, self.private_key, for_address)
     else:
-      return getSuiBalanceForAddress(self.rpc_url, self.private_key, self.scratch.get_str_address())
+      return getSuiBalanceForAddress(self.rpc_url, self.private_key, self.scratch.get_address())
 
 
 
@@ -225,7 +225,7 @@ class Persona:
   async def likeTimeStream(self, protocol_config):
     profileID = self.scratch.get_hiveProfileID()
     if not profileID or profileID == "":
-      color_print(f"\nLiking Time-Stream Buzz for {self.name}... | Address: {self.scratch.get_str_address()} \n", GREEN)
+      color_print(f"\nLiking Time-Stream Buzz for {self.name}... | Address: {self.scratch.get_address()} \n", GREEN)
       await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
   
     

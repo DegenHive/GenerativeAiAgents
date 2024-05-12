@@ -407,7 +407,7 @@ def generate_new_decomp_schedule(persona, inserted_act, inserted_act_dur,  start
 def revise_identity(persona): 
   p_name = persona.scratch.name
 
-  focal_points = [f"{p_name}'s plan for {persona.scratch.get_str_curr_date_str()}.",
+  focal_points = [f"{p_name}'s plan for {persona.scratch.get_curr_date_str()}.",
                   f"Important recent events for {p_name}'s life."]
   retrieved = new_retrieve(persona, focal_points)
 
@@ -446,7 +446,7 @@ def revise_identity(persona):
 
   persona.scratch.currently = new_currently
 
-  daily_req_prompt = persona.scratch.get_str_iss() + "\n"
+  daily_req_prompt = persona.scratch.get_iss() + "\n"
   daily_req_prompt += f"Today is {persona.scratch.curr_time.strftime('%A %B %d')}. Here is {persona.scratch.name}'s plan today in broad-strokes (with the time of the day. e.g., have a lunch at 12:00 pm, watch TV from 7 to 8 pm).\n\n"
   daily_req_prompt += f"Follow this format (the list should have 4~6 items but no more):\n"
   daily_req_prompt += f"1. wake up and complete the morning routine at <time>, 2. ..."
