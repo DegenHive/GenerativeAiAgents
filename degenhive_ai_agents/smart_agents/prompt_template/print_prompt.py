@@ -8,7 +8,7 @@ import sys
 sys.path.append('../')
 
 from global_methods import *
-from persona.prompt_template.gpt_structure import *
+from prompt_template.gpt_structure import *
 from utils import *
 
 ##############################################################################

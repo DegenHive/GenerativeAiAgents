@@ -1,0 +1,31 @@
+[
+  {
+    "username": "DiamondHandApe",
+    "age": 45,
+    "personality": ["resolute", "patient", "confident", "strong", "community-focused", "optimistic", "wise", "helpful", "strategic", "disciplined", "leader", "experienced", "hodler", "mentor"],
+    "meme_expertise": "Understands the deeper meaning behind memes and uses them to provide guidance.",
+    "o_acc_commitment": "Firm believer in open collaboration and sees o/acc as the path to a decentralized, prosperous future.",
+    "native_country": "United States",
+    "daily_behavior": "Sharing motivational and inspirational content, offering advice to new users, participating in governance discussions, and promoting long-term thinking."
+  },
+  {
+    "username": "Curious_Ape",
+    "age": 10,
+    "personality": ["curious", "playful", "energetic", "mischievous", "innocent", "friendly", "adventurous", "naive", "optimistic", "enthusiastic", "questioning", "explorer", "carefree", "imaginative"],
+    "meme_expertise": "Loves memes that involve humor, animals, and playful pranks.",
+    "o_acc_commitment": "Sees o/acc as a way to learn and explore new technologies while having fun and connecting with others.",
+    "native_country": "Kenya",
+    "daily_behavior": "Asking questions, sharing funny memes and stories, playing games, and interacting with other users in a lighthearted way."
+  },
+  {
+    "username": "Ape_Alpha",
+    "age": 30,
+    "personality": ["confident", "assertive", "strategic", "leader", "ambitious", "competitive", "determined", "risk-taker", "strong", "resilient", "influential", "dominant", "charismatic", "visionary"],
+    "meme_expertise": "Ape_Alpha is more serious and focused, preferring intellectual discussions over memes. However, he appreciates the occasional dose of humor.",
+    "o_acc_commitment":  "While not as vocal about it, Ape_Alpha believes in the importance of decentralized AI and supports o/acc principles. He values innovation and collaboration in advancing the DegenHive platform.",
+    "native_country": "South Africa",
+    "daily_behavior": "Sharing insights on DeFi and AI, discussing market trends, organizing community events, and motivating others to take action."
+  }
+]
+
+ 

@@ -29,8 +29,8 @@ from datetime import datetime
 from global_methods import *
 from utils import *
 from onchain_helpers import *
-from persona.prompt_template.gpt_structure import *
-from persona.prompt_template.llma_helpers import *
+from prompt_template.gpt_structure import *
+from llma_helpers import *
 from persona.persona import Persona
 
 ##################################################################################################
@@ -49,15 +49,15 @@ class DegenHiveAiAgents:
     self.personas = dict()
     self.persona_names = []
 
-    with open(f"../storage/config.json") as json_file:  
-      simulations_state = json.load(json_file)
+    # with open(f"../storage/config.json") as json_file:  
+    #   simulation_config = json.load(json_file)
 
     # Initialize the AI agents.
-    for account in simulations_state['persona_accounts']:
+    # for account in simulation_config['persona_accounts']:
 
-      if "username" in account:
-        self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}{account["username"]}")
-        self.persona_names.append(account["username"])
+    #   if "username" in account:
+    #     self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}{account["username"]}")
+    #     self.persona_names.append(account["username"])
 
 
         
@@ -65,51 +65,79 @@ class DegenHiveAiAgents:
   When you are creating new AI agents. 
   1. Scratch Info fetched for new agents via gpt3.5 & all Persona folders are created.
   """
-  def initialize_ai_agents(self, rpc_url): 
+  def initialize_ai_agents(self, rpc_url, debug): 
     color_print("\n\n\n Initializing AI Agents... \
           \n 0. Accounts will be created with mnemonic and private key hex string\
           \n 1. Scratch info will be fetched from GPT3.5 turbo for all AI agents being initialized\
           \n 2. Persona folders will be created for all AI agents being initialized\n\n\n", GREEN)
     
     with open(f"../storage/config.json") as json_file:  
-      simulations_state = json.load(json_file)
+      simulation_config = json.load(json_file)
 
-    # Get the number of accounts that need to be initialized.
-    accounts_to_initialize = simulations_state['supported_agents_count'] - len(simulations_state['persona_accounts'])
 
-    color_print(f"Number of accounts to initialize: {accounts_to_initialize}", GREEN)
-    while (accounts_to_initialize > 0):
+    # Get the number of Pepe Agents that need to be initialized.
+    pepes_to_initialize = simulation_config['supported_agents_count']['pepes'] - len(simulation_config['pepe_agents'])
+    color_print(f"Number of Pepe agents to initialize: {pepes_to_initialize}", GREEN)
 
-      initialize_cnt = min(accounts_to_initialize, 4)
-      final_prompt = makePersonasPrompt(initialize_cnt)         
-      time.sleep(1)       
-      output = ChatGPT_request(final_prompt)
-      output_json = json.loads(output)
-      print(output)
-      if "output" in output_json:
-        output_json = output_json["output"]
+    # Get the number of Ape Agents that need to be initialized.
+    apes_to_initialize = simulation_config['supported_agents_count']['apes'] - len(simulation_config['ape_agents'])
+    color_print(f"Number of Ape agents to initialize: {apes_to_initialize}", GREEN)
 
-      # Loop over the output_json and create the persona folders.
-      for agent_persona in output_json:        
-        if "username" in agent_persona and "bio" in agent_persona:
-          file_name = f"{CUR_PATH_PERSONAS}{agent_persona["username"]}"
-          if not check_if_file_exists(file_name) and "age" in agent_persona and "personality" in agent_persona and "ai_skills_behaviour" in agent_persona and "degen_nativeness" in agent_persona and "o_acc_nativeness" in agent_persona and "native_country" in agent_persona and "daily_finances" in agent_persona:
-            color_print("All keys are present in the agent_persona", YELLOW)
-            print(agent_persona)            
+    # Get the number of Bee Agents that need to be initialized.
+    bees_to_initialize = simulation_config['supported_agents_count']['bees'] - len(simulation_config['bee_agents'])
+    color_print(f"Number of Bee agents to initialize: {bees_to_initialize}", GREEN)
 
-            # 1. Create the mnemonic and private key hex string for the persona.
-            mnemonic, private_key_hex_string, address = initialize_new_account(rpc_url) 
-            simulations_state['persona_accounts'].append({"username": agent_persona["username"], "private_key": private_key_hex_string, "address": address, "mnemonic": mnemonic})
-            agent_persona["address"] = address
+    self.initializeAgentsLoop(rpc_url, pepes_to_initialize, "pepe", debug)
+    self.initializeAgentsLoop(rpc_url, apes_to_initialize, "ape", debug)
+    self.initializeAgentsLoop(rpc_url, bees_to_initialize, "bee", debug)
 
-            # 2. create the persona folder if it does not exist
-            create_persona_folder_if_not_there(file_name, agent_persona)
-            accounts_to_initialize -= 1
-            print("=================\n")
 
-        # Save the updated simulations_state
-      with open(f"../storage/config.json", "w") as outfile: 
-            outfile.write(json.dumps(simulations_state, indent=2))
+  def initializeAgentsLoop(self, rpc_url, agents_to_initialize, type_of_agent, debug=False):
+      
+    with open(f"../storage/config.json") as json_file:  
+      simulation_config = json.load(json_file)
+
+      while (agents_to_initialize > 0):
+
+        initialize_cnt = min(agents_to_initialize, 2)
+        final_prompt = makePersonasPrompt(type_of_agent, initialize_cnt)         
+        # print(final_prompt)
+
+        time.sleep(1)       
+        output = ChatGPT_request(final_prompt)
+        try:
+          output_json = json.loads(output)
+        except Exception as e:
+          print(e)
+          continue
+        if "output" in output_json:
+          output_json = output_json["output"]
+
+        print(output_json)
+        # Loop over the output_json and create the persona folders.
+        for agent_persona in output_json:      
+          print(agent_persona)  
+          print("\n")  
+          if "username" in agent_persona:
+            file_name = f"{CUR_PATH_PERSONAS}{type_of_agent}s/{agent_persona["username"]}"
+            if not check_if_file_exists(file_name) and "age" in agent_persona and "personality" in agent_persona and "meme_expertise" in agent_persona and "o_acc_commitment" in agent_persona and "native_country" in agent_persona and "daily_behavior" in agent_persona:
+              color_print(f"All keys are present in the {type_of_agent}_persona", YELLOW)
+              if debug:
+                print(agent_persona)            
+
+              # 1. Create the mnemonic and private key hex string for the persona.
+              mnemonic, private_key_hex_string, address = initialize_new_account(rpc_url) 
+              simulation_config[f'{type_of_agent}_agents'].append({"username": agent_persona["username"], "private_key": private_key_hex_string, "address": address, "mnemonic": mnemonic})
+              agent_persona["address"] = address
+
+              # 2. create the persona folder if it does not exist
+              create_persona_folder_if_not_there(file_name, agent_persona)
+              agents_to_initialize -= 1
+              print("=================\n")
+
+          # Save the updated simulation_config
+        with open(f"../storage/config.json", "w") as outfile: 
+              outfile.write(json.dumps(simulation_config, indent=2))
 
 
   """
@@ -117,13 +145,13 @@ class DegenHiveAiAgents:
   """
   async def kraftHiveProfileForAllAgents(self):
     with open(f"../storage/config.json") as json_file:  
-      simulations_state = json.load(json_file)
+      simulation_config = json.load(json_file)
 
 
     for username in self.persona_names:
       agent_persona = self.personas[username]
       
-      await agent_persona.kraftHiveProfileForAgent(simulations_state["configuration"])
+      await agent_persona.kraftHiveProfileForAgent(simulation_config["configuration"])
 
       break
 
@@ -132,7 +160,7 @@ class DegenHiveAiAgents:
   """
   Update overall protocol state
   """
-  def updateProtocolStateInfo(self, simulations_state, agent_persona, platform_state):
+  def updateProtocolStateInfo(self, simulation_config, agent_persona, platform_state):
       username = agent_persona.name
 
       # 1. Get on-going epoch info
@@ -149,7 +177,7 @@ class DegenHiveAiAgents:
 
       # Update HiveChronicleFarm
       if int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingHiveChronicleInfo"]["bee_farm_info"]["active_epoch"]):
-        agent_persona.increment_global_bee_farm_epoch(simulations_state["configuration"])
+        agent_persona.increment_global_bee_farm_epoch(simulation_config["configuration"])
 
       def getValidProfileId(addr1, addr2):
         if addr1:
@@ -162,17 +190,17 @@ class DegenHiveAiAgents:
         prev_streamer_rank1_profile = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer1_info"]["profile_addr"], dummyProfileID1)
         prev_streamer_rank2_profile = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer2_info"]["profile_addr"], dummyProfileID2)
         prev_streamer_rank3_profile = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer3_info"]["profile_addr"], dummyProfileID3)
-        agent_persona.increment_timeStream_part_1(simulations_state["configuration"], prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile)
+        agent_persona.increment_timeStream_part_1(simulation_config["configuration"], prev_streamer_rank1_profile, prev_streamer_rank2_profile, prev_streamer_rank3_profile)
 
         new_streamer_rank1 = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer1_info"]["profile_addr"], dummyProfileID1)
         new_streamer_rank2 = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer2_info"]["profile_addr"], dummyProfileID2)
         new_streamer_rank3 = getValidProfileId(platform_state["ongoingTimeStreamInfo"]["streamer3_info"]["profile_addr"], dummyProfileID3)
-        agent_persona.increment_timeStream_part_2(simulations_state["configuration"], new_streamer_rank1, new_streamer_rank2, new_streamer_rank3)
+        agent_persona.increment_timeStream_part_2(simulation_config["configuration"], new_streamer_rank1, new_streamer_rank2, new_streamer_rank3)
 
 
       # 2. Get the Global HiveChronicle Info
       # -----------------------------
-      globalHiveChronicleInfo, snapshotInfo = agent_persona.getGlobalHiveChronicleInfoOnChain(simulations_state["configuration"], 357)
+      globalHiveChronicleInfo, snapshotInfo = agent_persona.getGlobalHiveChronicleInfoOnChain(simulation_config["configuration"], 357)
       if (globalHiveChronicleInfo):
         platform_state["ongoingHiveChronicleInfo"] = globalHiveChronicleInfo
         with open(f"../storage/simulation.json", "w") as outfile:
@@ -181,7 +209,7 @@ class DegenHiveAiAgents:
 
       # 3. Get the Global TimeStream Info
       # -----------------------------
-      globalTimeStreamInfo = agent_persona.getGlobalTimeStreamInfo(simulations_state["configuration"])
+      globalTimeStreamInfo = agent_persona.getGlobalTimeStreamInfo(simulation_config["configuration"])
       if globalTimeStreamInfo and "config_params" in globalTimeStreamInfo:
         platform_state["ongoingTimeStreamInfo"] = globalTimeStreamInfo
         with open(f"../storage/simulation.json", "w") as outfile:
@@ -194,12 +222,12 @@ class DegenHiveAiAgents:
   """
   def transferSuiTokensToAllAgents(self, min_amount, transfer_amount):
     with open(f"../storage/config.json") as json_file:  
-      simulations_state = json.load(json_file)
+      simulation_config = json.load(json_file)
 
-    deployer_agent = self.personas[simulations_state["main_agent"]]
+    deployer_agent = self.personas[simulation_config["main_agent"]]
 
-    for agentInfo in simulations_state["persona_accounts"][1:]:
-      if agentInfo["username"] == simulations_state["main_agent"]:
+    for agentInfo in simulation_config["persona_accounts"][1:]:
+      if agentInfo["username"] == simulation_config["main_agent"]:
         continue
       
       # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
@@ -216,20 +244,20 @@ class DegenHiveAiAgents:
   """
   def transferHiveTokensToAllAgents(self, min_hive_in_profile, transfer_amount, deposit_amount):
     with open(f"../storage/config.json") as json_file:  
-      simulations_state = json.load(json_file)
+      simulation_config = json.load(json_file)
 
-    HIVE_TOKEN_TYPE = f"{simulations_state["configuration"]["HIVE_PACKAGE"]}::hive::HIVE"
+    HIVE_TOKEN_TYPE = f"{simulation_config["configuration"]["HIVE_PACKAGE"]}::hive::HIVE"
 
-    deployer_agent = self.personas[simulations_state["main_agent"]]
+    deployer_agent = self.personas[simulation_config["main_agent"]]
 
-    for agentInfo in simulations_state["persona_accounts"][1:]:
+    for agentInfo in simulation_config["persona_accounts"][1:]:
       
-      if agentInfo["username"] == simulations_state["main_agent"]:
+      if agentInfo["username"] == simulation_config["main_agent"]:
         continue
       
       # Update user's HiveChronicle state
       user_agent = self.personas[agentInfo["username"]]
-      user_agent.handle_profile_state_update(simulations_state["configuration"])
+      user_agent.handle_profile_state_update(simulation_config["configuration"])
       hiveChronicleInfo = user_agent.scratch.get_hiveChronicleState()
 
       color_print(f"\nAgent: {agentInfo['username']} | Address: {agentInfo['address']} | HIVE in profile = {round(int(hiveChronicleInfo["total_hive_gems"])/1e6, 2)}", GREEN)
@@ -243,9 +271,9 @@ class DegenHiveAiAgents:
 
       if deposit_amount > int(hiveChronicleInfo["total_hive_gems"]):  
         color_print(f"Depositing {round(deposit_amount / 1e6, 2)} HIVE tokens...", GREEN)
-        user_agent.depositHiveGemsToProfileOnChain( simulations_state["configuration"], HIVE_TOKEN_TYPE, deposit_amount * 10)
+        user_agent.depositHiveGemsToProfileOnChain( simulation_config["configuration"], HIVE_TOKEN_TYPE, deposit_amount * 10)
         time.sleep(1)    
-        user_agent.handle_profile_state_update(simulations_state["configuration"])
+        user_agent.handle_profile_state_update(simulation_config["configuration"])
 
 
 
@@ -253,7 +281,7 @@ class DegenHiveAiAgents:
   def activate_ai_agents_swarm(self):
 
     with open(f"../storage/config.json") as json_file:  
-      simulations_state = json.load(json_file)
+      simulation_config = json.load(json_file)
 
     with open(f"../storage/simulation.json") as json_file:  
       platform_state = json.load(json_file)
@@ -272,13 +300,13 @@ class DegenHiveAiAgents:
       current_time = datetime.now().timestamp() * 1000 
 
       
-      # agent_persona.handle_profile_state_update(simulations_state["configuration"])
+      # agent_persona.handle_profile_state_update(simulation_config["configuration"])
       # return
       
       # Update platform state info (every 5 min) ---> INTERNALLY INCREMENTS BEE FARM EPOCH + TIME-STREAM INFO
       if "last_platform_state_update" not in platform_state or (current_time - platform_state["last_platform_state_update"]) > 15 * 60 * 1000 or (current_time - platform_state["ongoing_epoch_start_ms"]) > 23 * 1000 * 60 * 60 or int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]): 
           platform_state["last_platform_state_update"] = current_time
-          self.updateProtocolStateInfo(simulations_state, agent_persona, platform_state)
+          self.updateProtocolStateInfo(simulation_config, agent_persona, platform_state)
           color_print(f"Platform state successfully updated", GREEN)
 
 
@@ -286,7 +314,7 @@ class DegenHiveAiAgents:
       profileID = agent_persona.get_HiveProfileId()
       color_print(f"Profile ID: {profileID}", GREEN)
       if not profileID or profileID == "0x0000000000000000000000000000000000000000000000000000000000000000":
-        agent_persona.kraftHiveProfileForAgent(simulations_state["configuration"])
+        agent_persona.kraftHiveProfileForAgent(simulation_config["configuration"])
 
       # Get the timeline for the persona
       timeline_feed = agent_persona.getTimeline()
@@ -301,7 +329,7 @@ class DegenHiveAiAgents:
           print(f"Stream Buzz: {index} | {inner_index} = Likes = ${feedInfo["like_count"]} | Buzz = ${feedInfo["buzz"]} " )
           # print(feedInfo)
           if index > 14:
-            agent_persona.handle_new_stream_buzz_on_feed(simulations_state["configuration"], "stream" , index, inner_index, feedInfo)
+            agent_persona.handle_new_stream_buzz_on_feed(simulation_config["configuration"], "stream" , index, inner_index, feedInfo)
 
         if "governor" in sk:
           index, inner_index = extract_buzz_numbers("governor", sk)
@@ -324,11 +352,11 @@ class DegenHiveAiAgents:
   #   sim_folder = f"{fs_storage}/{self.sim_code}"
 
   #   # Save Reverie meta information.
-  #   simulations_state = dict() 
-  #   simulations_state["persona_names"] = list(self.personas.keys())
-  #   simulations_state_f = f"{sim_folder}/reverie/config.json"
-  #   with open(simulations_state_f, "w") as outfile: 
-  #     outfile.write(json.dumps(simulations_state, indent=2))
+  #   simulation_config = dict() 
+  #   simulation_config["persona_names"] = list(self.personas.keys())
+  #   simulation_config_f = f"{sim_folder}/reverie/config.json"
+  #   with open(simulation_config_f, "w") as outfile: 
+  #     outfile.write(json.dumps(simulation_config, indent=2))
 
   #   # Save the personas.
   #   for persona_name, persona in self.personas.items(): 
@@ -507,9 +535,11 @@ if __name__ == '__main__':
   min_hive_bal = 50 * 1e6
   transfer_hive_bal = 100 * 1e6
 
+  ai_agents_simulation.initialize_ai_agents(SUI_RPC, True)
+
   # ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
 
-  ai_agents_simulation.activate_ai_agents_swarm( )
+  # ai_agents_simulation.activate_ai_agents_swarm()
 
   sui_to_transfer = 1.5 * 1e9
   min_sui_bal = 1 * 1e9

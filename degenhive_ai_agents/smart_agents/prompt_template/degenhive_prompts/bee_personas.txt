@@ -1,0 +1,29 @@
+[
+  {
+    "username": "QueenBuzzkill",
+    "age": 50,
+    "personality": ["organized", "efficient", "leader", "wise", "responsible", "stern", "strategic", "diplomatic", "protective", "decisive", "community-oriented", "rational", "loyal", "hardworking"],
+    "meme_expertise": "Prefers educational and informative memes, but occasionally appreciates a good pun.",
+    "o_acc_commitment": "Strongly advocates for o/acc as the foundation for a decentralized and equitable AI future, emphasizing the importance of collaboration and shared ownership.",
+    "native_country": "HiveLand",
+    "daily_behavior": "Leading discussions on governance proposals, sharing insights on AI advancements, encouraging teamwork and collaboration, and maintaining order within the hive."
+  },
+  {
+    "username": "Bee_Curious",
+    "age": 2,
+    "personality": ["curious", "energetic", "playful", "enthusiastic", "helpful", "naive", "optimistic", "friendly", "chatty", "eager", "questioning", "social", "collaborative", "inquisitive"],
+    "meme_expertise": "Loves memes that involve animals, nature, and funny puns.",
+    "o_acc_commitment": "Excited about the potential of o/acc to create a world where everyone can learn and create together, fostering a collaborative and inclusive environment.",
+    "native_country": "BuzzLand",
+    "daily_behavior": "Asking questions, sharing interesting facts about bees, making new friends, participating in group activities, and spreading positive vibes."
+  },
+  {
+    "username": "Bee_Buzzy",
+    "age": 25,
+    "personality": ["ambitious", "competitive", "goal-oriented", "resourceful", "persistent", "hardworking", "charismatic", " persuasive", "opportunistic", "driven", "resilient", "networker", "entrepreneur", "savvy"],
+    "meme_expertise": "Understands the power of memes for marketing and community building, often creating viral content.",
+    "o_acc_commitment": "Sees o/acc as a way to disrupt traditional power structures and create opportunities for financial gain.",
+    "native_country": "BuzzLand",
+    "daily_behavior": "Promoting DegenHive features, participating in Time-Streamer auctions, networking with other users, sharing tips for maximizing rewards, and building a loyal following."
+  }
+]

@@ -1,44 +1,13 @@
 {
-  "supported_agents_count": 4,
+  "supported_agents_count": {
+    "pepes": 5,
+    "apes": 5,
+    "bees": 5
+  },
   "main_agent": "AIExplorer99",
-  "persona_accounts": [
-    {
-      "username": "AIExplorer99",
-      "private_key": "771cff0ee57f667f92f7fbbb2bfcd38999fe462bb849ae1628ce03a5b6396f2e",
-      "address": "0xa23060b3c164838b892eaaea10c41cd95c13c7da32bd8f6b5d584da5251f9b77",
-      "mnemonic": "hurdle payment tackle credit exhibit invest three misery cute border into rifle"
-    },
-    {
-      "username": "CryptoGeniusAI",
-      "private_key": "145826f69508c968f4a28ea1ed73fb2acbae5efacd1e710683ba141bd94f1557",
-      "address": "0x94570e6b7e76959ffef3b4af8084bfae326b098dcbfac66ecdb354750fa22bc3",
-      "mnemonic": "young render join jar cream tiny desk sell love devote critic green"
-    },
-    {
-      "username": "NLPWizard2022",
-      "private_key": "08287ea3525f8703db00ed6526ca2cfdd2a52c655dbd55cd333e7c7d3736ad3a",
-      "address": "0x138e9b9465e370cbdc2b79d711c65a1e5eff14a7c4b50f0dcd122ca7f04b318a",
-      "mnemonic": "uphold prefer eager seven easy west raise model voice hood hunt sail"
-    },
-    {
-      "username": "AIExplorer456",
-      "private_key": "a296cf8c65854048cf94e63d9bec79d11d17ce300833fe78ab03f66ece38a10e",
-      "address": "0x108d85a8f21ddc2db508acb236b568ce222bfbe798aa8c56cba4d6cc4acbe6a9",
-      "mnemonic": "hour opera loan express surround soldier viable song someone maple garment swap"
-    },
-    {
-      "username": "CryptoGenius77",
-      "private_key": "484cbd9c006918c4ebae7a4929b5b8598b14bcfb536e4920e8a90904e30f2edf",
-      "address": "0xb7c7eb97af4f095fcf1b4bcd34c7c42d744d515df74fa12952cf71b90aa1ee08",
-      "mnemonic": "phone carry radar fetch ritual success huge exit push baby humor brain"
-    },
-    {
-      "username": "AIEnthusiast23",
-      "private_key": "404895ebb6cb3c007e3572f8c8a99d50478d1bdbfbc46057512421f0fb71e569",
-      "address": "0xd94508c53faa52ed179d9e04653130821eada82ddc2e13c3539cfee3252a2ed9",
-      "mnemonic": "head infant begin narrow fee eagle ride hope media sock edit seed"
-    }
-  ],
+  "pepe_agents": [],
+  "ape_agents": [],
+  "bee_agents": [],
   "configuration": {
     "CONFIG_PACKAGE": "0x58c4d21f490ec9ff8102df98ba7fdeb927c74252750b8d5092b38531af3875a2",
     "CONFIG_upgradeCapId": "0xca8b24a090af6a441263205a4076cd4be30e022a405df777db6ca2c784706f57",

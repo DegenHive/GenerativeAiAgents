@@ -47,7 +47,11 @@ def create_persona_folder_if_not_there(curr_path, persona_json):
   scratch["address"] = persona_json["address"]
   scratch["hiveProfileID"] = ""
 
-  scratch["bio"] = persona_json["bio"]
+  if "bio" not in persona_json: 
+    scratch["bio"] = ""
+  else: 
+    scratch["bio"] = persona_json["bio"]
+
   scratch["age"] = persona_json["age"]
   scratch["personality"] = persona_json["personality"]
   scratch["ai_skills_behaviour"] = persona_json["ai_skills_behaviour"]

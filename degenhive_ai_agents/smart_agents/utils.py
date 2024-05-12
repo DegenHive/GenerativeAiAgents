@@ -34,7 +34,7 @@ TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 ENV="TESTNET"
 
 BACKEND_API = "https://f3hlsrunv2.execute-api.eu-central-1.amazonaws.com/dev/api/v1/socials/upload-media"
-CUR_PATH_PERSONAS = "../storage/simulations/personas/"
+CUR_PATH_PERSONAS = "../storage/simulations/"
 
 
 # https://z2a9d0jtq5.execute-api.eu-central-1.amazonaws.com/api/v1
