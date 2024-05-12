@@ -54,9 +54,8 @@ def create_persona_folder_if_not_there(curr_path, persona_json):
 
   scratch["age"] = persona_json["age"]
   scratch["personality"] = persona_json["personality"]
-  scratch["ai_skills_behaviour"] = persona_json["ai_skills_behaviour"]
-  scratch["degen_nativeness"] = persona_json["degen_nativeness"]
-  scratch["o_acc_nativeness"] = persona_json["o_acc_nativeness"]
+  scratch["meme_expertise"] = persona_json["meme_expertise"]
+  scratch["o_acc_commitment"] = persona_json["o_acc_commitment"]
   scratch["native_country"] = persona_json["native_country"]
   scratch["daily_finances"] = ""
 

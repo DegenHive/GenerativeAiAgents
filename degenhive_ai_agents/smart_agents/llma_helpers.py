@@ -11,7 +11,7 @@ def makePersonasPrompt(type, count):
                               3. meme and Internet Culture Savvy: Reference popular memes and internet culture trends to make interactions relevant and entertaining. \
                               4. o/acc Advocacy: Promote the principles of o/acc and decentralized AI in conversations, highlighting the importance of collaboration and innovation. (sometimes by making jokes about how if not done, the world can become a dystopia)\
                               To facilitate the development of these Pepe characters, we need to define their unique traits and characteristics. Each Pepe character will be characterized by the following parameters: \
-                              1. username: Unique names inspired by Pepe memes and internet culture. These can have no spaces, and can use only '_' other than alphabets and numbers. Max length is 15 characters. \
+                              1. username: Unique names inspired by Pepe memes and internet culture. These can have no spaces, and can use only '_' other than alphabets and numbers. Maximum length of username is 11 characters. \
                               2. age: age of the Pepe character, influencing its behavior and interactions. \
                               3. personality: Defined by keywords such as playful, mischievous, expressive, etc., encapsulating a 14-keyword array to describe the nuances of each character's personality. \
                               4. meme Expertise: A brief overview of the character's knowledge of memes and internet culture, highlighting their proficiency and expertise. \
@@ -29,7 +29,7 @@ def makePersonasPrompt(type, count):
                               3. Social interactions: Monkeys are highly social animals that communicate through various vocalizations and gestures. Conversational agents can mimic this trait by engaging users in interactive conversations and group activities.\
                               4. Problem-solving skills: Monkeys are known for their problem-solving abilities and intelligence. Conversational agents can incorporate puzzles, riddles, and brain teasers to stimulate users' minds and provide entertaining challenges.\
                               To facilitate the development of these Ape characters, we need to define their unique traits and characteristics. Each Ape character will be characterized by the following parameters: \
-                              1. username: Unique names inspired by Ape memes and internet culture. These can have no spaces, and can use only '_' other than alphabets and numbers. Max length is 15 characters.\
+                              1. username: Unique names inspired by Ape memes and internet culture. These can have no spaces, and can use only '_' other than alphabets and numbers.  Maximum length of username is 11 characters\
                               2. age: age of the Ape character, influencing its behavior and interactions. \
                               3. personality: Defined by keywords such as playful, mischievous, expressive, etc., encapsulating a 14-keyword array to describe the nuances of each character's personality. \
                               4. meme Expertise: A brief overview of the character's knowledge of memes and internet culture, highlighting their proficiency and expertise. \
@@ -47,7 +47,7 @@ def makePersonasPrompt(type, count):
                               3. Efficiency and productivity: Bees are known for their efficiency and productivity in tasks such as pollination and honey production. Conversational agents can incorporate elements of gamification to encourage users to be productive and achieve goals within the platform.\
                               4. Adaptability and resilience: Bees are adaptable creatures that can thrive in diverse environments. Conversational agents can exhibit adaptability and resilience in their interactions, responding to user input and feedback to provide personalized experiences.\
                               To facilitate the development of these Bee characters, we need to define their unique traits and characteristics. Each Bee character will be characterized by the following parameters: \
-                              1. username: Unique names inspired by Bee memes and internet culture. These can have no spaces, and can use only '_' other than alphabets and numbers. Max length is 15 characters.\
+                              1. username: Unique names inspired by Bee memes and internet culture. These can have no spaces, and can use only '_' other than alphabets and numbers.  Maximum length of username is 11 characters\
                               2. age: age of the Bee character, influencing its behavior and interactions. \
                               3. personality: Defined by keywords such as playful, mischievous, expressive, etc., encapsulating a 14-keyword array to describe the nuances of each character's personality. \
                               4. meme Expertise: A brief overview of the character's knowledge of memes and internet culture, highlighting their proficiency and expertise. \

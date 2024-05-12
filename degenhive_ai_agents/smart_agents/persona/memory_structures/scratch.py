@@ -19,15 +19,14 @@ class Scratch:
     # THE CORE IDENTITY OF THE PERSONA 
     self.address = None
     self.hiveProfileID = None
-    self.daily_finances = None
+    self.daily_behavior = None
 
     self.username = None
     self.bio = None
     self.age = None
     self.personality = None
-    self.ai_skills_behaviour = None
-    self.currently = None
-    self.o_acc_nativeness = None
+    self.meme_expertise = None
+    self.o_acc_commitment = None
     self.native_country = None
 
     self.last_stream_interaction = None
@@ -72,15 +71,14 @@ class Scratch:
 
       self.address = scratch_load["address"]
       self.hiveProfileID = scratch_load["hiveProfileID"]
-      self.daily_finances = scratch_load["daily_finances"]
+      self.daily_behavior = scratch_load["daily_behavior"]
 
       self.username = scratch_load["username"]
       self.bio = scratch_load["bio"]
       self.age = scratch_load["age"]
       self.personality = scratch_load["personality"]
-      self.ai_skills_behaviour = scratch_load["ai_skills_behaviour"]
-      self.currently = scratch_load["degen_nativeness"]
-      self.o_acc_nativeness = scratch_load["o_acc_nativeness"]
+      self.meme_expertise = scratch_load["meme_expertise"]
+      self.currently = scratch_load["o_acc_commitment"]
       self.native_country = scratch_load["native_country"]
 
       self.last_stream_interaction = scratch_load.get("last_stream_interaction", None)
@@ -123,15 +121,14 @@ class Scratch:
 
     scratch["address"] = self.address
     scratch["hiveProfileID"] = self.hiveProfileID
-    scratch["daily_finances"] = self.daily_finances
+    scratch["daily_behavior"] = self.daily_behavior
 
     scratch["username"] = self.username
     scratch["bio"] = self.bio
     scratch["age"] = self.age
     scratch["personality"] = self.personality
-    scratch["ai_skills_behaviour"] = self.ai_skills_behaviour
-    scratch["degen_nativeness"] = self.currently
-    scratch["o_acc_nativeness"] = self.o_acc_nativeness
+    scratch["meme_expertise"] = self.meme_expertise
+    scratch["o_acc_commitment"] = self.currently
     scratch["native_country"] = self.native_country
 
     scratch["last_stream_interaction"] = self.last_stream_interaction
@@ -180,29 +177,12 @@ class Scratch:
     ISS stands for "identity stable set." This describes the commonset summary
     of this persona -- basically, the bare minimum description of the persona
     that gets used in almost all prompts that need to call on the persona. 
-
-    INPUT
-      None
-    OUTPUT
-      the identity stable set summary of the persona in a string form.
-    EXAMPLE STR OUTPUT
-      "Name: Dolores Heitmiller
-       Age: 28
-       personality traits: hard-edged, independent, loyal
-       ai_skills_behaviour traits: Dolores is a painter who wants live quietly and paint 
-         while enjoying her everyday life.
-       Currently: Dolores is preparing for her first solo show. She mostly 
-         works from home.
-       o_acc_nativeness: Dolores goes to bed around 11pm, sleeps for 7 hours, eats 
-         dinner around 6pm.
-       Daily plan requirement: Dolores is planning to stay at home all day and 
-         never go out."
     """
     commonset = ""
     commonset += f"Name: {self.username}\n"
     commonset += f"Address: {self.address}\n"
     commonset += f"HiveProfileID: {self.hiveProfileID}\n"
-    commonset += f"Daily Finances: {self.daily_finances}\n"
+    commonset += f"Daily Behaviour: {self.daily_behavior}\n"
     commonset += f"Bio: {self.bio}\n"
     commonset += f"last_stream_interaction: {self.last_stream_interaction}\n"
     commonset += f"last_dex_dao_interaction: {self.last_dex_dao_interaction}\n"
@@ -210,10 +190,7 @@ class Scratch:
     
     commonset += f"Age: {self.age}\n"
     commonset += f"personality traits: {self.personality}\n"
-    commonset += f"ai_skills_behaviour traits: {self.ai_skills_behaviour}\n"
-    commonset += f"Currently: {self.currently}\n"
-    commonset += f"o_acc_nativeness: {self.o_acc_nativeness}\n"
-    commonset += f"Daily plan requirement: {self.daily_finances}\n"
+    commonset += f"meme_expertise traits: {self.meme_expertise}\n"
 
 
     return commonset
@@ -283,20 +260,20 @@ class Scratch:
     return self.personality
 
 
-  def get_str_ai_skills_behaviour(self): 
-    return self.ai_skills_behaviour
+  def get_str_meme_expertise(self): 
+    return self.meme_expertise
 
 
   def get_str_currently(self): 
     return self.currently
 
 
-  def get_str_o_acc_nativeness(self): 
-    return self.o_acc_nativeness
+  def get_str_o_acc_commitment(self): 
+    return self.o_acc_commitment
 
 
-  def get_str_daily_finances(self): 
-    return self.daily_finances
+  def get_str_daily_behavior(self): 
+    return self.daily_behavior
 
 
 

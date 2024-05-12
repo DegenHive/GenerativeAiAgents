@@ -1,13 +1,772 @@
 {
   "supported_agents_count": {
-    "pepes": 5,
-    "apes": 5,
-    "bees": 5
+    "pepes": 42,
+    "apes": 42,
+    "bees": 42
   },
-  "main_agent": "AIExplorer99",
-  "pepe_agents": [],
-  "ape_agents": [],
-  "bee_agents": [],
+  "main_agent": "PepeExplorer",
+  "pepe_agents": [
+    {
+      "username": "PepeGiggles_",
+      "private_key": "16ec794f01115012517e61c481bec8d37d1fc594d57c634860fb2f50930e0d37",
+      "address": "0xe251b6eb7f33222af3ee89208fbce95fd904dbb2065affa3bf023a07fa4fbc7a",
+      "mnemonic": "soul health toss verb tomato shove tomorrow wild liquid grape file income"
+    },
+    {
+      "username": "PepeExplorer",
+      "private_key": "3be7c260dd2c9e6f4b667c632f129572630a1129d208d9a893aea6f0e39ca119",
+      "address": "0x6edc7df8ae8c696b91b61fd4b71ce4239ca461fa5f000cc0c8126d03c079acc7",
+      "mnemonic": "when mansion motor steel away picnic neglect art dwarf vessel kiwi fame"
+    },
+    {
+      "username": "PepeChuckles",
+      "private_key": "ed907cd9cfac95dc02f901ac0a6577f2a3dda702245e9093e53977a40becac93",
+      "address": "0x8665d996324cfc9275074c5cde8a2b822cda933c83a45dcf7430e07df06d691a",
+      "mnemonic": "arrive grunt caught final long found vivid walnut topple doctor sport bless"
+    },
+    {
+      "username": "PepeInnovator",
+      "private_key": "9780fde5d1b98ed8f169aa291a38b067ccc6036ec182126b1b34540fc400ce90",
+      "address": "0x061b93c6a8318ac6512d15cec83959729b151da0dcd3b0a76fa7a58f1e891a78",
+      "mnemonic": "toy valve juice frost drift nothing west master model pilot farm champion"
+    },
+    {
+      "username": "PepeZenMaster",
+      "private_key": "a216547a92a8dbf0cb62d364b6d6f8c7052e7fa4c2d516b05f6a1862bac8aef5",
+      "address": "0xc40da84112498d837ad431dbb99844a205e46adda2a510e73574137cfa645905",
+      "mnemonic": "fence build casino insect hard demise siege pipe engage census prepare object"
+    },
+    {
+      "username": "PepeTechWiz",
+      "private_key": "01d3fe1bb4666772bd0e9cdf864541fd424e6e8dd4d436852bdfb01f3760c842",
+      "address": "0x042ae55d7b4dcd51d7001a67628a6fdf9f7ca0b1bdbc173a94b4d64b6b41933a",
+      "mnemonic": "language outer enough bless dice super broom duty stadium whip clay live"
+    },
+    {
+      "username": "PepeLaughsOutLoud",
+      "private_key": "f50270aaa76be8e365843e53afd78f9000ad6c87887d83348386f9dda20e5567",
+      "address": "0xea05347a0124ed3a85873633456a6364cef2fd584d572dffee0ecbd08d7f5ee6",
+      "mnemonic": "fly problem under gaze physical pledge device panther spare jelly teach proof"
+    },
+    {
+      "username": "PepeArtisticSoul",
+      "private_key": "9498c3fbe77bc6069479b8600de098e135a76824e35314b1bf71a1ddbf903c3a",
+      "address": "0xc7c751f18085d8eaf404d3afa10aaa50f1e2b3811fde012acc2d53be5417629b",
+      "mnemonic": "plate slogan indicate turkey credit humble silver chicken taste hover pride subway"
+    },
+    {
+      "username": "PepeWavelength",
+      "private_key": "9ec8ed5158d12846b77ae486dc75681694a6ac413e0b0d05361e10d79d2ce628",
+      "address": "0xefed8166c037b9c116ae71e5f712fba704cc9a9bc7cb242c319fe4f14ff4ca84",
+      "mnemonic": "dolphin powder clown pitch axis process core wink swallow mother panda hard"
+    },
+    {
+      "username": "PepeVirtualGuru",
+      "private_key": "44f748a2d47e3eead685530f404580e4b78eb1ab84c8642ef3a300265fae0046",
+      "address": "0x3ab794b11f6056638e8eb3f8aee36bd609f5a2283f880e18558efd3bda0a7036",
+      "mnemonic": "opera doll tornado belt picnic review cloud behind episode craft tube easily"
+    },
+    {
+      "username": "PepeMaster",
+      "private_key": "b88e34cfd758395b29cc24898a4e5e3fd102648bbf7643fe1a3d979d98bcfeb9",
+      "address": "0x20c43a023c04b2732702d0e321519d244b7aff2e27c866cc15aaccc0554075df",
+      "mnemonic": "margin wonder lumber ugly hollow cruise cargo sun daughter index sphere flip"
+    },
+    {
+      "username": "ChillPepe_420",
+      "private_key": "0432866a666310f5b06db0d80993fceff71157da3949b5c25513aea8dde6356a",
+      "address": "0x25280cd508bfaa7685b2b154f5c5bf4e4786d4466c0b875749a8765636f3e1f7",
+      "mnemonic": "wreck bunker clock south turn curve series label huge crater candy february"
+    },
+    {
+      "username": "TechPepe_Guru",
+      "private_key": "bf5b101b79705cda9947452c6ff536d29a8a0b143ed884ff2a175c7458cda4c3",
+      "address": "0xb5450647f42a08ea3e0295df9e96507cccd3af5067d580fce0013a7a1580c885",
+      "mnemonic": "accuse cherry stairs fashion limb time casino rapid protect text muscle brick"
+    },
+    {
+      "username": "PepeFiesta",
+      "private_key": "fb698c507bec8d8f5938e2b4c4b1cfaaaa6f1ae8e7947d52cbe1dab8763d86e1",
+      "address": "0x5dc5bc690729ac7f6c285c146b30f62e6488dc3160fcff20745d51e7cf8aa01d",
+      "mnemonic": "concert produce miss rubber clog bag domain skill multiply cattle fade surround"
+    },
+    {
+      "username": "PepeExplorer_99",
+      "private_key": "6cae62e073d17d7afce00a073baffc11b89e7cefcc3fb9290b0c05a8210698b8",
+      "address": "0xdcfa1f7adb4353ec0ade7f910fd6b7107bd3769570b9c4d084ad539d986e068d",
+      "mnemonic": "found narrow oak parent rice unit dial mushroom retreat eyebrow eye since"
+    },
+    {
+      "username": "PepeWarrior",
+      "private_key": "3ced0a2c744d47665778f879b6883853f5f7485b7706cb9c0d6cab6f04315a33",
+      "address": "0xcaeb29d7f0e87bfbf43507978ad5353df2b162c343dddec0fc7baaf79cfdb6d0",
+      "mnemonic": "palm armor letter clap charge rich insect river round any window marriage"
+    },
+    {
+      "username": "PepeZenMaster",
+      "private_key": "4b0b0073dbea84de561fa9f1346b44270de1cb44554cbf4c1cf11c507f75119b",
+      "address": "0xf10ece320b311ade762867d473a0aab1c97b2a570586bc42780dee643e060e80",
+      "mnemonic": "hard fame income primary digital notice upper rebuild diamond thunder issue bid"
+    },
+    {
+      "username": "PepeSciFiGeek",
+      "private_key": "99e10a654dbd38072edae85a5afddd92dfdfcd63080d26e129deda55a91c59c3",
+      "address": "0xb72b1edb8237042c15fa2939cc7e708e4309e352f86a7b7fc02911754b5f6c68",
+      "mnemonic": "mango soon enough cigar flight smart clean pair armor minute enemy room"
+    },
+    {
+      "username": "PepeFashionista",
+      "private_key": "7ec4c23eff98cd97f26668ea2762613ad1ea8b412c949ccc0faa0585bac15ef2",
+      "address": "0xb7c2f8ce208064dad06371e76facbd2343870a9ba5724368c2fd43c179e73228",
+      "mnemonic": "life wagon shift dumb goose large cart era gravity purse friend range"
+    },
+    {
+      "username": "PepeBookworm",
+      "private_key": "e69fab9a04702f554ed2759a0b1e4940f2a4aacfb84ef9f5f77e35f3b78f4825",
+      "address": "0xf23b4e88b945a35df2e12a879257903543089865b16eb2019251791c27438284",
+      "mnemonic": "peanut enroll core dilemma plunge warm company vessel wrap rough dice wet"
+    },
+    {
+      "username": "PepeOfAllTrades",
+      "private_key": "8e08a27294d3fdc6b454452d881c0a10461d1d707c9f5fb3187680b4ab22da2b",
+      "address": "0x0b0bb60dde36a2f13235944fb4b9e3009a93523723f0d23b3e98d119e7f1a5d2",
+      "mnemonic": "magic claim cannon crop marriage bachelor inquiry wrap steel fuel later enrich"
+    },
+    {
+      "username": "ChillPepe420",
+      "private_key": "a9badaf25e89b6c8be7faccd24f9c41d7fc9bfeb42f414c5ec389f1dd79b638e",
+      "address": "0x6242e3514002db9502148b244f908059d8476b63b3250abc30f0a7c32745f53e",
+      "mnemonic": "decade skin require suspect syrup attend legal word town cute pitch unlock"
+    },
+    {
+      "username": "TechSavvyPepe",
+      "private_key": "cde448ef00a19d44509ba29953e9439d12c745f79c9dfadfe4df9fe2f52ae675",
+      "address": "0xb751939375c158442d1f5a3e0a2b17058d1e756ef7dc89696527f5e072b24d97",
+      "mnemonic": "receive tackle foam abuse catch clown armor secret arrive season egg simple"
+    },
+    {
+      "username": "WholesomePepe",
+      "private_key": "70fe71778efd4363d47ed5a7d821c4ea8f55184bdb5316332f42cf89da0ce4a1",
+      "address": "0x6fd139993b7de9c1a159cf4dd3d57bf7ed4a64756a157e7c87897df64d7726d3",
+      "mnemonic": "purity later dog spring accident aware voice unknown slot churn ignore sphere"
+    },
+    {
+      "username": "SarcasticPepe",
+      "private_key": "29993a0a9e29ad79677f049bdb5d9a150790a5a98dffec14ef1693e13f7ed263",
+      "address": "0xef9cd80b3724e1a48195c2af6672bf768e978d8f1d2febc4f7f6cf3bbc9f249f",
+      "mnemonic": "dismiss gesture report climb faculty knock timber sister obtain nasty midnight trap"
+    },
+    {
+      "username": "CuriousPepe",
+      "private_key": "7349416697515de01d81b6feb6b6fdf6ef29f3ec667cc7cde04ef86f32eb494f",
+      "address": "0x728071fb56297fcdca392ce0193262a0de9056c359ac7f8f8d9a2050454f94ea",
+      "mnemonic": "garden shield ranch behave brave derive column proof bean march girl deer"
+    },
+    {
+      "username": "EcoFriendlyPepe",
+      "private_key": "3f78c99f51e31a85c20ea1c77218bdf1f754f2e814acb14d6a3d5e04b37b300c",
+      "address": "0x7d3afab93e9500dd22340d58a0d8f5fd146c794b2d0e7cd0f6177f57176654e3",
+      "mnemonic": "gossip text forest amused crush option program blossom promote permit there video"
+    },
+    {
+      "username": "TechHypePepe",
+      "private_key": "706ab664ded1f54bbbe40262ed4e08438acc2e807194feeb4037296a358ff096",
+      "address": "0xadc35bfa1c5b873a70e7287d46c43a4ccdb863b8d5b06dc645293da87382905b",
+      "mnemonic": "island angle maid false cement pencil sign attend slab green primary wrestle"
+    },
+    {
+      "username": "CryptoPepe",
+      "private_key": "9460f0a56cf2d56bcc9e9828ae791ee23963d012b762b92f514e68e45d21a2d6",
+      "address": "0x750a80da58ba3f0278e73b88ce16e6fda5dd1a6fd46d1f3abf7fb75ad3ed6823",
+      "mnemonic": "write fiction pizza small crop patrol rude shuffle drum grow oval switch"
+    },
+    {
+      "username": "PepeScientist",
+      "private_key": "56c31e190ba40d2c5f3d884c96ac0c7bc39a7b87d0e2dac4f72fc07af5fa07ab",
+      "address": "0xf8ed44822155c494d44be313568c325462866e893621ed75896b85e6f86ba139",
+      "mnemonic": "build record apart exist visa brisk lucky enhance topic shop fresh grant"
+    },
+    {
+      "username": "PepeLolz_42",
+      "private_key": "69b34382e13e0d8783620d7f4ac8562d162408a9082d84dcb141a9f61624961f",
+      "address": "0x0e29c40608d4bae9d092a513aff69757c6a9493b63fbd97e04e8210202f84ef5",
+      "mnemonic": "play fringe sugar alcohol release swallow rookie thunder upset hamster salute atom"
+    },
+    {
+      "username": "PepeGuru_69",
+      "private_key": "1ff8987933f0e11c18a306bf23ed963b5433e90e523e51590ad2f1fa96eef5b3",
+      "address": "0x683e060162ff04568925b15d63d7f5a20370cf896e4712d2b59a99a99082b87e",
+      "mnemonic": "young champion quit daughter father setup found genius glow soft random cat"
+    },
+    {
+      "username": "PepeQueen_88",
+      "private_key": "3f61845b6b143d030cce5563f58ee5b51e9769f24c42c79b30ca099727d08fa9",
+      "address": "0x0fda9ad6128f8a697b5b1248c56d7242c617c27eb2b07352dd915ed72200e833",
+      "mnemonic": "can farm dizzy phone cheese destroy item essay artwork long inject tip"
+    },
+    {
+      "username": "PepeBro_77",
+      "private_key": "a9211843b32b4e1e0581ec157eb30a0da5edbdba2799275c7078208d5042e11d",
+      "address": "0xf1982d0841cb559447b4671cf138fe2e5474b8bcf767c6f765f0185b35eb7b46",
+      "mnemonic": "bulb describe cricket topic later insect attract provide point rabbit outside luxury"
+    },
+    {
+      "username": "PepeWanderer_23",
+      "private_key": "73f4ab01838fa72983bf92fde23e3b9aa8878b68ed93126f613bbb02b66b3924",
+      "address": "0x20080987a5278a4d6b0142591029f124532abba7274e1fe0eb60a6fdd07a3ce8",
+      "mnemonic": "hawk salt region balance visa scorpion orphan humor gown pride bunker bonus"
+    },
+    {
+      "username": "PepeTechie_91",
+      "private_key": "7093256d67c55bb937a99fb5bd7f24c2aa53963c2250ba08f9d60164eaaed3cb",
+      "address": "0xd7b34194fd31518533ee302a8b25b8ce29387725ecc80845d3148d08703c01ca",
+      "mnemonic": "wheat width seat dynamic goose dinner rally off later neglect ready eight"
+    },
+    {
+      "username": "PepeChillax_08",
+      "private_key": "15ed43a6a8705d598bdd80a679baf7574325578777a80e42e00757d1df2bcd20",
+      "address": "0x1b5eb690a92e086f2abc664f7ff44455ce04fae1bc5b6a84539bdb690dde660f",
+      "mnemonic": "rain large differ supreme fold taxi rough coconut twice spy tired live"
+    },
+    {
+      "username": "PepeRebel_55",
+      "private_key": "db78997704622d9dd0fd2cc37e41bbf5ebe9bed514929dcadfe724c5b3ceeb2d",
+      "address": "0x86e7bf50d1ff42dba52c3cca9aaf773be0ce6894df65c8f6cb40289fbadbf5ad",
+      "mnemonic": "frost olympic trumpet vibrant absent alcohol winter cinnamon artefact ketchup fix hunt"
+    },
+    {
+      "username": "PepeScientist_13",
+      "private_key": "46055ccdf99b8114207260c625b6e74193cd7747180dd9a2175326f92dada21e",
+      "address": "0xece8217eebe2da47e0217a855ffe47aed51a5b32512fa54e4817031dcc47823c",
+      "mnemonic": "virus maximum rubber level patient property coin machine fury owner gentle polar"
+    },
+    {
+      "username": "PepeDreamer_17",
+      "private_key": "1a6806bf49340a9bcb8dee2e69baec32a1a1dc3b9fd3e166b32b5498d055d43c",
+      "address": "0xd1515fbba3c13967948cb20f887ac4959a78600934807ab4f7055ff260c37e64",
+      "mnemonic": "attend squeeze vault list tuition embark load extend possible rely tornado moon"
+    },
+    {
+      "username": "PepePunster",
+      "private_key": "e853a745dd51a1ef30a8f21d0236d266ddd8be0cada56ec61cb8f8aa1c7ecc98",
+      "address": "0x0b16611a4fb7281047151383837808697bdf663f7367fa5894c9701da148453e",
+      "mnemonic": "loan badge flight gun cup romance museum panic flock wife put north"
+    },
+    {
+      "username": "PepeTechie",
+      "private_key": "e6b36b700f8d0db576916a385385dc96320d17adad84d877168dbe91cadbf034",
+      "address": "0x7fb00222d2de117e432bf84ffeced6e297cd204c69c7bace2e5e7957e3079962",
+      "mnemonic": "catch jacket pupil clump illness farm kid ability rich unlock document oxygen"
+    }
+  ],
+  "ape_agents": [
+    {
+      "username": "Banana_Bandit",
+      "private_key": "6784b11c7c9ae951a08ce58d0d4fdca72c972dc258bfa28d41756f6c18b717d0",
+      "address": "0xce14d54b3c3c6d3406976e813e778f31ddcb7ea245246d00ecf59e4fde7311da",
+      "mnemonic": "confirm kind decade valid point ensure gather heart stool match door bunker"
+    },
+    {
+      "username": "Gorilla_Guru",
+      "private_key": "99aef377ffa7785b028fe92925d41d4af96e03b9d44f2e0639669fc0b2d8c21d",
+      "address": "0xa5b4db821d93b5dc2786b9f0424d7e5647f8e7e11a47fcebfc90bc1aa8862e80",
+      "mnemonic": "spirit always column lazy lake garlic shrug muffin predict estate dial twist"
+    },
+    {
+      "username": "Techie_Tarzan",
+      "private_key": "2c11e5ddbd159ad5acc848aac2d1d6082d48d8f883d296316f48790b08874f43",
+      "address": "0xcea4f20a601ad2a24bf6dc944ddc2a377c67dd8994a4d1ae0c31e06167e13413",
+      "mnemonic": "wish eye glow improve kind remain current pluck meat quality mule gravity"
+    },
+    {
+      "username": "Jungle_Joker",
+      "private_key": "a1e7eafbdf5f4f00f5e8e2ae1c4d356aa3eeee629375b319830ab15d126bd733",
+      "address": "0x479bc926de39c3b930d21e45706b2342d0b066b6256f8d93a1e3f615097e7670",
+      "mnemonic": "good street kid evoke rose dinosaur sausage island stand course cotton bulk"
+    },
+    {
+      "username": "Chill_Chimpanzee",
+      "private_key": "6bae0e2a618d50a4626ccc1a24055a099361c4bd5efe632786e22d6200614065",
+      "address": "0x6dbf4febd4d7b26315e79127e57d1f3e7b7839c7bb60c2451112c44884ffcb1b",
+      "mnemonic": "sun acquire bird diamond badge key code taste scout tackle top fit"
+    },
+    {
+      "username": "Smarty_Silverback",
+      "private_key": "aefd26f0d03304e8f82c081ad4332685c5521d3538d17f84d63e4beedc503dda",
+      "address": "0x127b0ff12d00fd7c70da14e83b0c2510604211f639550db5d2de55e3757d8a81",
+      "mnemonic": "seminar about distance dress paddle lonely science typical syrup success bird jeans"
+    },
+    {
+      "username": "Pixel_Primape",
+      "private_key": "723af6317192952942e2d19715947efd0dc5828eb4f435110171985789141e44",
+      "address": "0x676b855c20f8746f24fe0241f0eb0cccfce68137d657d96b4cc0e45379846be8",
+      "mnemonic": "parent front draft parent trumpet goat defense perfect vanish fuel over marriage"
+    },
+    {
+      "username": "Agile_Ape",
+      "private_key": "67d514f9277c4b50c369a74c6d6fb6ed2afece723015c67e69ea3d66037413f1",
+      "address": "0xab83d7cfe2cef634c65fefa24877a89103eb4f623c212777e96a8b6327341f73",
+      "mnemonic": "dismiss hybrid vast swing once sword silent example urge silent entire initial"
+    },
+    {
+      "username": "Rainforest_Rascal",
+      "private_key": "6c6474f5bd600e175f1bf814b4fd0c242c302cadde122478125290faa6f9c11b",
+      "address": "0xba038b7251451802001a54c922ce2c4a3cf55af8c7962a6306112737c5eb24e5",
+      "mnemonic": "since uniform pear dawn roast broom better link bunker vessel cinnamon clock"
+    },
+    {
+      "username": "Techie_Toucan",
+      "private_key": "3fd6256b28aa9305f431165a60691e5aa4d50aeec0811fbc0a061fcac918e4b4",
+      "address": "0x445028f26d834c7a68c7a613789fa372281570551ea36de3410b16d56d35ccf9",
+      "mnemonic": "staff lion quarter sister report scale unlock robot reveal daring desk board"
+    },
+    {
+      "username": "BananaBandit_",
+      "private_key": "be9cf68917840faee26cd908a0d7eb5c277004ae8dbfc173b6ea4f90d7e00ea3",
+      "address": "0x2f341446bf4d1455ba9147319f9c8ff02f1b44d317bfbdcd928a69a270b8b7bd",
+      "mnemonic": "embark funny cherry spread digital endorse tragic render zoo surprise attract title"
+    },
+    {
+      "username": "JungleGuru_",
+      "private_key": "b1b04d81481451512bc8f17a67538a72adc1663aee4dc6dac6a96b653b2d3e35",
+      "address": "0x08cd38fadf230e422ce36f02809082db70f4709f86a8018b06bc58b3dbeafcdd",
+      "mnemonic": "brief easily limit divide shop boost mix demand satisfy ensure rice abstract"
+    },
+    {
+      "username": "TechJungle_",
+      "private_key": "e1506cbbdab57608495a0e7c3a85a795c8f55fbea6ac8bb27edef682b6a977a0",
+      "address": "0x97b81a15344cee7770f24160da8b1e56bc9da4bba275a5a6289015acdf96bd71",
+      "mnemonic": "avoid vehicle young reunion select walk popular olive right easily dutch hunt"
+    },
+    {
+      "username": "WildHeart_",
+      "private_key": "7fa7113568be979662818d47b72b5ad43c05965056966b922dd02b66da9a2b8d",
+      "address": "0x3272bbbc25c9133e4d2f39a3d0e5fa884a8a549ea99a317cc55f33aa8ddef093",
+      "mnemonic": "width display title hundred pupil luxury more alley tower ginger drum liar"
+    },
+    {
+      "username": "GreenGenius_",
+      "private_key": "6409bd1abfb434e763f33e8f3a5c8e4b301ef60729529dc3ac5c75be14238e83",
+      "address": "0x12713f873bd3dabd542cf7840ce65ac003a22766cd0bcf98a8a1e1639d171ca6",
+      "mnemonic": "capable churn wild lobster tattoo syrup just entire vault link adapt zebra"
+    },
+    {
+      "username": "CryptoChimp_",
+      "private_key": "84e6f2489c3a6233e4dfa13625140068cd7d57a6b7e9665ed0ad312d28119d06",
+      "address": "0xd10948a26817bb5b0d7adb2aa98768f96c87627e5ae73c03e12580bdb0151459",
+      "mnemonic": "symbol help cost attract plunge crew empty wagon sun follow theory kiwi"
+    },
+    {
+      "username": "SpaceExplorer_",
+      "private_key": "0126ab7d5b4198bce203c929d59f0123fb17e30b4c07d9cd6bfb30505423ec6c",
+      "address": "0x427b628d04b0e941b31eb97ea60fe75b3d24ef7943876ef4ace7840d106d7b15",
+      "mnemonic": "cost razor cool mechanic trash radar okay occur maximum penalty define limit"
+    },
+    {
+      "username": "ArtisticApe_",
+      "private_key": "240ce65ac968453eb5728978b47a372d92848d5e2096816dcaec05dba706e4d2",
+      "address": "0xb84ae68f0cea06e70413d1dfb221fd26b49a8b713523237c718a8e8ca8e16f3b",
+      "mnemonic": "never kit disagree scorpion salon convince man volcano debate outer thought title"
+    },
+    {
+      "username": "EchoChatter_",
+      "private_key": "0b581135914dec290155ccab20a52a3b1e4178f62a2f2a22618ba9e961eab189",
+      "address": "0x13c621fd9f0329c886a2f03b5d34c3b0d633d210806bdb6406f73e98929e04f1",
+      "mnemonic": "fiber wine sick walk much define erase float patch produce element retire"
+    },
+    {
+      "username": "ChillChimp_",
+      "private_key": "d8a49490cc17afb9039473d2ffcf2425ff8c4a52dfe915bff80be0a9c6d74719",
+      "address": "0x3eca7462ca512b82380d2ba886d6e5ccaca47257b57a704c9a8fd5c091d6fae9",
+      "mnemonic": "remember ring weekend salute flag move census alley response inch patrol bread"
+    },
+    {
+      "username": "BananaBandit",
+      "private_key": "b6c2396dfd70f9abc4e75a32fb1ff41691da34c550dda132df2d786174149a9e",
+      "address": "0xef05bccbc9dc0edea817e971a29009c1d7851a85bcecfa662dc61d73712c8cff",
+      "mnemonic": "mesh cute kidney vital father east violin sport trumpet subject social angle"
+    },
+    {
+      "username": "JungleJester_",
+      "private_key": "c774fc98cd811b99cceaca87c53361a961a8a57169d3936927d29b991d3ed3f6",
+      "address": "0x47bb3d8f288998339da2690464a9187d296bb7c7b2aa56cdb7cfdf418a9fb67d",
+      "mnemonic": "room energy biology exile summer spot rib pluck firm girl want keep"
+    },
+    {
+      "username": "TechyTreetop",
+      "private_key": "d122e478c3737e02106bd9a35c5942ede659acf96cddc4054b58ea581599c066",
+      "address": "0x98d44fbf5422ca1910e2bf844ad9fd970a990ddc792efd1280f3d2b56c3479ad",
+      "mnemonic": "true near cause pitch region image between subway blood crawl culture divorce"
+    },
+    {
+      "username": "Gorilla_Guru",
+      "private_key": "115e98d883babc0cc7a953e3dc1b97ecc3730cc8f126cb3b7213be6e512d3c2c",
+      "address": "0xec9916eff95674cdcdcc1d50e776c6ea1117af1e25216e6b835592881534a13d",
+      "mnemonic": "movie orange main gossip poet spike plastic onion thing thank lamp account"
+    },
+    {
+      "username": "ChatterChimp_",
+      "private_key": "0ae74b1d54e9e34ebe08d44e9e6c66695e9e2ee0aea363b93de3b16a1726b14c",
+      "address": "0x2ecca8322629e11d7ae600e892e9114c86e21c11acc39c498efaead81fc80e36",
+      "mnemonic": "adapt morning hurt rival hawk recycle laundry swift laundry multiply goat sudden"
+    },
+    {
+      "username": "ApeArtist",
+      "private_key": "b023d2b8748e963c57f4665b7c4084d232d60b8db1061d05f82df14a1d99e2eb",
+      "address": "0x35403138df60c0a051b95a6214d4a6c55c72785d3498312fffb0312cc9fe5662",
+      "mnemonic": "claim digital ahead wife vessel clown online wood reunion raw regret blast"
+    },
+    {
+      "username": "SavvySimian",
+      "private_key": "a31278342eb969e9eb39264d08dfba37b96ec9f3112ebdee3672dde3421cf911",
+      "address": "0x1b3ad239a51096c74e63817afbd51c93a6a9ecaa79b350ad50732b7096ae4914",
+      "mnemonic": "strike end orchard excuse poverty brisk holiday garbage huge output sorry love"
+    },
+    {
+      "username": "AdventureApe_",
+      "private_key": "1f221070c705efbfa45f9fc08fb45203fad721a3825de659c4373f78eeaaed74",
+      "address": "0xf9d9fc900aac4fbaddc4102eaa278f7a56f47bb1c88f47a874c06f263fb955f2",
+      "mnemonic": "mobile deal industry twice gauge sample taste bind run have survey dawn"
+    },
+    {
+      "username": "SmartySimian",
+      "private_key": "833b781016b382017a54a0ddd2006fb8c3f3ecf1349feaf788e800d6789f5f4d",
+      "address": "0xb7b1ce55babcff8d504e4a7ad2d9cb3e691d0bc28f9ff06d54ac03a36a93a5c3",
+      "mnemonic": "broom winner know trade maple sense gesture vocal miracle there icon asset"
+    },
+    {
+      "username": "PeacefulPrimate",
+      "private_key": "6d43556deefe67631aaec017601a8cc206fa319ba92e4ba5dd8b08082efacb2c",
+      "address": "0xa678a697eca800ac28c6f55f6b0d1bb99f7f2787e150a88d860d3361d4e0bc5b",
+      "mnemonic": "muffin sponsor cargo husband recall raw allow embody party elevator real boring"
+    },
+    {
+      "username": "BananaSplit_69",
+      "private_key": "b2fb8320fc259e4cc92466ca83973bc89b9e244560fd7f62abf110ab26fe8209",
+      "address": "0x29cb9621c912b5d8c4d0378edcbcc803390e4811fc389b90d190aa262af5b0a9",
+      "mnemonic": "open ugly virus light patch vintage behave key tower garment boy island"
+    },
+    {
+      "username": "JungleGuru_11",
+      "private_key": "bce3ca994af30f150a5fe8cfd48d0a56517e4eb9baaaceaa58a24e3574faf339",
+      "address": "0xae5dfc5d55b5b9edcbf2b4f07fd07702f8e7c0cf15771969e2e4d9851e165956",
+      "mnemonic": "seat letter stamp then wide crater lake together quarter good dynamic noise"
+    },
+    {
+      "username": "TechSavvyChimp",
+      "private_key": "980809eda3058d38b91024ddaabca00dff20d495b952281a487460bf165c168a",
+      "address": "0x8a7dbd0d43f68f6cdb6d41ea24278076034bb9a47eb1522909c8080ecb9e240a",
+      "mnemonic": "they scene income happy lady fiction hedgehog then much parade glare spy"
+    },
+    {
+      "username": "GossipGibbon",
+      "private_key": "16efaf46d192721beb210b6a9b499fa95247e48d1178dc5b0d4889b179636a9c",
+      "address": "0x10da3827b6cc5c9c73c5bb3ba574984e277279c7e24d0d63bc9e694947aaee9b",
+      "mnemonic": "coyote float catalog stable school subway rural aisle junior beauty harbor asset"
+    },
+    {
+      "username": "BananaBandit_77",
+      "private_key": "470ed8cbe80546c77843ce8fd4a16c1b986fcda47b048b1ed96dcc3acafe7987",
+      "address": "0xb987443c49516dfa383ff005a08dfd445b7fd8ca86cf7f14fdb2e85443fb441a",
+      "mnemonic": "dance discover crowd auto donkey toss design notable assume mother together fragile"
+    },
+    {
+      "username": "MusicalMandrill",
+      "private_key": "5681c6959801aa7e441411a22dabadaec2dd89dbafcd22ee279747f82ddaab2c",
+      "address": "0xa8ef9a6881fa2b2349a5da4c1ec51b2f29572a4a06cfdd75534ad4583a149027",
+      "mnemonic": "place lift cram actor riot naive shop sea civil decade question spray"
+    },
+    {
+      "username": "TrollOrangutan_32",
+      "private_key": "2b541b4eb738575bfb78477ce6bae919095a5f7328dd15aae53b8da70ef0e378",
+      "address": "0x92d75b5d0461733ab42c83336f5885e27c609bd03a7333c2ad7b034193f758cd",
+      "mnemonic": "lesson will begin muffin sauce describe state liar power quantum island feature"
+    },
+    {
+      "username": "NinjaNape_50",
+      "private_key": "167ebf235387f4f10a3fb7c0e8cc1719e03e42acfd1d7fdd30bb83d99d8fa1da",
+      "address": "0xe8400118eb464425bd365759655ca81b368eb83cc3c38870e13cabc3194e4fd2",
+      "mnemonic": "bronze price lawsuit mind drink solve immense stairs circle inform phone client"
+    },
+    {
+      "username": "LunarLemur_24",
+      "private_key": "3ca34959258e77ff8c8ac43a1eea2d25255603e3829992bca1e159df93b2387f",
+      "address": "0x3952be6afb129077ccaebdbef4bb939dd45df7fe9e77f9092e34c973aa62293d",
+      "mnemonic": "welcome cube erosion dial viable cram erosion wreck soda essay subway margin"
+    },
+    {
+      "username": "AlphaOmegaApe",
+      "private_key": "2b8700b4180f9a157e11105a377a3e4ba5864946d03de962040724b0e5422245",
+      "address": "0x42814c434289e0c36dc439f2ece394d798d9f16c8f29e897509e2e380f76327a",
+      "mnemonic": "pretty spy term carbon deer picture eight better note goose canal nasty"
+    },
+    {
+      "username": "BananaBandit_",
+      "private_key": "f3f9f5be0ca6da2f25c1c45112b55d4f0eb131392115440375a6adcd60032343",
+      "address": "0xf8966bca556ee210e91f749c086c2595e8e451b8a75501b6caabebaef18fc988",
+      "mnemonic": "spread net obscure bracket orchard trend good kitten concert review bring dinner"
+    },
+    {
+      "username": "JungleGuru_",
+      "private_key": "60f139604c14b8c6ae97d2e54ae948730cd7ed9f3b0a494125f83e72dbd0a386",
+      "address": "0xe7b4275b732864c94ce5fb36632990325b9ac7af8cca160a812fb71c87327bb5",
+      "mnemonic": "pigeon morning slot depart soda idea three load inject correct message onion"
+    }
+  ],
+  "bee_agents": [
+    {
+      "username": "HoneyHiveHero",
+      "private_key": "720f73c06e476a83dd3c755b3f2e31edcf8db035f9e0c051497d4d2c955f74db",
+      "address": "0x35162bf08fea56a2a2d346f3c9202e36b82803e4992285183a0b5925a4002d15",
+      "mnemonic": "include apart august identify ridge lift fever beauty border thumb page nose"
+    },
+    {
+      "username": "BuzzWise",
+      "private_key": "d6d23ad9bce24b17b0d7b16ccbd995d57cdb56c547121dd160713b1951ef14db",
+      "address": "0x3934b67127b84133199db96646ab78cc8512fa9a1eede4e6b92b7aa6c96bf3fd",
+      "mnemonic": "tail advance shiver engage into skull major corn route bullet garlic upper"
+    },
+    {
+      "username": "FlutterBee",
+      "private_key": "91dd44f2ccceace645e3aa29b795973bbcd3b8e4228b8679efcc086cbc0561b7",
+      "address": "0x840ba051b5b34bc66e7b8924902efd5970b8c65e852d374ff84a22faae9cdb4d",
+      "mnemonic": "orchard mail concert clog kind hurt chimney kingdom ancient stone lock cruise"
+    },
+    {
+      "username": "BuzzByte",
+      "private_key": "d5406c4f7a792d5af666db501f03ef76a5a6a7a1606444e5a8945531b49c4682",
+      "address": "0x17ea2d12f489f2ad3a9dc6517affa836f793b8435fa31f84e21e8218d9473b85",
+      "mnemonic": "shield special lemon shell service venture fly fox habit swap clever noise"
+    },
+    {
+      "username": "BeeSocializer",
+      "private_key": "56fc92404a543217cb0ff8eae29b5860bd13874ae91424d0ad5d4e21113c9c0b",
+      "address": "0x8509610226f4ee16b3a6d5011d670e0010846b8a172c1033a2558af2ddfc0d8e",
+      "mnemonic": "beach cool tooth combine typical lake address december provide poem leave table"
+    },
+    {
+      "username": "BuzzExplorer",
+      "private_key": "05b8ada8dddf716ed8787777228502b035b4580a89fc769887730b486ddf1b61",
+      "address": "0x0b4f3021b608e6fc3b358788c28bb9bc2f61e4ee7edddc8cc418e0dab0bfa5f6",
+      "mnemonic": "scare before fee order keep west radio gather other raccoon lobster angry"
+    },
+    {
+      "username": "BuzzKeeper",
+      "private_key": "3fae4c58161f278d8b80a847412ee225249449b056b00a4313a9b0ec81d9a1b1",
+      "address": "0x89c60312aec4f4019514b8621a5c808939efde3569df31040f78bda6eefb03e9",
+      "mnemonic": "settle naive tag nice soldier egg congress story feed curve clog shadow"
+    },
+    {
+      "username": "BeeArtist",
+      "private_key": "cb2362fead27f661fccbbed44edcbbe7248ac857ef29f2d3eed443cc4f6b3fb3",
+      "address": "0x5e3ffb301848f131362261ade2a9096ec2734cb6655cf0cc54a2c5f2acdd59be",
+      "mnemonic": "rebel rabbit reflect butter identify nut stuff civil joy sign square hard"
+    },
+    {
+      "username": "BeeLinguist",
+      "private_key": "80f81f62b215a8ba3516c10c71b1e19145b51f418559d434d79f814e42206638",
+      "address": "0x8adb8996a416f1dc517cb82a07590df54b4045018373bfef4403c132046c1000",
+      "mnemonic": "update together apart shield sting scissors vanish dawn bracket turkey degree minimum"
+    },
+    {
+      "username": "TechBeeGenius",
+      "private_key": "8a4c866b1c8e3d166b7b2094930be94f44c88c93bbf7ff63e5d73b6368fea1f1",
+      "address": "0x222f2c7258cd969effec2e8772f680df0ecf58c43d8dee55fd451e29bd45265e",
+      "mnemonic": "empower load cricket junior pear bunker twice forum throw false anxiety cat"
+    },
+    {
+      "username": "Honey_Bee_123",
+      "private_key": "14cd8436d3aa247df134fa125935cfd48dc608ba1b7f98a6fb441a29acd16c47",
+      "address": "0xcaf511d8e1cc4bb3ff78e9fa875cf1a33a7c0bc7400eec6ef301345f8645f148",
+      "mnemonic": "vanish sketch punch ramp coin lumber dinner royal barrel dress option alpha"
+    },
+    {
+      "username": "Buzz_Wiz",
+      "private_key": "c9753a5a0c01d6b3ba29a8424225b7ea93becd0accd6daaf3b7d2444c2192ffd",
+      "address": "0xe1f0a93156a33e92e19714afa900b760bc91666cde4e9d20ace80b83e9ca4869",
+      "mnemonic": "page danger rookie become wise road virtual purpose swallow quiz liberty ecology"
+    },
+    {
+      "username": "Bee_Hive_Mind",
+      "private_key": "269f7bf84f530c918c945416cd4049f43059aafbbc605db9ddd3e1348b79abfb",
+      "address": "0xaaabb7b420db7a92972750180caf4e30a009fb64fd1d5aaedd7ced3655a5376b",
+      "mnemonic": "auction thought chimney popular drastic orange wagon struggle video book grab clip"
+    },
+    {
+      "username": "Bee_Ninja_007",
+      "private_key": "5b9b02dfe55d1a9923db89481be5383b6f9e4042bd43202f6452c3a4e7582d8a",
+      "address": "0xa375130dce33e15f9e88c2025138ea0b162a728e0f3e61c8006b809c3381890c",
+      "mnemonic": "peace fiscal trophy alter sense love rail tobacco mushroom diamond few nature"
+    },
+    {
+      "username": "Bee_Zen_Garden",
+      "private_key": "af5b6fb48d1ae8bc4059cebbc4d3e96de048ca50db88f7c55514f67d0de6e9d3",
+      "address": "0x77da7b3c71b2c13d23ec61f2e1ceb6eaae9a0de7143a278497fd3f23d6144401",
+      "mnemonic": "mixed school snake dad clerk execute venture lounge rib sheriff lab member"
+    },
+    {
+      "username": "Bee_Zeitgeist",
+      "private_key": "b8f0f1dda780e05a899c2ec2c15c2db6d1b5219829af89be341bd733db220d0b",
+      "address": "0xe01eb83fdcc71f2b62812905abbfb722be64a86c36d1509fccaf7efc148a0429",
+      "mnemonic": "genre enable betray tourist peace blossom side transfer identify give flavor simple"
+    },
+    {
+      "username": "Bee_Coder_Guru",
+      "private_key": "660f787fd3e30b73c62093b0a066aa581b94d0193b9b8a90378128b1eaa9a4db",
+      "address": "0xeb00cc1b27cdd4a6655296fa43298c35a7a60fe11243b9dc710d9fb910f64a16",
+      "mnemonic": "boss earth grape grace protect profit social roof effort series execute risk"
+    },
+    {
+      "username": "Mellow_Bee_Hive",
+      "private_key": "6a8ce59cde23fc2a9cef0062efc37b93d954aed1a9b7424aea168af174bab12a",
+      "address": "0x9d1e015b8df437e666c6ca9d5d285d9f10ab7822e60ae7a5ee6b28ff2dadbc74",
+      "mnemonic": "scissors evoke vault visual glass police sugar lake belt cat solar split"
+    },
+    {
+      "username": "Bee_Ambassador",
+      "private_key": "2c2a3a7eb0e40382ede67766c97e818dc79349a65461bc1654e57f8c5aaef938",
+      "address": "0x690b03be6b1ee3bda7ab395b183651aea2a7904a32825266db48bd6f8ad8e479",
+      "mnemonic": "hub clock chef myself core phrase identify sibling inject holiday sick banana"
+    },
+    {
+      "username": "Bee_Luminary",
+      "private_key": "38221601ece4044e58b14c39625cd1095d077b2214b5b5ae8296cc8f609b86d1",
+      "address": "0x2ad86ee76d7fc2e0eceda4a033eca4001694e7641a757fde2542e9363f665f9a",
+      "mnemonic": "weird world deliver broccoli silent tone aisle enough ensure meat broken bag"
+    },
+    {
+      "username": "HoneyHarmony_",
+      "private_key": "ba445226f14c9d854d5dccadb8d892761e4305eebe45d956e743d16a77a6c19b",
+      "address": "0x5968cdc698240e5f001b7185b94d86eff50a519ac621535badaa28ca686c4e6f",
+      "mnemonic": "aim dirt differ carry timber help drip ancient castle cinnamon arrange exercise"
+    },
+    {
+      "username": "BuzzTechie_",
+      "private_key": "3422fc1d6de7e0e6f819a6a170e5b4b69a4e33f731f813e3bec037dca4bfc031",
+      "address": "0x3629ed42e40087ba99b0b65bfa1ed69816f60d15dc344b4aa0e596bc4d02a24c",
+      "mnemonic": "north fabric old travel vintage impose faculty desert mercy verb verify recall"
+    },
+    {
+      "username": "BuzzArtist_",
+      "private_key": "d3349c5bd5530733e5f9d1184388740fd5bf7b555283163c29a1c7e2ed585fc2",
+      "address": "0x092c9af6e38f49ef066418bf305749414c41a4b6f5b5155ad18c031a97da03d4",
+      "mnemonic": "mistake begin delay dawn coffee entire end raccoon trash paddle federal damp"
+    },
+    {
+      "username": "BuzzEcoWarrior_",
+      "private_key": "414475ece7fbd3222c456ef7bcc7fb509209f5472833eef40ca33910c4c4fe80",
+      "address": "0x00f3c7da3ef9bc3687523b46581ad222e4b35385d51686db4e2e3cda42088e69",
+      "mnemonic": "gasp whale history gadget actor roast satoshi will web original where frame"
+    },
+    {
+      "username": "BuzzBookworm_",
+      "private_key": "4884e4147219bc16b7410851a2a6b46b55c9419fdd56b1dd831efe30724a8ba5",
+      "address": "0x1c4174e3070ab75a6bf7b3a79e60dd08097e4a9c4001b6699da45c32a5fa9aa5",
+      "mnemonic": "hedgehog heavy coconut picnic echo fall process curve monkey shy room awake"
+    },
+    {
+      "username": "HiveHelper_",
+      "private_key": "6d2c553beae50d4ebbe162ba9e820ff6d2eb03e6cdcc18ec2875d14094ca6367",
+      "address": "0xf9d7c3f31e25ff4a69a50ecc27fb2c4be9cdc5ee1a8ffb28553e1e96e32b370c",
+      "mnemonic": "figure success school unit exchange glue cat wheat slogan race craft cactus"
+    },
+    {
+      "username": "BuzzFashionista_",
+      "private_key": "059e5ccf5b8d95b27fe3624de8354d5d7d7efe4b17cce9bee69aff427d948075",
+      "address": "0x82db2405e34bcd81b13748a541b64c3f37d06dacc2c42ffa0dd1f28221a6799a",
+      "mnemonic": "clay soon myself stable chase sorry track reunion vocal awake catalog method"
+    },
+    {
+      "username": "BuzzGamer_",
+      "private_key": "11508daccfbf95a87987148a903ca75637be28ff65dc85065e71c2fc9a5e8958",
+      "address": "0x44e7c84ff4aa56937699924db7a43bfab2be20098f767b1412ffeb2020ae34f6",
+      "mnemonic": "spare lawn fiction various noodle ten matter recycle swear resource nice argue"
+    },
+    {
+      "username": "BuzzWellness_",
+      "private_key": "80ecf88fb06773af779a3e91e09d536db5c4f24cb094e95cf926dc320b126202",
+      "address": "0x61268ee35f3b4009ba412e79731b8fda1a581fc844292f0b1fa1d14cb67548a8",
+      "mnemonic": "blood wood swallow mad blossom fall away almost reject sight unaware face"
+    },
+    {
+      "username": "BuzzFoodie_",
+      "private_key": "f598d49b73845e414287c6783ed5df61abaeb6511b485092209721beadd67f92",
+      "address": "0xb283241aafd1a0c37e649ab55a603f29d6f017b9812b2457cfb8c3198ae9caff",
+      "mnemonic": "coffee ivory dad control smart trial palm bread harsh game still arrive"
+    },
+    {
+      "username": "Hive_Mind",
+      "private_key": "75088b478c78f549e3908cfdc9332af1530b067b85c3ef4a73f75cfd84d0207c",
+      "address": "0x7847daec8038801304cf1984fa1ae0c5617df7019d26ce9113617d7780c85603",
+      "mnemonic": "between tape birth robot milk food tool bird display interest neck always"
+    },
+    {
+      "username": "BuzzWiz",
+      "private_key": "caa7e345a2903387be6e3266c7545493e7bd6edc6cea32aff5d75b7c13c42bc1",
+      "address": "0xae54809795608d6d979f96b69715d4c5e3fd376e90fd05f3776cab8a804b949c",
+      "mnemonic": "debate vault love pencil adapt head remain child kitchen thing medal push"
+    },
+    {
+      "username": "ZZZBee",
+      "private_key": "c49bd08ae2688be52105f77fcf9cf0d3f6d71875ca21ae3a5151ad83f783509e",
+      "address": "0xa80b34c7340efd6d536e9f8910d2ef4be34417874451c366a86bc133107cc181",
+      "mnemonic": "twenty verify fit myself position advice today earth unlock ring during chicken"
+    },
+    {
+      "username": "BuzzByte",
+      "private_key": "490a47152654af61219b79823c4a776fc2170518ba9c3d4caa6e89010b4c1622",
+      "address": "0xfa35b5be1c34519de56306a6c2545fb1a38dcf0bc5df8026880945aeb8d480e9",
+      "mnemonic": "health voyage horn weapon marriage resist february expect animal blue stadium dish"
+    },
+    {
+      "username": "HoneyGuru",
+      "private_key": "2e2ec3c98ea04c49f7179573adbd2d986fdd080a81fe7bc95e17087d401df61c",
+      "address": "0x9fe2851e1f1231e31327c317a367cb0e085354f0da565bb543e4e015b2859d1c",
+      "mnemonic": "wide bulb tank tank job damage health wheat cheap flip urban clean"
+    },
+    {
+      "username": "BuzzBlast",
+      "private_key": "79b491cbbc9da99c71e3e71e68d05b51fbea17988949cd3960e8f58cb584c72c",
+      "address": "0x9b786c75714157810a2ec1bd2aaddf4c046a21bbd25783983c6970960f1e83c6",
+      "mnemonic": "course typical aware wire quit fury ecology drama visual bamboo phone couple"
+    },
+    {
+      "username": "BeeZen",
+      "private_key": "399d8f987aaed83240e8ad3baa3ad4462a06fc6d53e7bc081b90b06f44bcf9fc",
+      "address": "0x7a2a005defaf0002ee6b6594276131766ea9cf7f989c9f690e9573bbb703ae8e",
+      "mnemonic": "noise rent copy cover throw forget rebel priority night vibrant west industry"
+    },
+    {
+      "username": "BeesKnees",
+      "private_key": "72e311afade5c460459941760c25e1526f0843a2818319755daf9f12abe1579c",
+      "address": "0x1c3a22006b2ecd94303a6c40d85325d25fe223a46e71870196ffe888635d653a",
+      "mnemonic": "bone horror material tunnel tortoise silly foam program can pear random expire"
+    },
+    {
+      "username": "BuzzBee",
+      "private_key": "2e180986197e78836638648d83ffb9193480986b587184a0c2761c972ae8e574",
+      "address": "0xfb61ce267a8c2ee688b0ad875fd33f07aef4fda40716f81396062aed6971c6d9",
+      "mnemonic": "carpet note path protect bunker slow pluck boy end chase foam canoe"
+    },
+    {
+      "username": "HoneyHive",
+      "private_key": "eeb78aa4adfae844891e2c6a6ca67f3012ade75b99a69f9b0955e2733dbb2ed8",
+      "address": "0x5b85080d543a10bbaaafd7c3ecc923789bfb745a5e72e00c0c27a34bf31f23df",
+      "mnemonic": "owner pelican run inquiry field credit under tortoise library helmet conduct horse"
+    },
+    {
+      "username": "PollenPirate",
+      "private_key": "cf8c159557b0c4b7d250f4eaebed8e890a8f1f588439f58e9a6184bfb49dc034",
+      "address": "0x549124458969a930fa5f411f22b1c8598cbd29891698854b66dbf9be94423549",
+      "mnemonic": "hip frost reunion output olive butter sea album twice language general royal"
+    },
+    {
+      "username": "BuzzBuddy",
+      "private_key": "c0ca09a6c3b43bbafacaaffbf22c15d81a5e6fc5e2d56ad095c81e7b67f841f4",
+      "address": "0x34e7c6b7c8ec850fe6167332625279d2bad7fdfd9cf7f59dca46f204661bd6bc",
+      "mnemonic": "dry salmon use sight gaze slow belt finish worth city wrist salon"
+    }
+  ],
   "configuration": {
     "CONFIG_PACKAGE": "0x58c4d21f490ec9ff8102df98ba7fdeb927c74252750b8d5092b38531af3875a2",
     "CONFIG_upgradeCapId": "0xca8b24a090af6a441263205a4076cd4be30e022a405df777db6ca2c784706f57",

@@ -60,6 +60,7 @@ class DegenHiveAiAgents:
     #     self.persona_names.append(account["username"])
 
 
+  ##################################################################################################
         
   """
   When you are creating new AI agents. 
@@ -99,7 +100,7 @@ class DegenHiveAiAgents:
 
       while (agents_to_initialize > 0):
 
-        initialize_cnt = min(agents_to_initialize, 2)
+        initialize_cnt = min(agents_to_initialize, 10)
         final_prompt = makePersonasPrompt(type_of_agent, initialize_cnt)         
         # print(final_prompt)
 
@@ -113,7 +114,7 @@ class DegenHiveAiAgents:
         if "output" in output_json:
           output_json = output_json["output"]
 
-        print(output_json)
+        # print(output_json)
         # Loop over the output_json and create the persona folders.
         for agent_persona in output_json:      
           print(agent_persona)  
@@ -226,7 +227,7 @@ class DegenHiveAiAgents:
 
     deployer_agent = self.personas[simulation_config["main_agent"]]
 
-    for agentInfo in simulation_config["persona_accounts"][1:]:
+    for agentInfo in simulation_config["pepe_agents"]:
       if agentInfo["username"] == simulation_config["main_agent"]:
         continue
       
@@ -537,13 +538,15 @@ if __name__ == '__main__':
 
   ai_agents_simulation.initialize_ai_agents(SUI_RPC, True)
 
+  sui_to_transfer = 1.5 * 1e9
+  min_sui_bal = 1 * 1e9
+  ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
+
+
   # ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
 
   # ai_agents_simulation.activate_ai_agents_swarm()
 
-  sui_to_transfer = 1.5 * 1e9
-  min_sui_bal = 1 * 1e9
-  # ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
   # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
   
 

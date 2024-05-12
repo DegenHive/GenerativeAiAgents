@@ -237,7 +237,7 @@ def new_retrieve(persona, focal_points, n_count=30):
 
     # Computing the final scores that combines the component values. 
     # Note to self: test out different weights. [1, 1, 1] tends to work
-    # decently, but in the future, these weights should likely be ai_skills_behaviour, 
+    # decently, but in the future, these weights should likely be meme_expertise, 
     # perhaps through an RL-like process.
     # gw = [1, 1, 1]
     # gw = [1, 2, 1]
