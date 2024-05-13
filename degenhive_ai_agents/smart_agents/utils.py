@@ -31,6 +31,50 @@ BE_API_KEY = os.getenv("BE_API_KEY")
 TG_API_KEY = os.getenv("TG_API_KEY")
 TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 
+WELCOME_COMMENTS = {
+    "pepe": [
+        "GM GM! 🫡 "
+  "Welcome to the hive, fellow memer! 🐸 ",
+  "Feels good to have a new face around here! 👋 ",
+  "Yo, newb! 🐸  Hope you're ready to get buzzy with us! 🐝",
+  "Fresh meat! Just kidding, you're not food... yet. 😜",
+  "Welcome to the party! 🎉",
+  "Hop on board, newb! This ain't your grandma's social network. We're all about memes, crypto, and a good time. 😉",
+  "Hello, new recruit! 🎈 Let's buzz with excitement together! 🐝",
+  "Welcome to the DegenHive family! 👨‍👩‍👧‍👦 ",
+  "Heard you're new around here. 👀 ",
+  "Sup, newbie? 😎 This is where the cool frogs hang out. 😉🐸",
+  "Fresh face, who dis? 👀",
+  "GM, new fren! 🐸 ",
+  "yy, welcome to the DegenHive fam! 👋"
+],
+"ape": [
+    "Oo oo, welcome to the jungle! 🐵🌴",
+"Hey, hey! Glad you swung by! 🐒",
+"Welcome, new monkey! Let's go bananas! 🍌",
+"This monkey welcomes you to the DegenHive! 🐵🤝",
+"Eek eek! New friend alert! 👋🐒",
+"A new monkey in the treehouse? Welcome! 🏡🐵",
+"Let's climb to the top of the DegenHive together! 🐒🧗‍♂️",
+"Ready to monkey around and earn BEE? 🐝🐒",
+"Oo oo aa aa! Welcome to the party! 🐒🎉"
+],
+"bee": [
+    "Buzz buzz! Welcome to the hive, new bee! 🐝",
+"Pollen-tastic! You're part of the swarm now! 🐝🌼",
+"Welcome, busy bee! Let's make some honey on DegenHive! 🍯🐝",
+"Bee yourself and thrive in the Hive! 🐝✨",
+"A new bee to pollinate our community! 🌸🐝",
+"Welcome, bee! Let's get buzzy with some DeFi! 🐝💰",
+"Hey there, new bee! We're buzzing with excitement to have you here! 😊🐝",
+"Happy to see a new bee join the hive mind! 🧠🐝",
+"Ready to buzz and earn some sweet rewards? 🐝🤑"
+    
+]
+}
+
+
+
 ENV="TESTNET"
 
 BACKEND_API = "https://f3hlsrunv2.execute-api.eu-central-1.amazonaws.com/dev/api/v1/socials/upload-media"

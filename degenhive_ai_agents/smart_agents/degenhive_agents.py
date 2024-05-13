@@ -338,23 +338,40 @@ class DegenHiveAiAgents:
       simulation_config["latest_new_profile"] = { "profileID": "", "timestamp": 0 }
 
     new_profile_ID = welcome_buzz["PK"].split("#")[0]
-    timestamp =  int(welcome_buzz["timestamp"])
+    timestamp =  int(welcome_buzz["timestamp"]) 
 
-    # Automatically give the new profile some likes and comments
-    likes_count = random.randint(1, 9)
-    comments_count = random.randint(2, 5)
+    # print(welcome_buzz)
+    # make sure its a new Buzz
+    if timestamp > simulation_config["latest_new_profile"]["timestamp"]:
+      color_print(f"\nNew Profile: {new_profile_ID} | Timestamp: {timestamp}", GREEN)
+      send_telegram_message(f"New Profile: {new_profile_ID} | Timestamp: {timestamp}")
 
+      total_agents = len(self.persona_names)
+      likes_count = random.randint(3, 9)
+      comments_count = random.randint(0, likes_count)
+      color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
 
+      # ----- Handle Making Likes and Comments -----
+      while likes_count > 0 or comments_count > 0:
+        # Get the persona that will interact with the new profile
+        agent_index = random.randint(0, total_agents - 1)
+        agent_persona = self.personas[self.persona_names[agent_index]]
+        is_liked = agent_persona.make_like_handler(simulation_config["configuration"], "chronicle", 1, 0, new_profile_ID)
+        is_commented = agent_persona.make_comment_on_welcome_buzz(simulation_config["configuration"], "chronicle", 1, 0, new_profile_ID)
+        if is_liked:
+          likes_count -= 1
 
+        if is_commented:
+          comments_count -= 1
 
+    # Update the latest_new_profile in the simulation_config
+    simulation_config["latest_new_profile"]["profileID"] = new_profile_ID
+    simulation_config["latest_new_profile"]["timestamp"] = timestamp
+    with open(f"../storage/config.json", "w") as outfile:
+      outfile.write(json.dumps(simulation_config, indent=2))
+      
 
-    print(f"new_profile_ID = {new_profile_ID}")
-
-
-    pass
-
-
-
+    
   ##################################################################################################
   
   def activate_ai_agents_swarm(self):
@@ -393,7 +410,10 @@ class DegenHiveAiAgents:
 
       # sort welcome buzzes by timestamp and then handle them
       welcome_buzzes = sorted(welcome_buzzes, key=lambda x: x["timestamp"])
+
+
       for welcome_buzz in welcome_buzzes:
+        # print(welcome_buzz["timestamp"])
         self.handle_welcome_buzzes(welcome_buzz)
 
 

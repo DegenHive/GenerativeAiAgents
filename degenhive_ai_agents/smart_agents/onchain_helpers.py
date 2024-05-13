@@ -590,6 +590,7 @@ def make_noise_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_pro
 Execute a transaction to like a HiveChronicle Post
 """
 def like_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, buzz_type, buzz_index, thread_index) :
+    print(f"like_hiveChronicle_buzzTx: user_profile = {user_profile}, poster_profile = {poster_profile}, buzz_type = {buzz_type}, buzz_index = {buzz_index}, thread_index = {thread_index}")
     try: 
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
         txBlock = SyncTransaction(client=suiClient)
@@ -601,9 +602,9 @@ def like_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_config, 
                     ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
                     ObjectID(user_profile),
                     ObjectID(poster_profile),
-                    SuiU64(buzz_type),
-                        SuiU64(buzz_index),
-                        SuiU64(thread_index),
+                    SuiU8(buzz_type),
+                    SuiU64(buzz_index),
+                    SuiU64(thread_index),
                 ],
                 type_arguments=[],
             )
@@ -622,7 +623,7 @@ def like_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_config, 
                 return False
         else: 
             print(f"Simulation failed")
-            send_telegram_message(f"Simulation -- Error Liking HiveChronicle Buzz: {txBlock}")
+            send_telegram_message(f"Simulation -- Error Liking HiveChronicle Buzz: {simulation_response}")
             return False
     except Exception as e:
         print(f"Error Liking HiveChronicle Buzz: {e}")
@@ -644,7 +645,7 @@ def like_dexDaoGovernor_buzzTx(rpc_url, private_key_hex_string, protocol_config,
                     ObjectID(protocol_config["HIVE_MANAGER"]),
                     ObjectID(protocol_config["POOLS_GOVERNOR"]),
                     ObjectID(user_profile),
-                        SuiU64(governor_post_index),
+                    SuiU64(governor_post_index),
                 ],
                 type_arguments=[],
             )
@@ -772,7 +773,7 @@ def comment_on_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_co
                     ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
                     ObjectID(user_profile),
                     ObjectID(poster_profile),
-                    SuiU64(buzz_type),
+                    SuiU8(buzz_type),
                         SuiU64(buzz_index),
                         SuiU64(thread_index),
                         SuiU64(dialogue_index),

@@ -80,8 +80,8 @@ class Persona:
     if profileID and profileID != "0x0000000000000000000000000000000000000000000000000000000000000000":
       hiveChronicleState = getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, profileID)
       timeStreamState = getTimeStreamStateForProfileInfo(self.rpc_url, self.private_key, protocol_config, profileID)
-      print(hiveChronicleState)
-      print(timeStreamState)
+      # print(hiveChronicleState)
+      # print(timeStreamState)
       is_updated = 0
 
       if hiveChronicleState and "active_epoch" in hiveChronicleState:
@@ -178,79 +178,60 @@ class Persona:
   Like a Buzz on Hive Chronicle or Time-Stream Auction or Buzz Chain
   """
   def make_like_handler(self, protocol_config, buzz_type, buzz_index, buzz_inner_index, poster_profile_id):
-    color_print(f"\nHandling Like by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+    color_print(f"\nHandling Like post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
     userSuiHiveProfile = self.scratch.get_hiveProfileID()
+    username = self.scratch.get_name()
     
     if (userSuiHiveProfile == poster_profile_id):
       color_print(f"\n Oops! You can't like your own buzz.", RED)
       return False
 
-    hiveChronicleState = getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile)
-    if "max_entropy_for_cur_epoch" not in hiveChronicleState  or hiveChronicleState["max_entropy_for_cur_epoch"] < 1:
-      color_print(f"\n Oops! You don't have enough entropy points to like this buzz.", RED)
+    respoonse = False
+    if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
+      buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
+      respoonse = like_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index)
+
+    elif buzz_type == "governor":
+      respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
+
+    if respoonse:
+      color_print(f"Buzz post of {poster_profile_id} liked by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+      self.handle_profile_state_update(protocol_config)
+      return True
+    else:
+      color_print(f"\n Oops! Something went wrong while liking the buzz.", RED)
+      return False
+
+
+  """
+  Comment on a welcome Buzz
+  """
+  def make_comment_on_welcome_buzz(self, protocol_config, buzz_type, buzz_index, buzz_inner_index, poster_profile_id):
+    color_print(f"\nHandling Comment on post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+    userSuiHiveProfile = self.scratch.get_hiveProfileID()
+    comments_info = WELCOME_COMMENTS[self.scratch.type ]
+    comment_to_make = random.choice(comments_info)
+    username = self.scratch.get_name()
+    
+    if (userSuiHiveProfile == poster_profile_id):
+      color_print(f"\n Oops! You can't comment on your own buzz.", RED)
       return False
 
     respoonse = False
     if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
       buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
-      respoonse = like_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, CHRONICLE_TYPE, buzz_index, buzz_inner_index)
+      respoonse = comment_on_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index, 0, comment_to_make, False)
 
+    # elif buzz_type == "governor":
+    #   respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
 
-
-
-
-  const clickLikeHandler = async (
-    index: any,
-    buzz_info: any,
-    poster_profile_id: any,
-    username: any,
-    e: any
-  ) => {
-    console.log("\n\n\nclickLikeHandler");
-    try {
- 
-
-      let payload: any;
- 
- 
-
- 
-      // // ----- If its a Pool Governor Buzz -----
-      else if (buzz_type == "governor") {
-        success_msg = `AMM Pools Governance Buzz #${buzz_index} liked successfully. This costs 1 entropy points and doesn't earn you any BEE tokens!`;
-        payload = like_or_unlike_governor_buzz(
-          userSuiHiveProfile.ID,
-          buzz_index,
-          true,
-          networkType
-        );
-      }
-      // // ----- If its a Hivedao Buzz -----
-      else if (buzz_type == "hivedao") {
-        success_msg = `AMM Pools Governance Buzz #${buzz_index} liked successfully!`;
-        payload = like_or_unlike_hivedao_buzz(
-          userSuiHiveProfile.ID,
-          buzz_index,
-          true,
-          networkType
-        );
-      }
-      // ----- If its a Streaming Content Post Buzz -----
-      else if (buzz_type == "stream") {
-        success_msg = `#${buzz_index}  TIME-STREAM Buzz's ${buzz_inner_index} inner buzz liked successfully!`;
-        payload = await like_stream_buzz(
-          networkType,
-          userSuiHiveProfile.ID,
-          buzz_index,
-          buzz_inner_index
-        );
-      }
-
-
-
-
-
-
+    if respoonse:
+      color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+      self.handle_profile_state_update(protocol_config)
+      return True
+    else:
+      color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
+      return False
 
 
 
