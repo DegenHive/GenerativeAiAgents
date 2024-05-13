@@ -878,6 +878,7 @@
     "BEE_CAP": "0x7552d47a79efa7cf2bd206923bd2b73bf710367c963cb0d9a2ef63f0907202b3",
     "pool_usdc_usdt_stable_id": "0x2493ec8a23872baf246fbdd448cf67a192776f484b7bf52fd4526977e4b60b9d",
     "pool_usdc_sui_curved_id": "0xbd9640b570a75023061b930f4b35931aa919dfa83b4f07e263fd87dd205012a3",
-    "pool_dsui_sui_curved_id": "0x508fd4a9ec95c9677bfdb344b29b25ba121efcde76639910574f4314e94d9256"
+    "pool_dsui_sui_curved_id": "0x508fd4a9ec95c9677bfdb344b29b25ba121efcde76639910574f4314e94d9256",
+    "STREAMER_BUZZ_OBJECT": "0xda2283b59b49fbe2e7e84cbd33506c6299f0b8b4f5764089aefa2d91060742c8"
   }
 }

@@ -25,6 +25,10 @@ from persona.cognitive_modules.execute import *
 from onchain_helpers import *
 from backend_api import *
 
+NOISE_TYPE = 0
+CHRONICLE_TYPE = 1
+BUZZ_CHAIN_TYPE = 2
+
 class Persona: 
 
   def __init__(self, name, private_key, rpc_url, folder_mem_saved=False):
@@ -170,6 +174,126 @@ class Persona:
     transferSui(self.rpc_url, self.private_key, recepient_address, amount)
 
 
+  """
+  Like a Buzz on Hive Chronicle or Time-Stream Auction or Buzz Chain
+  """
+  def make_like_handler(self, protocol_config, buzz_type, buzz_index, buzz_inner_index, poster_profile_id):
+    color_print(f"\nHandling Like by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+    userSuiHiveProfile = self.scratch.get_hiveProfileID()
+    
+    if (userSuiHiveProfile == poster_profile_id):
+      color_print(f"\n Oops! You can't like your own buzz.", RED)
+      return False
+
+    hiveChronicleState = getHiveChronicleInfo(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile)
+    if "max_entropy_for_cur_epoch" not in hiveChronicleState  or hiveChronicleState["max_entropy_for_cur_epoch"] < 1:
+      color_print(f"\n Oops! You don't have enough entropy points to like this buzz.", RED)
+      return False
+
+    respoonse = False
+    if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
+      buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
+      respoonse = like_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, CHRONICLE_TYPE, buzz_index, buzz_inner_index)
+
+
+
+
+
+  const clickLikeHandler = async (
+    index: any,
+    buzz_info: any,
+    poster_profile_id: any,
+    username: any,
+    e: any
+  ) => {
+    console.log("\n\n\nclickLikeHandler");
+    try {
+ 
+
+      let payload: any;
+ 
+ 
+
+ 
+      // // ----- If its a Pool Governor Buzz -----
+      else if (buzz_type == "governor") {
+        success_msg = `AMM Pools Governance Buzz #${buzz_index} liked successfully. This costs 1 entropy points and doesn't earn you any BEE tokens!`;
+        payload = like_or_unlike_governor_buzz(
+          userSuiHiveProfile.ID,
+          buzz_index,
+          true,
+          networkType
+        );
+      }
+      // // ----- If its a Hivedao Buzz -----
+      else if (buzz_type == "hivedao") {
+        success_msg = `AMM Pools Governance Buzz #${buzz_index} liked successfully!`;
+        payload = like_or_unlike_hivedao_buzz(
+          userSuiHiveProfile.ID,
+          buzz_index,
+          true,
+          networkType
+        );
+      }
+      // ----- If its a Streaming Content Post Buzz -----
+      else if (buzz_type == "stream") {
+        success_msg = `#${buzz_index}  TIME-STREAM Buzz's ${buzz_inner_index} inner buzz liked successfully!`;
+        payload = await like_stream_buzz(
+          networkType,
+          userSuiHiveProfile.ID,
+          buzz_index,
+          buzz_inner_index
+        );
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   # GLOBAL TRANSACTION FUNCTIONS --> Incrementing Hive Chronicle, Time-Stream, etc.
     
@@ -219,16 +343,7 @@ class Persona:
 
 
     
-  """
-  Like a time-stream Buzz
-  """
-  async def likeTimeStream(self, protocol_config):
-    profileID = self.scratch.get_hiveProfileID()
-    if not profileID or profileID == "":
-      color_print(f"\nLiking Time-Stream Buzz for {self.name}... | Address: {self.scratch.get_address()} \n", GREEN)
-      await kraftHiveProfileTx(self.rpc_url, self.private_key, protocol_config, self.name, self.scratch.get_bio() )
-  
-    
+
 
 
 

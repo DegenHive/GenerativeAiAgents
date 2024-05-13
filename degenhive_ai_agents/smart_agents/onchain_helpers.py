@@ -537,49 +537,356 @@ def simulate_tx(txb: SyncTransaction):
         return False, simulation_json["effects"]["status"]["error"]
 
 
+############### --- ############### --- ############### --- ###############
+############### --- --- --- NOISE   FUNCTIONS  --- --- --- --- ############
+############### --- ############### --- ############### --- ###############
 
+"""
+Execute a transaction to make a Noise Post
+"""
+def make_noise_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, noise, gen_ai) :
+    try: 
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::make_some_noise",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                    ObjectID(user_profile),
+                    ObjectID(noise),
+                    SuiString([gen_ai])
+                ],
+                type_arguments=[],
+            )
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"Noise Buzz made successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error making Noise Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error making Noise Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error making Noise Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error making Noise Buzz: {e}")
+        return False
+
+
+
+############### --- ############### --- ############### --- ###############
+############### --- --- --- LIKE FUNCTIONS  --- --- --- --- ###############
+############### --- ############### --- ############### --- ###############
+
+"""
+Execute a transaction to like a HiveChronicle Post
+"""
+def like_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, buzz_type, buzz_index, thread_index) :
+    try: 
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::add_like_to_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["HIVE_MANAGER"]),
+                    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                    ObjectID(user_profile),
+                    ObjectID(poster_profile),
+                    SuiU64(buzz_type),
+                        SuiU64(buzz_index),
+                        SuiU64(thread_index),
+                ],
+                type_arguments=[],
+            )
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"HiveChronicle Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Liking HiveChronicle Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Liking HiveChronicle Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Liking HiveChronicle Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error Liking HiveChronicle Buzz: {e}")
+        return False
+
+
+"""
+Execute a transaction to like a DexDao Governor Post
+"""
+def like_dexDaoGovernor_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, governor_post_index) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::entry_like_governor_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                    ObjectID(protocol_config["HIVE_MANAGER"]),
+                    ObjectID(protocol_config["POOLS_GOVERNOR"]),
+                    ObjectID(user_profile),
+                        SuiU64(governor_post_index),
+                ],
+                type_arguments=[],
+            )
+        
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"DexDao Governor Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Liking DexDao Governor Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Liking DexDao Governor Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Liking DexDao Governor Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error Liking DexDao Governor Buzz: {e}")
+        return False
+
+
+"""
+Execute a transaction to like a HiveDao Governor Post
+"""
+def like_HiveDaoGovernor_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, governor_post_index) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_DAO_PACKAGE"]}::hive_dao::like_governor_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["POOLS_GOVERNOR"]),
+                    ObjectID(user_profile),
+                        SuiU64(governor_post_index),
+                ],
+                type_arguments=[],
+            )
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"HiveDao Governor Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Liking HiveDao Governor Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Liking HiveDao Governor Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Liking HiveDao Governor Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error Liking HiveDao Governor Buzz: {e}")
+        return False
 
 """
 Execute a transaction to like a stream buzz Post
 """
 def like_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, stream_index, stream_inner_index) :
-    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
-    txBlock = SyncTransaction(client=suiClient)
-    txBlock.move_call(
-        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::like_stream_buzz",
-        arguments=[
-                   ObjectID(CLOCK),
-                   ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
-                   ObjectID(protocol_config["HIVE_MANAGER"]),
-                   ObjectID(protocol_config["HIVE_VAULT"]),
-                   ObjectID(protocol_config["BEE_CAP"]),
-                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
-                     ObjectID(user_profile),
-                    SuiU64(stream_index),
-                    SuiU64(stream_inner_index),
-            ],
-            type_arguments=[SUI_TYPE],
-        )
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::like_stream_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                    ObjectID(protocol_config["HIVE_MANAGER"]),
+                    ObjectID(protocol_config["HIVE_VAULT"]),
+                    ObjectID(protocol_config["BEE_CAP"]),
+                    ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                        ObjectID(user_profile),
+                        SuiU64(stream_index),
+                        SuiU64(stream_inner_index),
+                ],
+                type_arguments=[SUI_TYPE],
+            )
 
-    simulation_response, txBlock = simulate_tx(txBlock)
-    if (simulation_response):
-        print(f"Simulation successful")
-        exec_result = handle_result(txBlock.execute())
-        exec_result = exec_result.to_json()
-        exec_result = json.loads(exec_result)
-        if (exec_result["effects"]["status"]["status"] == "success"):
-            color_print(f"Stream Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
-            return True
-        else:
-            color_print(f"Error Liking Stream Buzz: {exec_result["effects"]["status"]["error"]}", RED)
-            send_telegram_message(f"Error Liking Stream Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"Stream Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Liking Stream Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Liking Stream Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Liking Stream Buzz: {txBlock}")
             return False
-    else: 
-        print(f"Simulation failed")
-        send_telegram_message(f"Simulation -- Error Liking Stream Buzz: {txBlock}")
+    except Exception as e:
+        print(f"Error Liking Stream Buzz: {e}")
+        return False
+
+############### --- ############### --- ############### --- ###############
+############### --- --- --- COMMENT FUNCTIONS  --- --- --- --- ############
+############### --- ############### --- ############### --- ###############
+
+"""
+Execute a transaction to comment on a HiveChronicle Post
+"""
+def comment_on_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, buzz_type, buzz_index, thread_index, dialogue_index, dialogue_content, to_remove) :
+    try: 
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::update_dialogue_to_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["HIVE_MANAGER"]),
+                    ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                    ObjectID(user_profile),
+                    ObjectID(poster_profile),
+                    SuiU64(buzz_type),
+                        SuiU64(buzz_index),
+                        SuiU64(thread_index),
+                        SuiU64(dialogue_index),
+                        SuiString(dialogue_content),
+                        SuiBoolean(to_remove),
+                ],
+                type_arguments=[],
+            )
+
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"HiveChronicle Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Commenting HiveChronicle Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Commenting HiveChronicle Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Commenting HiveChronicle Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error Commenting HiveChronicle Buzz: {e}")
         return False
 
 
+"""
+Execute a transaction to comment on a DexDao Governor Post
+"""
+def comment_on_dexDaoGovernor_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, governor_post_index, comment_index, comment) :
+    try: 
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["DEX_DAO_PACKAGE"]}::dex_dao::interact_with_governance_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["HIVE_MANAGER"]),
+                    ObjectID(protocol_config["POOLS_GOVERNOR"]),
+                    ObjectID(user_profile),
+                        SuiU64(governor_post_index),
+                        SuiU64(comment_index),
+                        SuiU64(comment)
+                ],
+                type_arguments=[],
+            )
+
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"DexDao Governor Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Commenting DexDao Governor Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Commenting DexDao Governor Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Commenting DexDao Governor Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error Commenting DexDao Governor Buzz: {e}")
+        return False
+
+"""
+Execute a transaction to comment on a HiveDao Governor Post
+"""
+def comment_on_HiveDaoGovernor_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, governor_post_index, comment_index, comment) :
+    try: 
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["DEX_DAO_PACKAGE"]}::dex_dao::interact_with_governance_buzz",
+            arguments=[
+                    ObjectID(CLOCK),
+                    ObjectID(protocol_config["HIVE_MANAGER"]),
+                    ObjectID(protocol_config["POOLS_GOVERNOR"]),
+                    ObjectID(user_profile),
+                        SuiU64(governor_post_index),
+                        SuiU64(comment_index),
+                        SuiU64(comment)
+                ],
+                type_arguments=[],
+            )
+
+        simulation_response, txBlock = simulate_tx(txBlock)
+        if (simulation_response):
+            print(f"Simulation successful")
+            exec_result = handle_result(txBlock.execute())
+            exec_result = exec_result.to_json()
+            exec_result = json.loads(exec_result)
+            if (exec_result["effects"]["status"]["status"] == "success"):
+                color_print(f"DexDao Governor Buzz Liked successfuly: {exec_result["digest"]}", GREEN)
+                return True
+            else:
+                color_print(f"Error Commenting DexDao Governor Buzz: {exec_result["effects"]["status"]["error"]}", RED)
+                send_telegram_message(f"Error Commenting DexDao Governor Buzz: {exec_result["effects"]["status"]["error"]} \nTxhash - <a href='https://testnet.suivision.xyz/txblock/{exec_result["digest"]}>{exec_result["digest"]}</a>")
+                return False
+        else: 
+            print(f"Simulation failed")
+            send_telegram_message(f"Simulation -- Error Commenting DexDao Governor Buzz: {txBlock}")
+            return False
+    except Exception as e:
+        print(f"Error Commenting DexDao Governor Buzz: {e}")
+        return False
 
 """
 Execute a transaction to comment on a stream buzz Post

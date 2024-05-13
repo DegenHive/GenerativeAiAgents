@@ -1,3 +1,35 @@
 {
-  
+  "ongoing_epoch": 367,
+  "last_platform_state_update": 1715524773048.705,
+  "ongoing_epoch_start_ms": 1715441037010,
+  "ongoingHiveChronicleInfo": {
+    "bee_farm_info": {
+      "active_epoch": "367",
+      "bees_for_epoch": "57534246575342",
+      "entropy_during_epoch": "6"
+    },
+    "config_params": {
+      "buffer": "5",
+      "max_buzz_chains": "24",
+      "max_chronicles": "24",
+      "max_noises": "24",
+      "max_rebuzzes": "24"
+    },
+    "total_bees_available": "57534246575342",
+    "welcome_buzzes_count": "9",
+    "system_infusion_buzzes_count": "20",
+    "lockdrop_vault_dof_manager_cap": {
+      "name": "CELESTIAL_BEINGS",
+      "id": "0x30577b333cf28c27d88d8ed7538e5ec6dcfb4c9fc994d061fd1596dfcf2bc0a2"
+    },
+    "infusion_vault_dof_manager_cap": {
+      "name": "HIVE_CHRONICLES",
+      "id": "0x4aac6f66216d9b7e75e53bd3e2963bbed0fdeb0007551e6aa1f5178ec542fb10"
+    },
+    "hive_entry_capID": "0x1422005c4862ee3821f96636e3bdbf4159a667142a12486f0b802427e25c582d",
+    "hive_chronicle_dof_cap": {
+      "name": "HiveChronicles",
+      "id": "0x79c41bdee064ddc39aa8c35e30837888095741e0d1afab93c28b8c0735df8387"
+    }
+  }
 }

@@ -147,6 +147,28 @@ def getCommentsForPost(pk: any, sk: any, limit: any, lastKey: None, network: any
     # }
 
 
+def getRecentPosts():
+    print("Getting recent posts...")
+    try:
+        graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
+        recentData = graphQLClient.execute(
+            GET_RECENT_POSTS,
+            variables={"recents":"buzz"}
+        )    
+        # print("recentData Data: ", recentData)
+        recentData = json.loads(recentData)
+        print(type(recentData))
+        return {
+            "status": True,
+            "data": recentData["data"]["getSocial"]["results"]
+        }
+    except Exception as e:
+        print(e)
+        return {"status": False, "data": None}
+
+
+
+
 def getLikesAndDialogues(user_id: any, network: any):
     print("Getting Likes And Dialogues...")
     graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)

@@ -197,3 +197,13 @@ query GetSocial($feed: SocialProfileSpecific, $limit: Float, $lastKey: String) {
   }
 }
 """
+
+GET_RECENT_POSTS  = """
+query getSocial($recents: String) {
+  getSocial(recents: $recents) {
+    results
+    recents
+    lastKey
+  }
+}
+"""
