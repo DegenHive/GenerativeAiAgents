@@ -80,7 +80,33 @@ def makeFetchBioPrompt(type, username, age, personality, meme_expertise, o_acc_c
                                    
                       
 
-                            
+def generate_prompt_character(character,theme, prompt_object):
+     prompt = f'''You have to act as a prompt generator for illustrations. 
+                    The format for the structure of these prompts is: illustration of a (keyword as per the theme) (emotion) {character} on white background, cute, Halloween,(keyword as per the theme), wearing vr, (keyword as per the theme) style, kawaii, (color), cute, kawaii, chibi, (keyword as per the theme) style, illustration, vintage style,  epic light, fantasy, bokeh, {prompt_object}, hand-drawn, digital painting, low-poly, retro aesthetic, focused on the character, 4K resolution, using Cinema 4D, white outline, vivid print, (third keyword as per the theme), 4k, (2nd keyword as per the theme) style, detailed potions, vector on white background
+                    You can replace the (color). You can also optimize it for the (theme) but the structure of the prompt and all the keywords mentioned here should stay consistent. You do not have to deviate from this prompt structure and it's keywords. You don't have to come up with a context or any other information. You should just come with a simple prompt. You should just provide a single prompt that can be plugged into the software. You are acting as an API call for image-generating software.
+                    character = {character}       theme={theme}
+                    Also come up with a strong emotion for the (emotion) variable.'''
+     return prompt
+ 
+                             
+def generate_prompt_attributes(prompt, attribute):
+     prompt = f''' {prompt}
+          This is a prompt for a NFT character that is generated from a image generating software. Now you have to generate another prompt using this information that describes the 
+          character's {attribute}. The format of the prompt will be similar to that of the original prompt. Also you have you generate a prompt that gives out the texture of the {attribute}. The color of the textures you generate should 
+          purple, black and consistent with the original prompt'''
+     return prompt
+ 
+                             
+                              
+def generate_prompt_object(prompt):
+     prompt = f''' {prompt}
+          This is a prompt for a NFT character that is generated from a image generating software. Now you have to extract the object in this prompt. For example it can be a candle, book etc.
+          Note: remember that you have to stick to the prompt and extract the object in the form of text from the given prompt at the top only. You have to come up with a single (object) from the prompt
+          Then when you extract the object from this prompt you have to generate another prompt in this format and that is all you have to do:
+          Format for the new prompt: an item for (object)
+          '''
+     return prompt
+ 
                              
  
 

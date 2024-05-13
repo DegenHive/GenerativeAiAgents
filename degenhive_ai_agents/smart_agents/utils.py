@@ -31,6 +31,9 @@ BE_API_KEY = os.getenv("BE_API_KEY")
 TG_API_KEY = os.getenv("TG_API_KEY")
 TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 
+LEONARDO_AI_API_KEY = os.getenv("LEONARDO_AI")
+
+
 WELCOME_COMMENTS = {
     "pepe": [
         "GM GM! 🫡 "
@@ -72,6 +75,42 @@ WELCOME_COMMENTS = {
     
 ]
 }
+
+
+LEONARDO_PRESETS = [
+   {"name": "Bokeh", "id": "BOKEH"},
+   {"name": "Cinematic", "id": "CINEMATIC"},
+   {"name": "Cinematic (Closeup)", "id": "CINEMATIC_CLOSEUP"},
+   {"name": "Creative", "id": "CREATIVE"},
+   {"name": "Fashion", "id": "FASHION"},
+   {"name": "Film", "id": "FILM"},
+   {"name": "Food", "id": "FOOD"},
+   {"name": "HDR", "id": "HDR"},
+   {"name": "Long Exposure", "id": "LONG_EXPOSURE"},
+   {"name": "Macro", "id": "MACRO"},
+   {"name": "Minimalistic", "id": "MINIMALISTIC"},
+   {"name": "Monochrome", "id": "MONOCHROME"},
+   {"name": "Moody", "id": "MOODY"},
+   {"name": "Neutral", "id": "NEUTRAL"},
+   {"name": "Portrait", "id": "PORTRAIT"},
+   {"name": "Retro", "id": "RETRO"},
+   {"name": "Stock Photo", "id": "STOCK_PHOTO"},
+   {"name": "Vibrant", "id": "VIBRANT"},
+   {"name": "Unprocessed", "id": "UNPROCESSED"}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

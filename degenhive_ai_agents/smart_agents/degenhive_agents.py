@@ -395,7 +395,7 @@ class DegenHiveAiAgents:
     #   self.updateProtocolStateInfo(simulation_config, main_agent, platform_state)
     #   color_print(f"Platform state successfully updated", GREEN)
 
-    # Get the recent buzzes on the platform
+    # ====== ENGAGEMENT ====== =====>>>>>>> Get the recent buzzes on the platform
     recent_buzzes = getRecentPosts()
     if (recent_buzzes["status"] ):
 
@@ -415,6 +415,16 @@ class DegenHiveAiAgents:
       for welcome_buzz in welcome_buzzes:
         # print(welcome_buzz["timestamp"])
         self.handle_welcome_buzzes(welcome_buzz)
+
+
+    # ====== CONTENT CREATION ====== =====>>>>>>> Make Noise buzzes on the platform
+
+
+
+
+
+
+
 
 
     return
