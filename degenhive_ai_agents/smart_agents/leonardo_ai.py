@@ -43,44 +43,49 @@ def improve_leonardo_prompt(leonardo_prompt):
 
 
 def make_leonardo_image_request(leonardo_prompt, negative_prompt, modelId, width, height, number_of_images):
-    control_net_question = False
-    init_strength_question = None
-    init_image_id_question = None
-    prompt_magic_question = True
+    print(f"Making Leonardo Image Request...")
+    try:
+        control_net_question = False
+        init_strength_question = None
+        init_image_id_question = None
+        prompt_magic_question = True
 
-    payload = {
-            "prompt": f"{leonardo_prompt}",
-            "modelId": modelId,
-            "width": width,
-            "height": height,
-            "sd_version": "v1_5",
-            "num_images": number_of_images,
-            "negative_prompt": negative_prompt,
-            "promptMagic": False,
-            "num_inference_steps": 30,
-            "guidance_scale": 7,
-            "init_generation_image_id": None,
-            "init_image_id": init_image_id_question,
-            "init_strength": init_strength_question,
-            "scheduler": "EULER_DISCRETE",
-            "presetStyle": "LEONARDO",
-            "tiling": False,
-            "public": False,
-            "controlNet": control_net_question,
-            "controlNetType": "DEPTH"
-    }
+        payload = {
+                "prompt": f"{leonardo_prompt}",
+                "modelId": modelId,
+                "width": width,
+                "height": height,
+                "sd_version": "v1_5",
+                "num_images": number_of_images,
+                "negative_prompt": negative_prompt,
+                "promptMagic": False,
+                "num_inference_steps": 30,
+                "guidance_scale": 7,
+                "init_generation_image_id": None,
+                "init_image_id": init_image_id_question,
+                "init_strength": init_strength_question,
+                "scheduler": "EULER_DISCRETE",
+                "presetStyle": "LEONARDO",
+                "tiling": False,
+                "public": False,
+                "controlNet": control_net_question,
+                "controlNetType": "DEPTH"
+        }
 
-    response = requests.post(LEONARDO_API_ENDPOINT, json=payload, headers=HEADERS)
-    response_data = response.text
+        response = requests.post(LEONARDO_API_ENDPOINT, json=payload, headers=HEADERS)
+        response_data = response.text
 
-    # Parse the JSON data
-    data = json.loads(response_data)
-    print(data)
-
-
-    # Extract the generationId
-    generation_id = data["sdGenerationJob"]["generationId"]
-    response.close()
+        # Parse the JSON data
+        data = json.loads(response_data)
+        print(data)
+        # Extract the generationId
+        generation_id = data["sdGenerationJob"]["generationId"]
+        response.close()
+        # print(f"Generation ID: {generation_id}")
+        return generation_id
+    except Exception as e:
+        print(e)
+        return None
 
 #     print(f"Downloading generated Leonardo Images.... Please wait for 20 seconds.....")
 #     download_images(generation_id, LEONARDO_API_ENDPOINT, HEADERS, theme, character, community, version, age)
@@ -93,32 +98,39 @@ def make_leonardo_image_request(leonardo_prompt, negative_prompt, modelId, width
 
 # #============================ This function is for downloading the images from leonardo =============================================================
 
-def download_images(generation_id, url, headers, theme, character, community, version, age):
-    new_url = url + "/" + generation_id
-    response = requests.get(new_url, headers=headers)
+def download_leonardo_images(generation_id, save_image_path, cur_images_count):
+    print(f"Downloading generated Leonardo Images.... Please wait for 20 seconds.....")
+    generations_url = LEONARDO_API_ENDPOINT + "/" + generation_id
+    response = requests.get(generations_url, headers=HEADERS)
     response_data = response.text
     # Parse the JSON data
     data = json.loads(response_data)
-    # time.sleep(15)
-  
-    # Extract the image URLs
-    image_urls = [item["url"] for item in data["generations_by_pk"].get("generated_images", [])]
+    time.sleep(15)
+    # print(data)
+    
+    tries = 3
+    while(tries > 0):
+        try:
+            # Extract the image URLs
+            image_urls = [item["url"] for item in data["generations_by_pk"].get("generated_images", [])]
+            for i, new_url in enumerate(image_urls):
+                print(f"Downloading image {i}....")
+                response = requests.get(new_url)
+                if response.status_code == 200:
+                    with open(save_image_path + f"/{cur_images_count}.png", "wb") as file:
+                        file.write(response.content)
+                    cur_images_count += 1
+                    print(f"Image {i+1} downloaded successfully")
+                else:
+                    print(f"Failed to download image {i+1}")
+            break
+        except Exception as e:
+            print(e)
+            tries -= 1
+            time.sleep(15)
+    
+    return cur_images_count
 
-    for i, new_url in enumerate(image_urls):
-        response = requests.get(new_url)
-        if response.status_code == 200:
-            # Extract the filename from the URL
-            # filename = str(update_count()) + "_" + new_url.split("/")[-1]
-            # # Create the directory path
-            # directory = f"database/{version}/{theme}/{character}/{community}/{age}"
-            # os.makedirs(directory, exist_ok=True)
-            # Save the image to a file in the specified directory
-            # file_path = os.path.join(directory, filename)
-            with open("testing", "wb") as file:
-                file.write(response.content)
-            print(f"Image {i+1} downloaded successfully")
-        else:
-            print(f"Failed to download image {i+1}")
 
 
 if __name__ == "__main__":
@@ -133,4 +145,4 @@ if __name__ == "__main__":
     # make_leonardo_image_request(leonardo_prompt, negative_prompt, modelId, width, height, number_of_images)
 
     generationId = "c3ff9922-92ae-43cb-937d-42c91c21b65c"
-    download_images(generationId, LEONARDO_API_ENDPOINT, HEADERS, "theme", "character", "community", "version", "age")
+    download_leonardo_images(generationId, LEONARDO_API_ENDPOINT, HEADERS, "theme", "character", "community", "version", "age")

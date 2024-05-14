@@ -56,6 +56,7 @@ class DegenHiveAiAgents:
     # Initialize the AI agents.
     for account in simulation_config['pepe_agents']:
       if "username" in account:
+        # print(f"Initializing Pepe Agent: {account['username']}")
         self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}pepes/{account["username"]}")
         self.persona_names.append(account["username"])
 
@@ -63,12 +64,12 @@ class DegenHiveAiAgents:
       if "username" in account:
         self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}apes/{account["username"]}")
         self.persona_names.append(account["username"])
- 
+
     for account in simulation_config['bee_agents']:
       if "username" in account:
         self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}bees/{account["username"]}")
         self.persona_names.append(account["username"])
- 
+
 
 
 
@@ -88,6 +89,7 @@ class DegenHiveAiAgents:
     with open(f"../storage/config.json") as json_file:  
       simulation_config = json.load(json_file)
 
+    
 
     # Get the number of Pepe Agents that need to be initialized.
     pepes_to_initialize = simulation_config['supported_agents_count']['pepes'] - len(simulation_config['pepe_agents'])
@@ -371,10 +373,57 @@ class DegenHiveAiAgents:
       outfile.write(json.dumps(simulation_config, indent=2))
       
 
+  ##################################################################################################
+
+
+  def handle_making_noise_buzzes(self):
+    with open(f"../storage/config.json") as json_file:  
+      simulation_config = json.load(json_file)
+
+      total_agents = len(self.persona_names)
+      agent_index = random.randint(0, total_agents - 1)
+      agent_persona = self.personas[self.persona_names[agent_index]]
+      agent_persona.make_new_noise( f"{CUR_PATH_PERSONAS}{agent_persona.scratch.type}s/{agent_persona.scratch.username}", simulation_config["configuration"])
+
+    # if "latest_new_profile" not in simulation_config:
+    #   simulation_config["latest_new_profile"] = { "profileID": "", "timestamp": 0 }
+
+    # make sure its a new Buzz
+    # if timestamp > simulation_config["latest_new_profile"]["timestamp"]:
+    #   color_print(f"\nNew Profile: {new_profile_ID} | Timestamp: {timestamp}", GREEN)
+    #   send_telegram_message(f"New Profile: {new_profile_ID} | Timestamp: {timestamp}")
+
+    #   total_agents = len(self.persona_names)
+    #   likes_count = random.randint(3, 9)
+    #   comments_count = random.randint(0, likes_count)
+    #   color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
+
+    #   # ----- Handle Making Likes and Comments -----
+    #   while likes_count > 0 or comments_count > 0:
+    #     # Get the persona that will interact with the new profile
+    #     agent_index = random.randint(0, total_agents - 1)
+    #     agent_persona = self.personas[self.persona_names[agent_index]]
+    #     is_liked = agent_persona.make_like_handler(simulation_config["configuration"], "chronicle", 1, 0, new_profile_ID)
+    #     is_commented = agent_persona.make_comment_on_welcome_buzz(simulation_config["configuration"], "chronicle", 1, 0, new_profile_ID)
+    #     if is_liked:
+    #       likes_count -= 1
+
+    #     if is_commented:
+    #       comments_count -= 1
+
+    # # Update the latest_new_profile in the simulation_config
+    # simulation_config["latest_new_profile"]["profileID"] = new_profile_ID
+    # simulation_config["latest_new_profile"]["timestamp"] = timestamp
+    # with open(f"../storage/config.json", "w") as outfile:
+    #   outfile.write(json.dumps(simulation_config, indent=2))
+
     
   ##################################################################################################
   
   def activate_ai_agents_swarm(self):
+
+    self.handle_making_noise_buzzes()
+    return
 
     with open(f"../storage/config.json") as json_file:  
       simulation_config = json.load(json_file)

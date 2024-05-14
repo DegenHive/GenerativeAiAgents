@@ -77,8 +77,26 @@ def makeFetchBioPrompt(type, username, age, personality, meme_expertise, o_acc_c
 
      # final_prompt = add_example_to_chatGPT( simul_prompt, f"prompt_template/degenhive_prompts/{type}_personas.txt")
      return simul_prompt
-                                   
-                      
+
+
+def makeNewNoiseImagePrompt(type, age, personality, meme_expertise, o_acc_commitment, daily_behavior):
+     simul_prompt = f"Below we have provided the username, age, personality, meme expertise, o/acc commitment, and daily behavior for {type} character. Your task is to act as a prompt generator for generating an image for this character that reflects their unique traits and characteristics. \
+                              The noise image will be used as a visual representation of the character on DegenHive platform and should capture the essence of the character in a creative and engaging way. \
+                              Focus on the type of character (eq - Pepe, Ape, BEE) and the provided parameters to create a visually appealing character image which showcases some emotion as per this character's personality that resonates with the DegenHive community. \
+                              Age: {age} \
+                              Personality: {personality} \
+                              Meme Expertise: {meme_expertise} \
+                              o/acc Commitment: {o_acc_commitment} \
+                              Daily Behavior: {daily_behavior} \
+                              Your noise image should be colorful and vibrant, incorporating elements of humor, playfulness, and creativity to make it visually appealing for users. Return only the noise image prompt and nothing else. "
+
+     final_prompt = add_example_to_chatGPT( simul_prompt, f"prompt_template/degenhive_prompts/{type}_image.txt")
+     
+     final_prompt = final_prompt + "\n The above example prompt is just for reference. Come up with a new prompt for the given character based on provided characteristics. Make sure to focus on emotion and try to keep it fun, engaging with cyberpunk elements. "
+     final_prompt = final_prompt + "\n Return only the image prompt and nothing else. Maximum prompt length is 900 characters. Strictly follow the 900 character limit"
+     return final_prompt
+
+                    
 
 def generate_prompt_character(character,theme, prompt_object):
      prompt = f'''You have to act as a prompt generator for illustrations. 

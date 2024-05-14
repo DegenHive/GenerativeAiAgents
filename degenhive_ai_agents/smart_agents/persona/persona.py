@@ -24,6 +24,8 @@ from persona.cognitive_modules.reflect import *
 from persona.cognitive_modules.execute import *
 from onchain_helpers import *
 from backend_api import *
+from llma_helpers import *
+from leonardo_ai import *
 
 NOISE_TYPE = 0
 CHRONICLE_TYPE = 1
@@ -126,9 +128,75 @@ class Persona:
         return True
     pass
 
+  # ----  ### -------- MAKE NOISE FUNCTION ------------ ### ----
 
 
+  def make_new_noise(self, generations_path, protocol_config):
+    color_print(f"\nMaking New Noise for {self.name}... | Address: {self.scratch.get_address()}", YELLOW)
 
+    # Load the saved persona's Generations state
+    try:
+      generations_load = json.load(open(generations_path + "/generations/generations.json"))
+      print(generations_load)
+    except Exception as e:
+      print(e)
+      generations_load = {}
+
+      if "count" not in generations_load:
+        generations_load["count"] = 0
+        generations_load["last_posted"] = 0
+        generations_load["generations"] = []
+        
+    # Generate prompt for noise image
+    # image_prompt = makeNewNoiseImagePrompt( self.scratch.type, self.scratch.age, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior)
+    # noise_image_prompt = ChatGPT_request(image_prompt)
+    # try:
+    #   noise_image_prompt = json.loads(noise_image_prompt)
+    # except Exception as e:
+    #   print(e)
+    #   return False
+    # if "output" in noise_image_prompt:
+    #   noise_image_prompt = noise_image_prompt["output"]
+
+    noise_image_prompt = "Create a whimsical and bubbly Pepe character immersed in a colorful and vibrant underwater world. Imagine Pepe exploring an underwater paradise filled with unique sea creatures, coral reefs, and shimmering ocean plants. Let the image capture Pepe's playful and curious personality as it interacts with the whimsical marine life. Incorporate elements like glowing jellyfish, friendly seahorses, and magical underwater landscapes to evoke a sense of wonder and joy. The scene should be teeming with life and energy, reflecting Pepe's optimistic and expressive nature in an enchanting underwater setting"
+
+    with open(f"./leonardo_models.json") as leonardo_models:  
+      leonardo_models = json.load(leonardo_models)
+    
+    leonardo_models = leonardo_models["character_models"]
+    modelToUse = random.choice(leonardo_models)
+    # generationId = make_leonardo_image_request(noise_image_prompt, "", modelToUse["id"], 512, 512, 4)
+    generationId = "de165229-c4b5-4275-84b6-58c743b32f6c"
+    color_print(f"Generation ID: {generationId}", YELLOW)
+    new_cur_images_count = generations_load["count"]
+    if generationId:
+      new_cur_images_count = download_leonardo_images(generationId, generations_path + "/generations/leonardo/", generations_load["count"])
+    else:
+      print("Error generating images via leonardo API")
+      return False
+
+    # new_cur_images_count = download_leonardo_images("ddccbd5c-7833-4a6a-a75f-3bbb038ed5a0", generations_path + "/generations/leonardo/", generations_load["count"])
+
+    if new_cur_images_count > generations_load["count"]:
+      new_images = list(range(generations_load["count"], new_cur_images_count))
+      generations_load["count"] = new_cur_images_count
+      generations_load["generations"].append({"noise_image_prompt": noise_image_prompt, "generationId": "generationId", "new_images": new_images, "modelId": modelToUse["id"],  "modelName": modelToUse["name"] })
+
+    with open(generations_path + "/generations/generations.json", "w") as outfile:
+      json.dump(generations_load, outfile, indent=2) 
+
+      color_print(f"\nNew Noise generated for {self.name}... | Address: {self.scratch.get_address()}", GREEN)
+      return True
+    # text_prompt = makeNoiseTextPrompt( self.scratch.type, self.scratch.username, self.scratch.personality, self.scratch.daily_behavior, image_prompt)
+
+
+    # modelId
+
+    # download_leonardo_images(generationId)
+
+    # upload_image_to_degenhive_be(image_path)
+
+    # make_noiseTx()
 
 
 

@@ -8,7 +8,7 @@ import asyncio
 
 
 
-async def file_to_base64(file):
+def file_to_base64(file):
     try:
         with open(file, "rb") as file:
             base64_string = base64.b64encode(file.read()).decode('utf-8')
@@ -220,6 +220,14 @@ def getHiveThread(pk: any, sk: any, network: any):
     #       "data": null,
     #     }
     # }
+
+
+def upload_image_to_degenhive_be(image_path):
+    print("Uploading Image to BE...")
+    img_str = file_to_base64(image_path)
+    img_str = "data:image/png;base64," + img_str    
+    result = upload_media_to_be(img_str)
+    print(result)
 
 
 

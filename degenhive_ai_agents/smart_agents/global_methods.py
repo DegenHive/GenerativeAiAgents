@@ -24,6 +24,11 @@ from os import listdir
 def create_persona_folder_if_not_there(curr_path, persona_json):
   create_folder_if_not_there(curr_path)
 
+  create_folder_if_not_there(curr_path + "/generations" )
+  create_folder_if_not_there(curr_path + "/generations/leonardo" )
+  create_folder_if_not_there(curr_path + "/generations/dalle" )
+  create_file_if_not_there(curr_path + "/generations" + "/generations.json")  
+
   # create social memory file and associative memory folder
   create_file_if_not_there(curr_path + "/social_memory.json")
   with open(curr_path + "/social_memory.json", "w") as outfile:
