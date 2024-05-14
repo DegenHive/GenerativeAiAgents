@@ -545,6 +545,7 @@ def simulate_tx(txb: SyncTransaction):
 Execute a transaction to make a Noise Post
 """
 def make_noise_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, noise, gen_ai) :
+    print(f"make_noise_buzzTx: user_profile = {user_profile}, noise = {noise}, gen_ai = {gen_ai}")
     try: 
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
         txBlock = SyncTransaction(client=suiClient)
@@ -554,7 +555,7 @@ def make_noise_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_pro
                     ObjectID(CLOCK),
                     ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
                     ObjectID(user_profile),
-                    ObjectID(noise),
+                    SuiString(noise),
                     SuiString([gen_ai])
                 ],
                 type_arguments=[],
@@ -913,19 +914,13 @@ def interact_with_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config
                    ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
                    ObjectID(protocol_config["HIVE_DISPERSER"]),
                    ObjectID(user_profile), ObjectID(streamer_profile),
-                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
-                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
                     SuiU64(stream_index),
                     SuiU64(stream_inner_index),
                     SuiString(user_buzz),
-                    None
+                    SuiString([n_gen_ai_url])
             ],
             type_arguments=[SUI_TYPE],
         )
-    
-
-
-
     simulation_response, txBlock = simulate_tx(txBlock)
     if (simulation_response):
         print(f"Simulation successful")

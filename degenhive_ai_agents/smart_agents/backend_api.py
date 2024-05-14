@@ -15,10 +15,12 @@ def file_to_base64(file):
             return base64_string
     except FileNotFoundError:
         raise FileNotFoundError("No file provided")
+        return None
 
 
 
-async def upload_media_to_be(img_str):
+def upload_media_to_be(img_str):
+    print("Uploading Image to BE Now...")
     headers = {"Content-Type": "application/json"}
     payload = {
         "api_key": BE_API_KEY,
@@ -28,9 +30,11 @@ async def upload_media_to_be(img_str):
     # return
     try:
         response = requests.post(BACKEND_API, headers=headers, json=payload)
+        print(response.json())
         response.raise_for_status()
         return {"status": "success", "data": response.json()}
     except requests.exceptions.RequestException as e:
+        print("1. Error uploading image to BE")
         print(e)
         return {"status": "error", "data": None}
 
@@ -147,6 +151,27 @@ def getCommentsForPost(pk: any, sk: any, limit: any, lastKey: None, network: any
     # }
 
 
+
+def getStreamingContent():
+    try:
+        print("Getting Streaming Content...")
+        graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
+        final_data = graphQLClient.execute(
+            GET_STREAMING_CONTENT,
+            variables={"stream": True}
+        )    
+        print("final_data Data: ", final_data)
+        print(type(final_data))       
+        final_data = json.loads(final_data) 
+        return {
+            "status": True,
+            "data": final_data["data"]["getSocial"]["results"]
+        }
+    except Exception as e:
+        print(e)
+        return {"status": False, "data": None}
+
+
 def getRecentPosts():
     print("Getting recent posts...")
     try:
@@ -155,9 +180,9 @@ def getRecentPosts():
             GET_RECENT_POSTS,
             variables={"recents":"buzz"}
         )    
-        # print("recentData Data: ", recentData)
-        recentData = json.loads(recentData)
+        print("recentData Data: ", recentData)
         print(type(recentData))
+        recentData = json.loads(recentData)
         return {
             "status": True,
             "data": recentData["data"]["getSocial"]["results"]
@@ -188,6 +213,17 @@ def getLikesAndDialogues(user_id: any, network: any):
 
     #     "dialoguesData": dialogueData?.getSocial?.user_dialogues ? dialogueData?.getSocial?.user_dialogues : [],
     #   }
+
+def getDialoguesForPost(pk: any, sk: any):
+    print("Getting Dialogues For Post...")
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
+    final_data = graphQLClient.execute(
+        GET_COMMENTS_FOR_POST,
+        variables={"dialoguesForPost": {"SK": sk, "PK": pk}}
+    )    
+    print("Profile Timeline Data: ", final_data)
+
+
 
 def getHiveThread(pk: any, sk: any, network: any):
     print("Getting Hive Thread...")
@@ -223,26 +259,36 @@ def getHiveThread(pk: any, sk: any, network: any):
 
 
 def upload_image_to_degenhive_be(image_path):
-    print("Uploading Image to BE...")
-    img_str = file_to_base64(image_path)
-    img_str = "data:image/png;base64," + img_str    
-    result = upload_media_to_be(img_str)
-    print(result)
+    try:
+        print("Uploading Image to DegenHive BE...")
+        print(image_path)
+        img_str = file_to_base64(image_path)
+        if not img_str:
+            print("issue with file_to_base64")
+            return {"status": "failure", "data": None}
+        img_str = "data:image/png;base64," + img_str    
+        result = upload_media_to_be(img_str)
+        if (result["status"] == "success"):
+            return  result["data"]["url"]
+    except Exception as e:
+        print("Error uploading image to DegenHive BE")
+        print(e)
+        return None
 
 
 
-async def main():
-    file_path = "../storage/content/welcome_imgs/degenHiveIntro2.png"  # Specify the path to your image file
-    print("Uploading Image to BE... file_to_base64")
-    img_str = await file_to_base64(file_path)
-    img_str = "data:image/png;base64," + img_str
-    # print(img_str)
-    print("Uploading Image to BE... upload_media_to_be")
-    result = await upload_media_to_be(img_str)
-    print(result)
+# async def main():
+#     file_path = "../storage/content/welcome_imgs/degenHiveIntro2.png"  # Specify the path to your image file
+#     print("Uploading Image to BE... file_to_base64")
+#     img_str = await file_to_base64(file_path)
+#     img_str = "data:image/png;base64," + img_str
+#     # print(img_str)
+#     print("Uploading Image to BE... upload_media_to_be")
+#     result = await upload_media_to_be(img_str)
+#     print(result)
 
 
 
-if __name__ == '__main__':
+# if __name__ == '__main__':
 
-    asyncio.run(main())
+#     asyncio.run(main())

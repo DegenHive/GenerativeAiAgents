@@ -2,6 +2,7 @@ from io import BytesIO
 import openai 
 from utils import *
 import json
+import time
 
 openai.api_key = OPEN_AI_API_KEY
 
@@ -19,14 +20,16 @@ def makeDalleImage(prompt):
     print(image_url)
 
 
-def download_images(new_url ):
+def download_dalle_image(new_url, file_name ):
+    time.sleep(15)
     response = requests.get(new_url)
     if response.status_code == 200:
-        with open("testing", "wb") as file:
+        with open(file_name, "wb") as file:
             file.write(response.content)
+        return {"status": True, "path": file_name}
     else:
         print(f"Failed to download image")
-        
+    return {"status": False, "path": file_name}
  
 
 

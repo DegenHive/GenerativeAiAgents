@@ -26,6 +26,8 @@ from onchain_helpers import *
 from backend_api import *
 from llma_helpers import *
 from leonardo_ai import *
+from dallE import *
+
 
 NOISE_TYPE = 0
 CHRONICLE_TYPE = 1
@@ -133,7 +135,10 @@ class Persona:
 
   def make_new_noise(self, generations_path, protocol_config):
     color_print(f"\nMaking New Noise for {self.name}... | Address: {self.scratch.get_address()}", YELLOW)
-
+    noise_image_prompt = None
+    generationId = None
+    modelToUse = {"id": "", "name": ""}
+  
     # Load the saved persona's Generations state
     try:
       generations_load = json.load(open(generations_path + "/generations/generations.json"))
@@ -146,60 +151,88 @@ class Persona:
         generations_load["count"] = 0
         generations_load["last_posted"] = 0
         generations_load["generations"] = []
-        
-    # Generate prompt for noise image
-    # image_prompt = makeNewNoiseImagePrompt( self.scratch.type, self.scratch.age, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior)
-    # noise_image_prompt = ChatGPT_request(image_prompt)
-    # try:
-    #   noise_image_prompt = json.loads(noise_image_prompt)
-    # except Exception as e:
-    #   print(e)
-    #   return False
-    # if "output" in noise_image_prompt:
-    #   noise_image_prompt = noise_image_prompt["output"]
 
-    noise_image_prompt = "Create a whimsical and bubbly Pepe character immersed in a colorful and vibrant underwater world. Imagine Pepe exploring an underwater paradise filled with unique sea creatures, coral reefs, and shimmering ocean plants. Let the image capture Pepe's playful and curious personality as it interacts with the whimsical marine life. Incorporate elements like glowing jellyfish, friendly seahorses, and magical underwater landscapes to evoke a sense of wonder and joy. The scene should be teeming with life and energy, reflecting Pepe's optimistic and expressive nature in an enchanting underwater setting"
+      if "noise_buzzes" not in generations_load:
+        generations_load["noise_buzzes"] = []
 
-    with open(f"./leonardo_models.json") as leonardo_models:  
-      leonardo_models = json.load(leonardo_models)
+    if generations_load["last_posted"] >= generations_load["count"]:
+      color_print(f"Generating new Images via Leonardo API...", YELLOW)
+      # ====> 1. Generate prompt for noise image
+      image_prompt = makeNewNoiseImagePrompt( self.scratch.type, self.scratch.age, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior)
+      noise_image_prompt = ChatGPT_request(image_prompt)
+      try:
+        noise_image_prompt = json.loads(noise_image_prompt)
+      except Exception as e:
+        print(e)
+        return False
+      if "output" in noise_image_prompt:
+        noise_image_prompt = noise_image_prompt["output"]
+
+      with open(f"./leonardo_models.json") as leonardo_models:  
+        leonardo_models = json.load(leonardo_models)
     
-    leonardo_models = leonardo_models["character_models"]
-    modelToUse = random.choice(leonardo_models)
-    # generationId = make_leonardo_image_request(noise_image_prompt, "", modelToUse["id"], 512, 512, 4)
-    generationId = "de165229-c4b5-4275-84b6-58c743b32f6c"
-    color_print(f"Generation ID: {generationId}", YELLOW)
-    new_cur_images_count = generations_load["count"]
-    if generationId:
-      new_cur_images_count = download_leonardo_images(generationId, generations_path + "/generations/leonardo/", generations_load["count"])
-    else:
-      print("Error generating images via leonardo API")
+      # ====> 2. Generate image using Leonardo API
+      leonardo_models = leonardo_models["character_models"]
+      modelToUse = random.choice(leonardo_models)
+      generationId = make_leonardo_image_request(noise_image_prompt, "", modelToUse["id"], modelToUse["name"], 512, 512, 4)
+      color_print(f"Generation ID: {generationId}", YELLOW)
+      new_cur_images_count = generations_load["count"]
+
+      # ====> 3. Download images from Leonardo API
+      if generationId:
+        new_cur_images_count = download_leonardo_images(generationId, generations_path + "/generations/leonardo/", generations_load["count"])
+      else:
+        print("Error generating images via leonardo API")
+        return False
+
+      # ====> 4. Update Generations state
+      if new_cur_images_count > generations_load["count"]:
+        new_images = list(range(generations_load["count"], new_cur_images_count))
+        generations_load["count"] = new_cur_images_count
+        generations_load["generations"].append({"noise_image_prompt": noise_image_prompt, "generationId": "generationId", "new_images": new_images, "modelId": modelToUse["id"],  "modelName": modelToUse["name"] })
+      else: 
+        print("No new images generated")
+        return False
+
+      with open(generations_path + "/generations/generations.json", "w") as outfile:
+        json.dump(generations_load, outfile, indent=2) 
+
+
+    # ====> 5. Upload images to DegenHive backend and generate Noise Text
+    image_to_post = generations_load["last_posted"] + 1
+    image_url = upload_image_to_degenhive_be(generations_path + "/generations/leonardo/" + f"{image_to_post}.png")
+    if not image_url:
+      print("Error uploading image to backend")
       return False
+    color_print(f"Image URL: {image_url}", YELLOW)
 
-    # new_cur_images_count = download_leonardo_images("ddccbd5c-7833-4a6a-a75f-3bbb038ed5a0", generations_path + "/generations/leonardo/", generations_load["count"])
 
-    if new_cur_images_count > generations_load["count"]:
-      new_images = list(range(generations_load["count"], new_cur_images_count))
-      generations_load["count"] = new_cur_images_count
-      generations_load["generations"].append({"noise_image_prompt": noise_image_prompt, "generationId": "generationId", "new_images": new_images, "modelId": modelToUse["id"],  "modelName": modelToUse["name"] })
+    # ====> 6. Generate Noise Text    
+    noise_text_prompt = makeNoiseTextPrompt( self.scratch.type, self.scratch.personality,  self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior, noise_image_prompt)
+    # print(noise_text_prompt)
+    noise_text = ChatGPT_request(noise_text_prompt)
+    print(noise_text)
+    try:
+      noise_text = json.loads(noise_text)
+    except Exception as e:
+      print(e)
+    if "output" in noise_text:
+      noise_text = noise_text["output"]        
+
+    print(noise_text)
+
+    # ====> 7. Make Noise Transaction
+    is_successful = make_noise_buzzTx(self.rpc_url, self.private_key, protocol_config, self.scratch.get_hiveProfileID(), noise_text, image_url)
+
+    if is_successful:
+      generations_load["last_posted"] += 1 
+      generations_load["noise_buzzes"].append({"image_to_post": image_to_post, "image_url": image_url, "noise_text": noise_text, "image_prompt": noise_image_prompt, "generationId": generationId, "modelId": modelToUse["id"],  "modelName": modelToUse["name"] })
 
     with open(generations_path + "/generations/generations.json", "w") as outfile:
       json.dump(generations_load, outfile, indent=2) 
 
-      color_print(f"\nNew Noise generated for {self.name}... | Address: {self.scratch.get_address()}", GREEN)
-      return True
-    # text_prompt = makeNoiseTextPrompt( self.scratch.type, self.scratch.username, self.scratch.personality, self.scratch.daily_behavior, image_prompt)
 
-
-    # modelId
-
-    # download_leonardo_images(generationId)
-
-    # upload_image_to_degenhive_be(image_path)
-
-    # make_noiseTx()
-
-
-
+    return is_successful
 
 
 
@@ -262,6 +295,9 @@ class Persona:
     elif buzz_type == "governor":
       respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
 
+    elif buzz_type == "stream":
+      respoonse = like_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, buzz_inner_index)
+
     if respoonse:
       color_print(f"Buzz post of {poster_profile_id} liked by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
       self.handle_profile_state_update(protocol_config)
@@ -269,6 +305,9 @@ class Persona:
     else:
       color_print(f"\n Oops! Something went wrong while liking the buzz.", RED)
       return False
+
+
+
 
 
   """
@@ -303,44 +342,91 @@ class Persona:
 
 
 
+  """
+  Comment on a Noise Buzz
+  """
+  def make_comment_on_noise_buzz(self, protocol_config, buzz_type, buzz_index, buzz_inner_index, poster_profile_id, has_image, noise_content, comments):
+    color_print(f"\nHandling Like post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+    userSuiHiveProfile = self.scratch.get_hiveProfileID()
+
+    comment_prompt = makeCommentOnNoiseBuzzPrompt(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior, noise_content, comments)
+    comment_to_make = ChatGPT_request(comment_prompt)
+    try:
+      comment_to_make = json.loads(comment_to_make)
+    except Exception as e:
+      print(e)
+    if "output" in comment_to_make:
+      comment_to_make = comment_to_make["output"]
+    
+    username = self.scratch.get_name()    
+    if (userSuiHiveProfile == poster_profile_id):
+      color_print(f"\n Oops! You can't comment on your own buzz.", RED)
+      return False
+
+    respoonse = False
+    if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
+      buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
+      respoonse = comment_on_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index, 0, comment_to_make, False)
+
+    if respoonse:
+      color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+      self.handle_profile_state_update(protocol_config)
+      return True
+    else:
+      color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
+      return False
 
 
+  """
+  Comment on a Stream Buzz
+  """
+  def make_comment_on_stream_buzz(self, protocol_config, stream_index, stream_inner_index, poster_profile_id, has_image, stream_content, comments, images_path):
+    color_print(f"\nHandling Commmenting on streaming Buzz post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+    userSuiHiveProfile = self.scratch.get_hiveProfileID()
+
+    username = self.scratch.get_name()    
+    if (userSuiHiveProfile == poster_profile_id):
+      color_print(f"\n Oops! You can't comment on your own buzz.", RED)
+      return False
 
 
+    comment_prompt = makeCommentOnStreamBuzzPrompt(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior, stream_content, comments, images_path)
+    comment_to_make = ChatGPT_request(comment_prompt)
+    try:
+      comment_to_make = json.loads(comment_to_make)
+    except Exception as e:
+      print(e)
+    if "output" in comment_to_make:
+      comment_to_make = comment_to_make["output"]
+    
+    to_generate_image = random.random() < 0.7
+    image_url = ""
+
+    if to_generate_image:
+      image_prompt = makeImagePromptForStreamComment(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.daily_behavior, stream_content, comments)
+      image_prompt = ChatGPT_request(image_prompt)
+      try:
+        image_prompt = json.loads(image_prompt)
+      except Exception as e:
+        print(e)
+      if "output" in image_prompt:
+        image_prompt = image_prompt["output"]
+
+      image_url = makeDalleImage(image_prompt)
+      is_downloaded = download_dalle_image(image_url, images_path)
+      if is_downloaded["status"]:
+        image_url = upload_image_to_degenhive_be(is_downloaded["path"])
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    # respoonse = False
+    respoonse = interact_with_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, stream_index, stream_inner_index, comment_to_make, image_url)
+    if respoonse:
+      color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+      self.handle_profile_state_update(protocol_config)
+      return True
+    else:
+      color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
+      return False
 
 
 

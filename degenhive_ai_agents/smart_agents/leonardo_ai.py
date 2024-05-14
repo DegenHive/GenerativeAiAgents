@@ -42,8 +42,8 @@ def improve_leonardo_prompt(leonardo_prompt):
 
 
 
-def make_leonardo_image_request(leonardo_prompt, negative_prompt, modelId, width, height, number_of_images):
-    print(f"Making Leonardo Image Request...")
+def make_leonardo_image_request(leonardo_prompt, negative_prompt, modelId, name, width, height, number_of_images):
+    print(f"Making Leonardo Image Request with model {name}...")
     try:
         control_net_question = False
         init_strength_question = None
@@ -100,20 +100,24 @@ def make_leonardo_image_request(leonardo_prompt, negative_prompt, modelId, width
 
 def download_leonardo_images(generation_id, save_image_path, cur_images_count):
     print(f"Downloading generated Leonardo Images.... Please wait for 20 seconds.....")
-    generations_url = LEONARDO_API_ENDPOINT + "/" + generation_id
-    response = requests.get(generations_url, headers=HEADERS)
-    response_data = response.text
-    # Parse the JSON data
-    data = json.loads(response_data)
     time.sleep(15)
-    # print(data)
-    
-    tries = 3
+
+    tries = 10
     while(tries > 0):
-        try:
-            # Extract the image URLs
-            image_urls = [item["url"] for item in data["generations_by_pk"].get("generated_images", [])]
-            for i, new_url in enumerate(image_urls):
+        generations_url = LEONARDO_API_ENDPOINT + "/" + generation_id
+        response = requests.get(generations_url, headers=HEADERS)
+        response_data = response.text
+        data = json.loads(response_data)
+        if data["generations_by_pk"]["status"] == "PENDING":
+            print("Generation is still pending. Trying again in 15 seconds....")
+            time.sleep(15)
+            tries -= 1
+        else:
+            break    
+
+    # Extract the image URLs
+    image_urls = [item["url"] for item in data["generations_by_pk"].get("generated_images", [])]
+    for i, new_url in enumerate(image_urls):
                 print(f"Downloading image {i}....")
                 response = requests.get(new_url)
                 if response.status_code == 200:
@@ -123,12 +127,7 @@ def download_leonardo_images(generation_id, save_image_path, cur_images_count):
                     print(f"Image {i+1} downloaded successfully")
                 else:
                     print(f"Failed to download image {i+1}")
-            break
-        except Exception as e:
-            print(e)
-            tries -= 1
-            time.sleep(15)
-    
+
     return cur_images_count
 
 

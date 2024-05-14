@@ -33,6 +33,10 @@ TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 
 LEONARDO_AI_API_KEY = os.getenv("LEONARDO_AI")
 
+PROFILE_IDS_TO_IGNORE = [
+    {"profileId": "0x0629d76e8ea037da508c35dff1328e23e410f6b36b2b02e49eaec354c17ffd9d", "name": "AiJournalist", "to_like": True, "to_comment": True},
+]
+
 
 WELCOME_COMMENTS = {
     "pepe": [
@@ -223,12 +227,30 @@ query ExampleQuery($timeline: SocialProfileSpecific, $lastKey: String, $limit: F
 }
 """
 
+GET_COMMENTS_FOR_POST = """
+query ExampleQuery($dialoguesForPost: SocialItemSpecific) {
+    getSocial(dialoguesForPost: $dialoguesForPost) {
+      results
+    }
+  }
+"""
+
+
+
 GET_HIVE_THREAD = """
 query ExampleQuery($threadByAnyId: SocialItemSpecific) {
     getSocial(threadByAnyId: $threadByAnyId) {
       posts
     }
   }
+"""
+
+GET_STREAMING_CONTENT = """
+query ExampleQuery($stream: Boolean) {
+  getSocial(stream: $stream) {
+    results
+  }
+}
 """
 
 DIALOGUES_FOR_USER = """
