@@ -7,6 +7,15 @@ from discord import Intents, Client, Message
 import requests
 import os
 import re
+import base64
+import json
+
+
+def json_to_base64(object):
+    json_str = json.dumps(object)
+    base64_str = base64.b64encode(json_str.encode()).decode()
+    return base64_str
+
 
 def extract_buzz_numbers(type_, str_):
     if type_ == "stream":
@@ -34,7 +43,7 @@ TG_CHAT_ID = os.getenv("TG_CHAT_ID")
 LEONARDO_AI_API_KEY = os.getenv("LEONARDO_AI")
 
 PROFILE_IDS_TO_IGNORE = [
-    {"profileId": "0x0629d76e8ea037da508c35dff1328e23e410f6b36b2b02e49eaec354c17ffd9d", "name": "AiJournalist", "to_like": True, "to_comment": True},
+    {"profileId": "0x0629d76e8ea037da508c35dff1328e23e410f6b36b2b02e49eaec354c17ffd9d", "name": "AiJournalist", "to_like": False, "to_comment": False},
 ]
 
 
@@ -155,8 +164,6 @@ def convert_seconds_to_hh_mm_ss(milli_seconds):
 
 def send_telegram_message(message):
   requests.get( f"https://api.telegram.org/bot{TG_API_KEY}/sendMessage?chat_id={TG_CHAT_ID}&text={message}&parse_mode={ParseMode.HTML}")
-    # bot = Bot(token=TG_API_KEY)
-    # bot.send_message(chat_id=TG_CHAT_ID, text=message, parse_mode=ParseMode.HTML)
 
 
 async def send_discord_message(message: Message, user_message: str):

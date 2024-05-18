@@ -4,6 +4,14 @@
     "apes": 42,
     "bees": 42
   },
+  "latest_new_profile": {
+    "profileID": "0xff1d3b292d7730ffbb5461fd84542d71bbb7357578cce5ca33fa027e60406d63",
+    "timestamp": 1716056070872
+  },
+  "latest_noise_buzz": {
+    "profileID": "0x2710090805aa37c9fa56ee3d78ad37d937f7e5c3aaa44f48a3bfdab350f7a3ff",
+    "timestamp": 1716054525571
+  },
   "main_agent": "PepeLuvzMemes",
   "pepe_agents": [
     {
@@ -880,5 +888,12 @@
     "pool_usdc_sui_curved_id": "0xbd9640b570a75023061b930f4b35931aa919dfa83b4f07e263fd87dd205012a3",
     "pool_dsui_sui_curved_id": "0x508fd4a9ec95c9677bfdb344b29b25ba121efcde76639910574f4314e94d9256",
     "STREAMER_BUZZ_OBJECT": "0xda2283b59b49fbe2e7e84cbd33506c6299f0b8b4f5764089aefa2d91060742c8"
-  }
+  },
+  "latest_stream_buzz": {
+    "index": 0,
+    "inner_index": 0,
+    "profileID": "0x51c29bd786edc423ec29436907580980d607fc2794bbab9f56c90f937c53c3ab",
+    "timestamp": 1716013975341
+  },
+  "latest_dalle_image": 0
 }

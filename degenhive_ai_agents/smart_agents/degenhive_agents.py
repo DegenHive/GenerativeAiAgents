@@ -70,7 +70,13 @@ class DegenHiveAiAgents:
         self.personas[account["username"]] = Persona(account["username"], account["private_key"], rpc_url, f"{CUR_PATH_PERSONAS}bees/{account["username"]}")
         self.persona_names.append(account["username"])
 
-
+  
+  async def try_async_sui_client(self, rpc_url):
+    try:
+      await getSuiASyncClient(rpc_url, "3be7c260dd2c9e6f4b667c632f129572630a1129d208d9a893aea6f0e39ca119")
+    except Exception as e:
+      print(e)
+      # send_telegram_message(f"Error in try_async_sui_client: {e}")
 
 
 
@@ -331,7 +337,7 @@ class DegenHiveAiAgents:
   ##################################################################################################
 
 
-  def handle_welcome_buzzes(self, welcome_buzz):
+  def handle_welcome_buzzes(self, welcome_buzz, min_amount, transfer_amount):
     with open(f"../storage/config.json") as json_file:  
       simulation_config = json.load(json_file)
 
@@ -343,14 +349,32 @@ class DegenHiveAiAgents:
 
     # print(welcome_buzz)
     # make sure its a new Buzz
-    if timestamp > simulation_config["latest_new_profile"]["timestamp"]:
-      color_print(f"\nNew Profile: {new_profile_ID} | Timestamp: {timestamp}", GREEN)
-      send_telegram_message(f"New Profile: {new_profile_ID} | Timestamp: {timestamp}")
+    print(f"timestamp = {timestamp} | latest_new_profile_timestamp = {simulation_config['latest_new_profile']['timestamp']}")
+    if int(timestamp) > int(simulation_config["latest_new_profile"]["timestamp"]):
 
       total_agents = len(self.persona_names)
       likes_count = random.randint(3, 9)
       comments_count = random.randint(0, likes_count)
-      color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
+
+      color_print(f"\nNew Profile: {new_profile_ID} Likes: {likes_count} | Comments: {comments_count} | Timestamp: {timestamp}", GREEN)
+      send_telegram_message(f"New Profile: <a href='{"https://www.degenhive.ai/profile/" + new_profile_ID}'>{new_profile_ID}</a>  Making {likes_count} likes and {comments_count} comments now...")
+
+      # Transfer SUI to new Users      
+      deployer_agent = self.personas[simulation_config["main_agent"]]
+      print(f"Deployer Agent: {deployer_agent.scratch.address}")
+
+      # Get owner of the HiveProfile
+      owner = getOwnerForHiveProfile(deployer_agent.rpc_url, deployer_agent.private_key, simulation_config["configuration"], new_profile_ID)
+
+      # Check if the agent has atleast min_amount SUI balance, and if not transfer transfer_amount SUI tokens.
+      availableSui = deployer_agent.getSuiBalanceForAddressOnChain(owner)
+      print(f"Owner of the HiveProfile is: {owner}, SUI balance: {round(availableSui/1e9, 2)}")
+      if (availableSui < min_amount):
+        color_print(f"Owner has only {round(availableSui/1e9, 2)} SUI balance. Transferring {round(transfer_amount/1e9, 2)} SUI tokens...", GREEN)
+        deployer_agent.transferSuiOnChain( owner, transfer_amount)
+        time.sleep(1)
+
+      # return
 
       # ----- Handle Making Likes and Comments -----
       while likes_count > 0 or comments_count > 0:
@@ -365,6 +389,12 @@ class DegenHiveAiAgents:
         if is_commented:
           comments_count -= 1
 
+      send_telegram_message(f"New Profile: <a href='{"https://www.degenhive.ai/profile/" + new_profile_ID}'>{new_profile_ID}</a>  Likes and Comments made successfully...")
+
+    else:
+      color_print(f"Already processed new profile Buzz: {new_profile_ID} | Timestamp: {timestamp}", YELLOW)
+      return
+
     # Update the latest_new_profile in the simulation_config
     simulation_config["latest_new_profile"]["profileID"] = new_profile_ID
     simulation_config["latest_new_profile"]["timestamp"] = timestamp
@@ -375,283 +405,274 @@ class DegenHiveAiAgents:
   ##################################################################################################
 
   def handle_engaging_on_noise_buzzes(self, new_noise_buzz):
-    # print(new_noise_buzz)
+    color_print(f"\n\n\nHandling Engaging on Noise Buzzes...", GREEN)
+    try:
+      timestamp =  int(new_noise_buzz["timestamp"]) 
+      poster_profile_ID = new_noise_buzz["PK"].split("#")[0]
+      noise_index = new_noise_buzz["SK"].split("#")[1]
+      inner_noise_index = new_noise_buzz["SK"].split("#")[2]
+      noise_content = new_noise_buzz["buzz"]    
+      has_image = True if new_noise_buzz["gen_ai"] and new_noise_buzz["gen_ai"] != "" else False
+      
+      with open(f"../storage/config.json") as json_file:  
+        simulation_config = json.load(json_file)
 
-    poster_profile_ID = new_noise_buzz["PK"].split("#")[0]
-    noise_index = new_noise_buzz["SK"].split("#")[1]
-    inner_noise_index = new_noise_buzz["SK"].split("#")[2]
-    timestamp =  int(new_noise_buzz["timestamp"]) 
-    noise_content = new_noise_buzz["buzz"]    
-    has_image = True if new_noise_buzz["gen_ai"] and new_noise_buzz["gen_ai"] != "" else False
-    print(f"Poster Profile ID: {poster_profile_ID} | Noise Index: {noise_index} | Inner Noise Index: {inner_noise_index} timestamp: {new_noise_buzz['timestamp']}")
+      if "latest_noise_buzz" not in simulation_config:
+        simulation_config["latest_noise_buzz"] = { "profileID": "", "timestamp": 0 }
+  
+      if int(timestamp) > int(simulation_config["latest_noise_buzz"]["timestamp"]):
+        color_print(f"\nNew Noise Buzz: {poster_profile_ID} | Timestamp: {timestamp}", GREEN)
 
-    toLike = True
-    likes_count = 0
-    toComment = True
-    comments_count = 0
+        if "is_repost" in new_noise_buzz and new_noise_buzz["is_repost"]:
+          color_print(f"This is a repost. Skipping...", YELLOW)
+        else:
+          base_64_str = json_to_base64({ "pk":  new_noise_buzz["PK"], "sk": new_noise_buzz["SK"]  })
+          send_telegram_message(f"New Noise Buzz by profileID {poster_profile_ID} | <a href='https://www.degenhive.ai/?post={base_64_str}'> Buzz link </a> | Timestamp: {timestamp}")
+          print(f"Poster Profile ID: {poster_profile_ID} | Noise Index: {noise_index} | Inner Noise Index: {inner_noise_index} timestamp: {new_noise_buzz['timestamp']}")
 
-    for profiles in PROFILE_IDS_TO_IGNORE:
-      if profiles["profileId"] == poster_profile_ID:
-        toLike = profiles["to_like"]
-        toComment = profiles["to_comment"]
-        break
+          toLike = True
+          likes_count = 0
+          toComment = True
+          comments_count = 0
 
-    with open(f"../storage/config.json") as json_file:  
-      simulation_config = json.load(json_file)
+          for profiles in PROFILE_IDS_TO_IGNORE:
+            if profiles["profileId"] == poster_profile_ID:
+              toLike = profiles["to_like"]
+              toComment = profiles["to_comment"]
+              break
 
-    if "latest_noise_buzz" not in simulation_config:
-      simulation_config["latest_noise_buzz"] = { "profileID": "", "timestamp": 0 }
- 
-    # make sure its a new Buzz
-    if timestamp > simulation_config["latest_noise_buzz"]["timestamp"]:
-      color_print(f"\nNew Noise Buzz: {poster_profile_ID} | Timestamp: {timestamp}", GREEN)
-      send_telegram_message(f"New Noise Buzz by profileID {poster_profile_ID} | Timestamp: {timestamp}")
+          total_agents = len(self.persona_names)
+          if toLike:
+            likes_count = random.randint(1, 7)
+          if toComment:
+            comments_count = random.randint(0, likes_count)
 
-      total_agents = len(self.persona_names)
-      if toLike:
-        likes_count = random.randint(1, 7)
-      if toComment:
-        comments_count = random.randint(0, likes_count)
+          color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
 
-      color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
+          comments = []
+          if comments_count > 0:
+            comments = getDialoguesForPost(new_noise_buzz["PK"], new_noise_buzz["SK"])      
 
-      if comments_count > 0:
-        comments = getDialoguesForPost(new_noise_buzz["PK"], new_noise_buzz["SK"])      
+          # ----- Handle Making Likes and Comments -----
+          while likes_count > 0 or comments_count > 0:
+            # Get the persona that will interact with the new profile
+            agent_index = random.randint(0, total_agents - 1)
+            agent_persona = self.personas[self.persona_names[agent_index]]
 
-      # ----- Handle Making Likes and Comments -----
-      while likes_count > 0 or comments_count > 0:
-        # Get the persona that will interact with the new profile
-        agent_index = random.randint(0, total_agents - 1)
-        agent_persona = self.personas[self.persona_names[agent_index]]
+            if likes_count > 0:
+              is_liked = agent_persona.make_like_handler(simulation_config["configuration"], "noise", noise_index, inner_noise_index, poster_profile_ID)
+              if is_liked:
+                likes_count -= 1
 
-        if likes_count > 0:
-          is_liked = agent_persona.make_like_handler(simulation_config["configuration"], "noise", noise_index, inner_noise_index, poster_profile_ID)
-          if is_liked:
-            likes_count -= 1
+            if comments_count > 0:
+              is_commented = agent_persona.make_comment_on_noise_buzz(simulation_config["configuration"], "noise", noise_index, inner_noise_index, poster_profile_ID, has_image, noise_content, comments)
+              if is_commented:
+                comments_count -= 1
+      
+      else:
+        color_print(f"Already processed Noise Buzz: {poster_profile_ID} | Timestamp: {timestamp}", YELLOW)
+        return
 
-        if comments_count > 0:
-          is_commented = agent_persona.make_comment_on_noise_buzz(simulation_config["configuration"], "noise", noise_index, inner_noise_index, poster_profile_ID, has_image, noise_content, comments)
-          if is_commented:
-            comments_count -= 1
+      # Update the latest_noise_buzz in the simulation_config
+      simulation_config["latest_noise_buzz"]["profileID"] = poster_profile_ID
+      simulation_config["latest_noise_buzz"]["timestamp"] = timestamp
+      with open(f"../storage/config.json", "w") as outfile:
+        outfile.write(json.dumps(simulation_config, indent=2))
 
-    # Update the latest_noise_buzz in the simulation_config
-    simulation_config["latest_noise_buzz"]["profileID"] = poster_profile_ID
-    simulation_config["latest_noise_buzz"]["timestamp"] = timestamp
-    with open(f"../storage/config.json", "w") as outfile:
-      outfile.write(json.dumps(simulation_config, indent=2))
-
+    except Exception as e:
+      print(e)
+      send_telegram_message(f"Error in handle_engaging_on_noise_buzzes: {e}")
 
   ##################################################################################################
-
-{'like_count': 2, 'dialogue_count': 0, 'gen_ai': '{"img":"https://degenhive-assets.s3.amazonaws.com/64c6e9b4-336c-465a-a0ce-42b4468f7c9f.mp4","isNft":false}',
-  'cur_auction_stream': '369', 'timestamp': 1715691735818, 'buzz': 'gm 🦁', 'profile_id': '0x8ad717f2eb0f87d965ae0a84849397ca18eede54f0731d42e55782dae7fa0065',
-    'ttl': '1970-01-01T00:00:00.000Z', 'SK': 'stream#8#0', 'PK': 'hive_announcements#buzz', 'type': 'buzz'}
 
   def handle_engaging_on_stream_buzzes(self, new_stream_buzz):
+    try:
+      streamer_profile_ID = new_stream_buzz["profile_id"]
+      stream_index = int(new_stream_buzz["SK"].split("#")[1])
+      inner_stream_index = int(new_stream_buzz["SK"].split("#")[2])
+      timestamp =  int(new_stream_buzz["timestamp"]) 
+      stream_content = new_stream_buzz["buzz"]    
+      has_image = True if new_stream_buzz["gen_ai"] and new_stream_buzz["gen_ai"] != "" else False
+      print(f"Streamer Profile ID: {streamer_profile_ID} | Stream Index: {stream_index} | Inner Stream Index: {inner_stream_index} timestamp: {new_stream_buzz['timestamp']}")
 
-    streamer_profile_ID = new_stream_buzz["profile_id"]
-    stream_index = int(new_stream_buzz["SK"].split("#")[1])
-    inner_stream_index = int(new_stream_buzz["SK"].split("#")[2])
-    timestamp =  int(new_stream_buzz["timestamp"]) 
-    stream_content = new_stream_buzz["buzz"]    
-    has_image = True if new_stream_buzz["gen_ai"] and new_stream_buzz["gen_ai"] != "" else False
-    print(f"Streamer Profile ID: {streamer_profile_ID} | Stream Index: {stream_index} | Inner Stream Index: {inner_stream_index} timestamp: {new_stream_buzz['timestamp']}")
+      toLike = True
+      likes_count = 0
+      toComment = True
+      comments_count = 0
 
-    toLike = True
-    likes_count = 0
-    toComment = True
-    comments_count = 0
+      with open(f"../storage/config.json") as json_file:  
+        simulation_config = json.load(json_file)
 
-    with open(f"../storage/config.json") as json_file:  
-      simulation_config = json.load(json_file)
+      if "latest_stream_buzz" not in simulation_config:
+        simulation_config["latest_stream_buzz"] = { "index": 0,  "inner_index": 0, "profileID": "", "timestamp": 0 }
+        simulation_config["latest_dalle_image"] = 0 
+  
+      # make sure its a new Buzz
+      if stream_index > simulation_config["latest_stream_buzz"]["index"] or (stream_index == simulation_config["latest_stream_buzz"]["index"] and inner_stream_index > simulation_config["latest_stream_buzz"]["inner_index"]):
+        color_print(f"\nNew Stream Buzz: {stream_index} | {inner_stream_index} ||  {streamer_profile_ID} | Timestamp: {timestamp}", GREEN)
+        send_telegram_message(f"New Stream Buzz by profileID {streamer_profile_ID} | Timestamp: {timestamp}")
 
-    if "latest_stream_buzz" not in simulation_config:
-      simulation_config["latest_stream_buzz"] = { "index": 0,  "inner_index": 0, "profileID": "", "timestamp": 0 }
- 
-    # make sure its a new Buzz
-    if stream_index > simulation_config["latest_stream_buzz"]["index"] or (stream_index == simulation_config["latest_stream_buzz"]["index"] and inner_stream_index > simulation_config["latest_stream_buzz"]["inner_index"]):
-      color_print(f"\nNew Stream Buzz: {stream_index} | {inner_stream_index} ||  {streamer_profile_ID} | Timestamp: {timestamp}", GREEN)
-      send_telegram_message(f"New Stream Buzz by profileID {streamer_profile_ID} | Timestamp: {timestamp}")
+        total_agents = len(self.persona_names)
+        if toLike:
+          likes_count = random.randint(10, 50)
+        if toComment:
+          comments_count = random.randint(3, min(10, likes_count))
 
-      total_agents = len(self.persona_names)
-      if toLike:
-        likes_count = random.randint(10, 50)
-      if toComment:
-        comments_count = random.randint(4, likes_count)
+        color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
 
-      color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
+        # if comments_count > 0:
+        #   comments = getDialoguesForPost(new_stream_buzz["PK"], new_stream_buzz["SK"])      
+        comments = []
 
-      if comments_count > 0:
-        comments = getDialoguesForPost(new_stream_buzz["PK"], new_stream_buzz["SK"])      
+        # ----- Handle Making Likes and Comments -----
+        while likes_count > 0 or comments_count > 0:
+          # Get the persona that will interact with the new profile
+          agent_index = random.randint(0, total_agents - 1)
+          agent_persona = self.personas[self.persona_names[agent_index]]
 
-      # ----- Handle Making Likes and Comments -----
-      while likes_count > 0 or comments_count > 0:
-        # Get the persona that will interact with the new profile
-        agent_index = random.randint(0, total_agents - 1)
-        agent_persona = self.personas[self.persona_names[agent_index]]
+          if likes_count > 0:
+            is_liked = agent_persona.make_like_handler(simulation_config["configuration"], "stream", stream_index, inner_stream_index, streamer_profile_ID)
+            if is_liked:
+              likes_count -= 1
 
-        if likes_count > 0:
-          is_liked = agent_persona.make_like_handler(simulation_config["configuration"], "stream", stream_index, inner_stream_index, streamer_profile_ID)
-          if is_liked:
-            likes_count -= 1
+          if comments_count > 0:
+            images_path = f"../storage/dalle/{simulation_config["latest_dalle_image"]}"
+            is_commented = agent_persona.make_comment_on_stream_buzz(simulation_config["configuration"], stream_index, inner_stream_index, streamer_profile_ID, has_image, stream_content, comments, images_path)
+            if is_commented["post_status"]:
+              comments_count -= 1
+            if is_commented["is_image_downloaded"]:
+              simulation_config["latest_dalle_image"] += 1
 
-        if comments_count > 0:
-          is_commented = agent_persona.make_comment_on_stream_buzz(simulation_config["configuration"], "stream", stream_index, inner_stream_index, streamer_profile_ID, has_image, stream_content, comments)
-          if is_commented:
-            comments_count -= 1
+      # Update the latest_stream_buzz in the simulation_config
+      simulation_config["latest_stream_buzz"]["profileID"] = streamer_profile_ID
+      simulation_config["latest_stream_buzz"]["timestamp"] = timestamp
+      with open(f"../storage/config.json", "w") as outfile:
+        outfile.write(json.dumps(simulation_config, indent=2))
 
-    # Update the latest_stream_buzz in the simulation_config
-    simulation_config["latest_stream_buzz"]["profileID"] = streamer_profile_ID
-    simulation_config["latest_stream_buzz"]["timestamp"] = timestamp
-    with open(f"../storage/config.json", "w") as outfile:
-      outfile.write(json.dumps(simulation_config, indent=2))
+    except Exception as e:
+      print(e)
+      send_telegram_message(f"Error in handle_engaging_on_stream_buzzes: {e}")
 
 
 
   ##################################################################################################
 
-  def handle_making_noise_buzzes(self):
-    with open(f"../storage/config.json") as json_file:  
-      simulation_config = json.load(json_file)
+  def handle_making_noise_buzzes(self, count):
+    while count > 0:
+      try:
+        with open(f"../storage/config.json") as json_file:  
+          simulation_config = json.load(json_file)
 
-      for username in self.persona_names:
-        agent_persona = self.personas[username]
-        agent_persona.make_new_noise( f"{CUR_PATH_PERSONAS}{agent_persona.scratch.type}s/{agent_persona.scratch.username}", simulation_config["configuration"])
+          for username in self.persona_names:
+            agent_persona = self.personas[username]
+            is_successful = agent_persona.make_new_noise( f"{CUR_PATH_PERSONAS}{agent_persona.scratch.type}s/{agent_persona.scratch.username}", simulation_config["configuration"])
+            if is_successful:
+              count -= 1
+              time.sleep(15)
+
+              if count <= 0:
+                return
+      except Exception as e:
+        send_telegram_message(f"Error in handle_making_noise_buzzes: {e}")
 
     
   ##################################################################################################
   
-  def activate_ai_agents_swarm(self):
+  def activate_ai_agents_swarm(self, mode, noise_count = 100):
+    
+    try: 
+      with open(f"../storage/config.json") as json_file:  
+        simulation_config = json.load(json_file)
 
-    with open(f"../storage/config.json") as json_file:  
-      simulation_config = json.load(json_file)
+      with open(f"../storage/platform.json") as json_file:  
+        platform_state = json.load(json_file)
 
-    with open(f"../storage/platform.json") as json_file:  
-      platform_state = json.load(json_file)
+      if not "ongoing_epoch" in platform_state:
+        platform_state["ongoing_epoch"] = 0
 
-    if not "ongoing_epoch" in platform_state:
-      platform_state["ongoing_epoch"] = 0
+      # Update the overall protocol state --> Epoch, HiveChronicle, TimeStream
+      current_time = datetime.now().timestamp() * 1000 
 
-    # Update the overall protocol state --> Epoch, HiveChronicle, TimeStream
-    current_time = datetime.now().timestamp() * 1000 
+      # Update platform state info (every 5 min) ---> INTERNALLY INCREMENTS BEE FARM EPOCH + TIME-STREAM INFO
+      # if "last_platform_state_update" not in platform_state or (current_time - platform_state["last_platform_state_update"]) > 15 * 60 * 1000 or (current_time - platform_state["ongoing_epoch_start_ms"]) > 23 * 1000 * 60 * 60 or int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]): 
+      #   platform_state["last_platform_state_update"] = current_time
+      #   main_agent = self.personas[simulation_config["main_agent"]]
+      #   self.updateProtocolStateInfo(simulation_config, main_agent, platform_state)
+      #   color_print(f"Platform state successfully updated", GREEN)
 
-    # Update platform state info (every 5 min) ---> INTERNALLY INCREMENTS BEE FARM EPOCH + TIME-STREAM INFO
-    # if "last_platform_state_update" not in platform_state or (current_time - platform_state["last_platform_state_update"]) > 15 * 60 * 1000 or (current_time - platform_state["ongoing_epoch_start_ms"]) > 23 * 1000 * 60 * 60 or int(platform_state["ongoing_epoch"]) > int(platform_state["ongoingTimeStreamInfo"]["config_params"]["cur_auction_stream"]): 
-    #   platform_state["last_platform_state_update"] = current_time
-    #   main_agent = self.personas[simulation_config["main_agent"]]
-    #   self.updateProtocolStateInfo(simulation_config, main_agent, platform_state)
-    #   color_print(f"Platform state successfully updated", GREEN)
+      # ====== ENGAGEMENT WITH STREAMS ====== =====>>>>>>> Get the recent streams on the platform
+      if mode =="stream":
+        color_print(f"\n\nActivating AI Agents Swarm in {mode} mode...", GREEN)
+        while True:
+          main_agent = self.personas[simulation_config["main_agent"]]
+          epoch_info = main_agent.getEpochInfoOnChain()
+          recent_streams = getStreamingContent()
 
-    # ====== ENGAGEMENT WITH STREAMS ====== =====>>>>>>> Get the recent streams on the platform
-    main_agent = self.personas[simulation_config["main_agent"]]
-    epoch_info = main_agent.getEpochInfoOnChain()
-    recent_streams = getStreamingContent()
+          streams_to_handle = []
+          if (recent_streams["status"] ):
+            for streamInfo in recent_streams["data"]:
+              streamInfo = json.loads(streamInfo)
+              if int(streamInfo["cur_auction_stream"]) == int(epoch_info["epoch"]):
+                streams_to_handle.append(streamInfo)
 
-    streams_to_handle = []
-    if (recent_streams["status"] ):
-      for streamInfo in recent_streams["data"]:
-        streamInfo = json.loads(streamInfo)
-        if int(streamInfo["cur_auction_stream"]) == int(epoch_info["epoch"]):
-          streams_to_handle.append(streamInfo)
+          # sort streams by timestamp and then handle them
+          streams_to_handle = sorted(streams_to_handle, key=lambda x: x["timestamp"])
 
-    # sort streams by timestamp and then handle them
-    streams_to_handle = sorted(streams_to_handle, key=lambda x: x["timestamp"])
+          for stream in streams_to_handle:
+            color_print(f"\nNew Stream to Handle: {stream}", GREEN)
+            self.handle_engaging_on_stream_buzzes(stream)
+          
+          time.sleep(35)
+          continue
 
-    for stream in streams_to_handle:
-      self.handle_engaging_on_stream_buzzes(stream)
+      # ====== ENGAGEMENT ====== =====>>>>>>> Get the recent buzzes on the platform
+      if mode == "engage_with_noise":
+        while True:
+          color_print(f"\n\nLooping again through recent buzzes in {mode} mode...", GREEN)
+          recent_buzzes = getRecentPosts()
 
+          if (recent_buzzes["status"] ):
+            welcome_buzzes = []
+            noise_buzzes = []
 
-    # ====== ENGAGEMENT ====== =====>>>>>>> Get the recent buzzes on the platform
-    # recent_buzzes = getRecentPosts()
-    # if (recent_buzzes["status"] ):
+            for buzzInfo in recent_buzzes["data"]:
+              buzzInfo = json.loads(buzzInfo)
+              sk = buzzInfo["SK"]
+              if sk == "chronicle#1#0":
+                welcome_buzzes.append(buzzInfo)
 
-    #   welcome_buzzes = []
-    #   noise_buzzes = []
+              if "noise" in buzzInfo["SK"]:
+                noise_buzzes.append(buzzInfo)
 
-    #   for buzzInfo in recent_buzzes["data"]:
-    #     buzzInfo = json.loads(buzzInfo)
-    #     print(buzzInfo)
-    #     print("\n")
+          # sort welcome buzzes by timestamp and then handle them
+          welcome_buzzes = sorted(welcome_buzzes, key=lambda x: x["timestamp"])
+          noise_buzzes = sorted(noise_buzzes, key=lambda x: x["timestamp"])
 
-    #     sk = buzzInfo["SK"]
-    #     if sk == "chronicle#1#0":
-    #       welcome_buzzes.append(buzzInfo)
+          color_print(f"\n\nWelcome Buzzes: {len(welcome_buzzes)} | Noise Buzzes: {len(noise_buzzes)}", GREEN)
+          for welcome_buzz in welcome_buzzes:
+            self.handle_welcome_buzzes(welcome_buzz, 5 * 1e9, 5 * 1e9)
 
-    #     if "noise" in buzzInfo["SK"]:
-    #       noise_buzzes.append(buzzInfo)
+          for noise_buzz in noise_buzzes:        
+            self.handle_engaging_on_noise_buzzes(noise_buzz)
 
-      # sort welcome buzzes by timestamp and then handle them
-      # welcome_buzzes = sorted(welcome_buzzes, key=lambda x: x["timestamp"])
-      # noise_buzzes = sorted(noise_buzzes, key=lambda x: x["timestamp"])
+          time.sleep(35)
 
+      # ====== MAKING NOISE ====== =====>>>>>>> Make noise buzzes on the platform
+      if mode == "make_noise":
+        while True:
+          self.handle_making_noise_buzzes(noise_count)
+          time.sleep(135)
 
-      # for welcome_buzz in welcome_buzzes:
-      #   # print(welcome_buzz["timestamp"])
-      #   self.handle_welcome_buzzes(welcome_buzz)
-
-      # for noise_buzz in noise_buzzes:        
-      #   self.handle_engaging_on_noise_buzzes(noise_buzz)
-
-
-
-    # ====== CONTENT CREATION ====== =====>>>>>>> Make Noise buzzes on the platform
-
-
-
-
-
-
-
-
-
-    return
-
-
-
-    # Start the simulation
-    for username in self.persona_names:
-      color_print(f"\n\n----------------------\
-                  \nActivating AI Agent: {username}", BLUE)
-      agent_persona = self.personas[username]
+    except Exception as e:
+      send_telegram_message(f"Error in activating swarm: {e} | Mode = {mode}")
 
 
 
-      
-      # agent_persona.handle_profile_state_update(simulation_config["configuration"])
-      # return
-      
-
-      # Get the profile ID for the persona, if it does not exist, kraft it.
-      profileID = agent_persona.get_HiveProfileId()
-      color_print(f"Profile ID: {profileID}", GREEN)
-      if not profileID or profileID == "0x0000000000000000000000000000000000000000000000000000000000000000":
-        agent_persona.kraftHiveProfileForAgent(simulation_config["configuration"])
-
-      # # Get the timeline for the persona
-      # timeline_feed = agent_persona.getTimeline()
-
-      # for feedInfo in timeline_feed["completeFeed"]:
-      #   feedInfo = json.loads(feedInfo)
-      #   sk = feedInfo["SK"]
-
-      #   # If its a time-stream Buzz, handle accordingly
-      #   if "stream" in sk:
-      #     index, inner_index = extract_buzz_numbers("stream", sk)
-      #     print(f"Stream Buzz: {index} | {inner_index} = Likes = ${feedInfo["like_count"]} | Buzz = ${feedInfo["buzz"]} " )
-      #     # print(feedInfo)
-      #     if index > 14:
-      #       agent_persona.handle_new_stream_buzz_on_feed(simulation_config["configuration"], "stream" , index, inner_index, feedInfo)
-
-      #   if "governor" in sk:
-      #     index, inner_index = extract_buzz_numbers("governor", sk)
-      #     print(f"Governor Buzz: {index} | {inner_index} = Likes = ${feedInfo["like_count"]} | Buzz = ${feedInfo["buzz"]} " )
-        # if "hiveProfileID" in feedInfo:
-        #   hiveProfileID = feedInfo["hiveProfileID"]
-        #   if not hiveProfileID or hiveProfileID == "0x
 
 
 
-      # break
+
+
 
 
 if __name__ == '__main__':
@@ -659,20 +680,23 @@ if __name__ == '__main__':
   # send_telegram_message("<a href='https://www.google.com/'>Google</a>")
   
 
-  # SUI_RPC = "https://fullnode.testnet.sui.io:443/"
-  SUI_RPC =  "https://sui-testnet-endpoint.blockvision.org"
+  SUI_RPC = "https://fullnode.testnet.sui.io:443/"
+  # SUI_RPC =  "https://sui-testnet-endpoint.blockvision.org"
 
 
 
   ai_agents_simulation = DegenHiveAiAgents(SUI_RPC)
 
-  
+  # asyncio.run( ai_agents_simulation.try_async_sui_client(SUI_RPC) )
+  # ai_agents_simulation.try_async_sui_client(SUI_RPC)
 
 
   # ai_agents_simulation.initialize_ai_agents(SUI_RPC, True)
 
-  # sui_to_transfer = 1.5 * 1e9
-  # min_sui_bal = 0.5 * 1e9
+  sui_to_transfer = 15 * 1e9
+  min_sui_bal = 5 * 1e9
+
+
   # ai_agents_simulation.transferSuiTokensToAllAgents(min_sui_bal, sui_to_transfer)
 
   # asyncio.run(ai_agents_simulation.kraftHiveProfileForAllAgents())
@@ -681,7 +705,16 @@ if __name__ == '__main__':
   # transfer_hive_bal = 1000 * 1e6
   # ai_agents_simulation.transferHiveTokensToAllAgents(min_hive_bal, transfer_hive_bal, transfer_hive_bal)
 
-  ai_agents_simulation.activate_ai_agents_swarm()
+  stream = "stream"
+  engage_with_noise = "engage_with_noise"
+  make_noise = "make_noise"
+  noise_count = 100
+
+  # ai_agents_simulation.activate_ai_agents_swarm(engage_with_noise)
+  ai_agents_simulation.activate_ai_agents_swarm(stream)
+  # ai_agents_simulation.activate_ai_agents_swarm(make_noise, noise_count)
+
+  # ai_agents_simulation.activate_ai_agents_swarm(stream)
 
   
 

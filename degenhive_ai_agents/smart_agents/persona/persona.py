@@ -279,31 +279,35 @@ class Persona:
   Like a Buzz on Hive Chronicle or Time-Stream Auction or Buzz Chain
   """
   def make_like_handler(self, protocol_config, buzz_type, buzz_index, buzz_inner_index, poster_profile_id):
-    color_print(f"\nHandling Like post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
-    userSuiHiveProfile = self.scratch.get_hiveProfileID()
-    username = self.scratch.get_name()
-    
-    if (userSuiHiveProfile == poster_profile_id):
-      color_print(f"\n Oops! You can't like your own buzz.", RED)
-      return False
+    try: 
+      color_print(f"\nHandling Like post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+      userSuiHiveProfile = self.scratch.get_hiveProfileID()
+      username = self.scratch.get_name()
+      
+      if (userSuiHiveProfile == poster_profile_id):
+        color_print(f"\n Oops! You can't like your own buzz.", RED)
+        return False
 
-    respoonse = False
-    if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
-      buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
-      respoonse = like_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index)
+      respoonse = False
+      if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
+        buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
+        respoonse = like_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index)
 
-    elif buzz_type == "governor":
-      respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
+      elif buzz_type == "governor":
+        respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
 
-    elif buzz_type == "stream":
-      respoonse = like_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, buzz_inner_index)
+      elif buzz_type == "stream":
+        respoonse = like_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, buzz_inner_index)
 
-    if respoonse:
-      color_print(f"Buzz post of {poster_profile_id} liked by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
-      self.handle_profile_state_update(protocol_config)
-      return True
-    else:
-      color_print(f"\n Oops! Something went wrong while liking the buzz.", RED)
+      if respoonse:
+        color_print(f"Buzz post of {poster_profile_id} liked by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+        self.handle_profile_state_update(protocol_config)
+        return True
+      else:
+        color_print(f"\n Oops! Something went wrong while liking the buzz.", RED)
+        return False
+    except Exception as e:
+      print(e)
       return False
 
 
@@ -314,32 +318,35 @@ class Persona:
   Comment on a welcome Buzz
   """
   def make_comment_on_welcome_buzz(self, protocol_config, buzz_type, buzz_index, buzz_inner_index, poster_profile_id):
-    color_print(f"\nHandling Comment on post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
-    userSuiHiveProfile = self.scratch.get_hiveProfileID()
-    comments_info = WELCOME_COMMENTS[self.scratch.type ]
-    comment_to_make = random.choice(comments_info)
-    username = self.scratch.get_name()
-    
-    if (userSuiHiveProfile == poster_profile_id):
-      color_print(f"\n Oops! You can't comment on your own buzz.", RED)
+    try: 
+      color_print(f"\nHandling Comment on post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+      userSuiHiveProfile = self.scratch.get_hiveProfileID()
+      comments_info = WELCOME_COMMENTS[self.scratch.type ]
+      comment_to_make = random.choice(comments_info)
+      username = self.scratch.get_name()
+      
+      if (userSuiHiveProfile == poster_profile_id):
+        color_print(f"\n Oops! You can't comment on your own buzz.", RED)
+        return False
+
+      respoonse = False
+      if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
+        buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
+        respoonse = comment_on_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index, 0, comment_to_make, False)
+
+      # elif buzz_type == "governor":
+      #   respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
+
+      if respoonse:
+        color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+        self.handle_profile_state_update(protocol_config)
+        return True
+      else:
+        color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
+        return False
+    except Exception as e:
+      print(e)
       return False
-
-    respoonse = False
-    if buzz_type == "chronicle" or buzz_type == "noise" or buzz_type == "buzz_chain":
-      buzz_type = CHRONICLE_TYPE if buzz_type == "chronicle" else (NOISE_TYPE if buzz_type == "noise" else BUZZ_CHAIN_TYPE)
-      respoonse = comment_on_hiveChronicle_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, buzz_type, buzz_index, buzz_inner_index, 0, comment_to_make, False)
-
-    # elif buzz_type == "governor":
-    #   respoonse = like_dexDaoGovernor_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, buzz_index, True)
-
-    if respoonse:
-      color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
-      self.handle_profile_state_update(protocol_config)
-      return True
-    else:
-      color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
-      return False
-
 
 
   """
@@ -381,53 +388,60 @@ class Persona:
   Comment on a Stream Buzz
   """
   def make_comment_on_stream_buzz(self, protocol_config, stream_index, stream_inner_index, poster_profile_id, has_image, stream_content, comments, images_path):
-    color_print(f"\nHandling Commmenting on streaming Buzz post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
-    userSuiHiveProfile = self.scratch.get_hiveProfileID()
-
-    username = self.scratch.get_name()    
-    if (userSuiHiveProfile == poster_profile_id):
-      color_print(f"\n Oops! You can't comment on your own buzz.", RED)
-      return False
-
-
-    comment_prompt = makeCommentOnStreamBuzzPrompt(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior, stream_content, comments, images_path)
-    comment_to_make = ChatGPT_request(comment_prompt)
     try:
-      comment_to_make = json.loads(comment_to_make)
-    except Exception as e:
-      print(e)
-    if "output" in comment_to_make:
-      comment_to_make = comment_to_make["output"]
-    
-    to_generate_image = random.random() < 0.7
-    image_url = ""
+      color_print(f"\nHandling Commmenting on streaming Buzz post of {poster_profile_id} by agent {self.name}... | Address: {self.scratch.get_address()} \n", YELLOW)
+      userSuiHiveProfile = self.scratch.get_hiveProfileID()
 
-    if to_generate_image:
-      image_prompt = makeImagePromptForStreamComment(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.daily_behavior, stream_content, comments)
-      image_prompt = ChatGPT_request(image_prompt)
+      username = self.scratch.get_name()    
+      if (userSuiHiveProfile == poster_profile_id):
+        color_print(f"\n Oops! You can't comment on your own buzz.", RED)
+        return False
+
+
+      comment_prompt = makeCommentOnStreamBuzzPrompt(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.o_acc_commitment, self.scratch.daily_behavior, stream_content, comments)
+      comment_to_make = ChatGPT_request(comment_prompt)
+      print(f"comment_to_make = {comment_to_make}")
       try:
-        image_prompt = json.loads(image_prompt)
+        comment_to_make = json.loads(comment_to_make)
       except Exception as e:
         print(e)
-      if "output" in image_prompt:
-        image_prompt = image_prompt["output"]
+      try:
+        if "output" in comment_to_make:
+          comment_to_make = comment_to_make["output"]
+      except Exception as e:
+        print(e)
+      
+      to_generate_image = random.random() < 0.3
+      image_url = ""
 
-      image_url = makeDalleImage(image_prompt)
-      is_downloaded = download_dalle_image(image_url, images_path)
-      if is_downloaded["status"]:
-        image_url = upload_image_to_degenhive_be(is_downloaded["path"])
+      if to_generate_image:
+        image_prompt = makeImagePromptForStreamComment(self.scratch.type, self.scratch.personality, self.scratch.meme_expertise, self.scratch.daily_behavior, stream_content, comments)
+        image_prompt = ChatGPT_request(image_prompt)
+        try:
+          image_prompt = json.loads(image_prompt)
+        except Exception as e:
+          print(e)
+        if "output" in image_prompt:
+          image_prompt = image_prompt["output"]
 
+        image_url = makeDalleImage(image_prompt)
+        is_downloaded = download_dalle_image(image_url, images_path + ".png")
+        if is_downloaded["status"]:
+          image_url = upload_image_to_degenhive_be(is_downloaded["path"])
 
-    # respoonse = False
-    respoonse = interact_with_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, stream_index, stream_inner_index, comment_to_make, image_url)
-    if respoonse:
-      color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
-      self.handle_profile_state_update(protocol_config)
-      return True
-    else:
-      color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
-      return False
-
+      if not image_url:
+        image_url = ""
+      respoonse = interact_with_stream_buzzTx(self.rpc_url, self.private_key, protocol_config, userSuiHiveProfile, poster_profile_id, stream_index, stream_inner_index, comment_to_make, image_url)
+      if respoonse:
+        color_print(f"Commented on post of {poster_profile_id} by profile {username} | profileID = {userSuiHiveProfile} | Address: {self.scratch.get_address()} \n", YELLOW)
+        self.handle_profile_state_update(protocol_config)
+        return {"post_status": True, "is_image_downloaded":  is_downloaded["status"]}
+      else:
+        color_print(f"\n Oops! Something went wrong while commenting on the buzz.", RED)
+        return  {"post_status": False, "is_image_downloaded":  is_downloaded["status"]}
+    except Exception as e:
+      print(e)
+      return  {"post_status": False, "is_image_downloaded":  False}
 
 
   # GLOBAL TRANSACTION FUNCTIONS --> Incrementing Hive Chronicle, Time-Stream, etc.

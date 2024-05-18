@@ -180,8 +180,8 @@ def getRecentPosts():
             GET_RECENT_POSTS,
             variables={"recents":"buzz"}
         )    
-        print("recentData Data: ", recentData)
-        print(type(recentData))
+        # print("recentData Data: ", recentData)
+        # print(type(recentData))
         recentData = json.loads(recentData)
         return {
             "status": True,
@@ -215,13 +215,23 @@ def getLikesAndDialogues(user_id: any, network: any):
     #   }
 
 def getDialoguesForPost(pk: any, sk: any):
-    print("Getting Dialogues For Post...")
-    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
-    final_data = graphQLClient.execute(
-        GET_COMMENTS_FOR_POST,
-        variables={"dialoguesForPost": {"SK": sk, "PK": pk}}
-    )    
-    print("Profile Timeline Data: ", final_data)
+    try: 
+        print("Getting Dialogues For Post...")
+        graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
+        final_data = graphQLClient.execute(
+            GET_COMMENTS_FOR_POST,
+            variables={"dialoguesForPost": {"SK": sk, "PK": pk}}
+        )    
+        print("Profile Timeline Data: ", final_data)
+        print(type(final_data))
+        recentData = json.loads(final_data)
+        return {
+            "status": True,
+            "data": final_data["data"]["getSocial"]["dialogues"]
+        }
+    except Exception as e:
+        print(e)
+        return {"status": False, "data": None}
 
 
 

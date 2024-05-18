@@ -82,6 +82,10 @@ class OptionalSuiString(canoser.RustOptional):
     _type = canoser.StrT
 
 
+class HiveProfileOwnerInfo(canoser.Struct):
+    _fields = [
+        ('owner', canoser.ArrayT(canoser.Uint8, _ADDRESS_LENGTH, False)) # SUI address),
+    ]
 
 class HiveProfileIdInfo(canoser.Struct):
     _fields = [
@@ -258,12 +262,64 @@ def initialize_new_account(rpc_url):
 
 
 
+async def getSuiASyncClient(rpc_url, private_key_hex_string ):
+    try:
+        async_suiClient = AsyncClient(SuiConfig.user_config(
+                rpc_url=rpc_url,
+                prv_keys=[{'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
+            ))
+        print(async_suiClient)
+
+        # txBlock = AsyncTransaction(client=async_suiClient)
+
+        objects = await async_suiClient.get_objects(fetch_all=True)
+        objects = objects.result_data.to_dict()["data"]
+        print(objects)
+
+    # spendableSui, use_gas_object = getSpendableSui(async_suiClient, txBlock, int(1000000000))
+    # txBlock.transfer_objects(recipient=SuiAddress(recipient_address), transfers=[spendableSui] )
+
+    # simulation_response, txBlock = simulate_tx(txBlock)
+    # if (simulation_response):
+    #     print(f"Simulation successful")
+    #     if use_gas_object:
+    #         exec_result = handle_result(txBlock.execute(gas_budget="10000000", use_gas_object=use_gas_object))
+    #     else:
+    #         exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+    #     exec_result = exec_result.to_json()
+    #     exec_result = json.loads(exec_result)
+
+    #     if (exec_result["effects"]["status"]["status"] == "success"):
+    #         color_print(f"SUI transferred successfuly: {exec_result["digest"]}", GREEN)
+    #         return exec_result
+    #     else:
+    #         color_print(f"Error transferring SUI: {exec_result["effects"]["status"]["error"]}", RED)
+    #         return False
+    # else: 
+    #     print(f"Simulation failed")
+    #     return False
+
+
+
+    except Exception as e:
+        send_telegram_message(f"Error getting SUI Sync Client: {e}")
+        print(f"Error getting SUI Sync Client: {e}")
+        return None
+
+
+
+
 def getSuiSyncClient(rpc_url, private_key_hex_string ):
-    suiClient = SyncClient(SuiConfig.user_config(
-            rpc_url=rpc_url,
-            prv_keys=[{'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
-        ))
-    return suiClient
+    try:
+        suiClient = SyncClient(SuiConfig.user_config(
+                rpc_url=rpc_url,
+                prv_keys=[{'wallet_key': "0x" + private_key_hex_string, 'key_scheme': SignatureScheme.ED25519}],
+            ))
+        return suiClient
+    except Exception as e:
+        send_telegram_message(f"Error getting SUI Sync Client: {e}")
+        print(f"Error getting SUI Sync Client: {e}")
+        return None
 
 
 def kraftHiveProfileTx(rpc_url, private_key_hex_string, protocol_config, address, name, bio) :
@@ -386,13 +442,18 @@ def transferSui(rpc_url, private_key_hex_string, recipient_address, amount):
     
 
 def getSuiBalanceForAddress(rpc_url, private_key_hex_string, user_address):
-    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)    
-    sui_objs = suiClient.get_gas(address=user_address)
-    sui_objs = sui_objs.result_data.to_dict()["data"]
-    total_balance = 0
-    for obj in sui_objs:
-        total_balance += int(obj["balance"])
-    return total_balance
+    try: 
+        print(f"Getting SUI balance for address: {user_address}")
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)    
+        sui_objs = suiClient.get_gas(address=user_address)
+        sui_objs = sui_objs.result_data.to_dict()["data"]
+        total_balance = 0
+        for obj in sui_objs:
+            total_balance += int(obj["balance"])
+        return total_balance
+    except Exception as e:
+        print(f"Error getting SUI balance: {e}")
+        return None
 
 
 """
@@ -524,17 +585,21 @@ def get_symbol(identifier):
 
 
 def simulate_tx(txb: SyncTransaction): 
-    simulation = txb.inspect_all()
-    simulation = simulation.to_json()    
-    simulation_json = json.loads(simulation)
+    try:
+        simulation = txb.inspect_all()
+        simulation = simulation.to_json()    
+        simulation_json = json.loads(simulation)
 
-    if simulation_json["effects"]["status"]["status"] == "success":
-        print(f"Transaction will be successful")
-        return True, txb
-    else:
-        print(f"Transaction will fail - Error")
-        print(simulation_json["effects"]["status"]["error"])
-        return False, simulation_json["effects"]["status"]["error"]
+        if simulation_json["effects"]["status"]["status"] == "success":
+            print(f"Transaction will be successful")
+            return True, txb
+        else:
+            print(f"Transaction will fail - Error")
+            print(simulation_json["effects"]["status"]["error"])
+            return False, simulation_json["effects"]["status"]["error"]
+    except Exception as e:
+        print(f"Error simulating transaction: {e}")
+        return False, e
 
 
 ############### --- ############### --- ############### --- ###############
@@ -591,9 +656,11 @@ def make_noise_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_pro
 Execute a transaction to like a HiveChronicle Post
 """
 def like_hiveChronicle_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, poster_profile, buzz_type, buzz_index, thread_index) :
+    # print(f"rpc_url: {rpc_url}, private_key_hex_string: {private_key_hex_string}")
     print(f"like_hiveChronicle_buzzTx: user_profile = {user_profile}, poster_profile = {poster_profile}, buzz_type = {buzz_type}, buzz_index = {buzz_index}, thread_index = {thread_index}")
     try: 
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+        print(suiClient)
         txBlock = SyncTransaction(client=suiClient)
         txBlock.move_call(
             target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::add_like_to_buzz",
@@ -894,13 +961,13 @@ def comment_on_HiveDaoGovernor_buzzTx(rpc_url, private_key_hex_string, protocol_
 Execute a transaction to comment on a stream buzz Post
 """
 def interact_with_stream_buzzTx(rpc_url, private_key_hex_string, protocol_config, user_profile, streamer_profile, stream_index, stream_inner_index, user_buzz, n_gen_ai_url) :
-    print(f"Interacting with Stream Buzz")
-    print(f"n_gen_ai_url: {n_gen_ai_url}")
-    print(f"user_profile: {user_profile}")
-    print(f"streamer_profile: {streamer_profile}")
-    print(f"stream_index: {stream_index}")
-    print(f"stream_inner_index: {stream_inner_index}")
-    print(f"user_buzz: {user_buzz}")
+    print(f"Interacting with Stream Buzz Tx")
+    # print(f"n_gen_ai_url: {n_gen_ai_url}")
+    # print(f"user_profile: {user_profile}")
+    # print(f"streamer_profile: {streamer_profile}")
+    # print(f"stream_index: {stream_index}")
+    # print(f"stream_inner_index: {stream_inner_index}")
+    # print(f"user_buzz: {user_buzz}")
     suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
     txBlock = SyncTransaction(client=suiClient)
     txBlock.move_call(
@@ -1183,6 +1250,31 @@ def increment_timeStream_part_2(rpc_url, private_key_hex_string, protocol_config
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
 # --------------------- x -----------------------------------
+
+
+
+"""
+Fetch HiveChronicle state information for a user profile from chain 
+"""
+def getOwnerForHiveProfile(rpc_url, private_key_hex_string, protocol_config, hiveProfileID) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        txBlock = SyncTransaction(client=suiClient)
+        txBlock.move_call(
+            target=f"{protocol_config["HIVEPROFILE_PACKAGE"]}::hive_profile::get_profile_owner",
+            arguments=[ ObjectID(hiveProfileID) ],  type_arguments=[], )
+        simulation = txBlock.inspect_all()
+        simulation_json = json.loads(simulation.to_json())
+        hive_profile_owner = HiveProfileOwnerInfo.deserialize( simulation_json["results"][0]["returnValues"][0][0]) 
+        hive_profile_owner = json.loads(hive_profile_owner.to_json())
+        return "0x" + hive_profile_owner["owner"]
+    except Exception as e:
+        color_print(f"onchain_helpers/getOwnerForHiveProfile: Error -  {e}", RED)
+        return None
+
+
+
+  
 
 
 """

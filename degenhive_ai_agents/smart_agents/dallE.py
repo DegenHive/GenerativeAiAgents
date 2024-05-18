@@ -21,19 +21,25 @@ def makeDalleImage(prompt):
 
 
 def download_dalle_image(new_url, file_name ):
-    time.sleep(15)
-    response = requests.get(new_url)
-    if response.status_code == 200:
-        with open(file_name, "wb") as file:
-            file.write(response.content)
-        return {"status": True, "path": file_name}
-    else:
-        print(f"Failed to download image")
+    print("Downloading DALL-E Image...")
+    tries = 3
+    while tries > 0:
+        try:
+            time.sleep(15)
+            response = requests.get(new_url)
+            # print(response)
+            if response.status_code == 200:
+                with open(file_name, "wb") as file:
+                    file.write(response.content)
+                return {"status": True, "path": file_name}
+            else:
+                print(f"Failed to download image")
+                tries -= 1
+                continue
+        except Exception as e:
+            print(e)
+            tries -= 1
+            continue
+    
     return {"status": False, "path": file_name}
- 
 
-
-
-if __name__ == "__main__":
-    # makeDalleImage("A painting of a flower in a vase")
-    download_images("https://oaidalleapiprodscus.blob.core.windows.net/private/org-jT846vop2X98prq8B2LHexfG/user-pD5mJDl7QSlp0XHaNhq56xua/img-yrtFIL5mBXY6nOK2G3FxNMOq.png?st=2024-05-13T18%3A29%3A58Z&se=2024-05-13T20%3A29%3A58Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2024-05-12T21%3A58%3A33Z&ske=2024-05-13T21%3A58%3A33Z&sks=b&skv=2021-08-06&sig=rUBmpV%2B15aJ8%2BJ4QGPT6tyDru7TID3QRIqpA%2BXt0Vq8%3D")
