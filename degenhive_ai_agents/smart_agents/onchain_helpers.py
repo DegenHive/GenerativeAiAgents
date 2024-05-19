@@ -1396,6 +1396,22 @@ def getEpochInfo(rpc_url, private_key_hex_string):
         return None
 
 """
+Get HiveProfile Info
+"""
+def getHiveProfileInfo(rpc_url, private_key_hex_string, hiveProfileID ) :
+    try:
+        suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+        hiveProfile = (suiClient.get_object(hiveProfileID))
+        hiveProfile = hiveProfile.result_data.to_dict()["content"]["fields"]
+        print(f"hiveProfile username: {hiveProfile["username"] }")
+        print(f"hiveProfile bio: {hiveProfile["bio"] }")
+        return hiveProfile
+    except Exception as e:
+        color_print(f"onchain_helpers/getHiveProfileInfo: Error -  {e}", RED)
+        return None
+
+
+"""
 Get GLobal TimeStream Info
 """
 def getTimeStreamInfo(rpc_url, private_key_hex_string, protocol_config) :

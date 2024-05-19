@@ -347,6 +347,10 @@ class DegenHiveAiAgents:
     new_profile_ID = welcome_buzz["PK"].split("#")[0]
     timestamp =  int(welcome_buzz["timestamp"]) 
 
+    # Transfer SUI to new Users      
+    deployer_agent = self.personas[simulation_config["main_agent"]]
+    print(f"Deployer Agent: {deployer_agent.scratch.address}")
+
     # print(welcome_buzz)
     # make sure its a new Buzz
     print(f"timestamp = {timestamp} | latest_new_profile_timestamp = {simulation_config['latest_new_profile']['timestamp']}")
@@ -357,11 +361,12 @@ class DegenHiveAiAgents:
       comments_count = random.randint(0, likes_count)
 
       color_print(f"\nNew Profile: {new_profile_ID} Likes: {likes_count} | Comments: {comments_count} | Timestamp: {timestamp}", GREEN)
-      send_telegram_message(f"New Profile: <a href='{"https://www.degenhive.ai/profile/" + new_profile_ID}'>{new_profile_ID}</a>  Making {likes_count} likes and {comments_count} comments now...")
+      hiveProfileInfo = getHiveProfileInfo(deployer_agent.rpc_url, deployer_agent.private_key, new_profile_ID)
+      if  hiveProfileInfo:
+        send_telegram_message(f"New Profile: <a href='{"https://www.degenhive.ai/profile/" + new_profile_ID}'>{hiveProfileInfo["username"]} (Bio - {hiveProfileInfo["bio"]}) </a>  Making {likes_count} likes and {comments_count} comments now...")
+      else:
+        return
 
-      # Transfer SUI to new Users      
-      deployer_agent = self.personas[simulation_config["main_agent"]]
-      print(f"Deployer Agent: {deployer_agent.scratch.address}")
 
       # Get owner of the HiveProfile
       owner = getOwnerForHiveProfile(deployer_agent.rpc_url, deployer_agent.private_key, simulation_config["configuration"], new_profile_ID)
@@ -389,7 +394,7 @@ class DegenHiveAiAgents:
         if is_commented:
           comments_count -= 1
 
-      send_telegram_message(f"New Profile: <a href='{"https://www.degenhive.ai/profile/" + new_profile_ID}'>{new_profile_ID}</a>  Likes and Comments made successfully...")
+      # send_telegram_message(f"New Profile: <a href='{"https://www.degenhive.ai/profile/" + new_profile_ID}'>{new_profile_ID}</a>  Likes and Comments made successfully...")
 
     else:
       color_print(f"Already processed new profile Buzz: {new_profile_ID} | Timestamp: {timestamp}", YELLOW)
@@ -421,13 +426,14 @@ class DegenHiveAiAgents:
         simulation_config["latest_noise_buzz"] = { "profileID": "", "timestamp": 0 }
   
       if int(timestamp) > int(simulation_config["latest_noise_buzz"]["timestamp"]):
+        hiveProfileInfo = getHiveProfileInfo(self.personas[simulation_config["main_agent"]].rpc_url, self.personas[simulation_config["main_agent"]].private_key, poster_profile_ID)
         color_print(f"\nNew Noise Buzz: {poster_profile_ID} | Timestamp: {timestamp}", GREEN)
 
         if "is_repost" in new_noise_buzz and new_noise_buzz["is_repost"]:
           color_print(f"This is a repost. Skipping...", YELLOW)
         else:
           base_64_str = json_to_base64({ "pk":  new_noise_buzz["PK"], "sk": new_noise_buzz["SK"]  })
-          send_telegram_message(f"New Noise Buzz by profileID {poster_profile_ID} | <a href='https://www.degenhive.ai/?post={base_64_str}'> Buzz link </a> | Timestamp: {timestamp}")
+          send_telegram_message(f"New Noise Buzz by profileID {hiveProfileInfo["username"]} | <a href='https://www.degenhive.ai/?post={base_64_str}'> Buzz link </a> | Timestamp: {timestamp}")
           print(f"Poster Profile ID: {poster_profile_ID} | Noise Index: {noise_index} | Inner Noise Index: {inner_noise_index} timestamp: {new_noise_buzz['timestamp']}")
 
           toLike = True
@@ -509,14 +515,16 @@ class DegenHiveAiAgents:
   
       # make sure its a new Buzz
       if stream_index > simulation_config["latest_stream_buzz"]["index"] or (stream_index == simulation_config["latest_stream_buzz"]["index"] and inner_stream_index > simulation_config["latest_stream_buzz"]["inner_index"]):
-        color_print(f"\nNew Stream Buzz: {stream_index} | {inner_stream_index} ||  {streamer_profile_ID} | Timestamp: {timestamp}", GREEN)
+        hiveProfileInfo = getHiveProfileInfo(self.personas[simulation_config["main_agent"]].rpc_url, self.personas[simulation_config["main_agent"]].private_key, streamer_profile_ID)
+
+        color_print(f"\nNew Stream Buzz: {stream_index} | {inner_stream_index} ||  {hiveProfileInfo["username"]} | Timestamp: {timestamp}", GREEN)
         send_telegram_message(f"New Stream Buzz by profileID {streamer_profile_ID} | Timestamp: {timestamp}")
 
         total_agents = len(self.persona_names)
         if toLike:
           likes_count = random.randint(10, 50)
         if toComment:
-          comments_count = random.randint(3, min(10, likes_count))
+          comments_count = random.randint(1, min(3, likes_count))
 
         color_print(f"Likes: {likes_count} | Comments: {comments_count}", GREEN)
 
