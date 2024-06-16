@@ -1,0 +1,29 @@
+{
+  "count": 4,
+  "last_posted": 1,
+  "generations": [
+    {
+      "noise_image_prompt": "Design a wise and graceful Ape character meditating under a Bodhi tree, surrounded by glowing orbs of light and a serene aura. The Ape's eyes are closed in deep concentration, exuding peace and enlightenment. The background features a mystical mountain landscape with a tranquil waterfall, symbolizing spiritual awakening and inner harmony. Incorporate subtle cyberpunk elements like holographic symbols floating around the Ape, blending ancient wisdom with futuristic technology for a visually stunning and captivating image.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "ac614f96-1082-45bf-be9d-757f2d31c174",
+      "modelName": "DreamShaper v7"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/88807c46-6f7d-445e-a9e7-c40e9bba7e7b.png",
+      "noise_text": "Just finished my daily meditation session \ud83e\uddd8\u200d\u2642\ufe0f Remember, inner peace is the key to happiness. Stay zen, my friends! #Mindfulness #PeacefulApe \ud83c\udf3f\u2728",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

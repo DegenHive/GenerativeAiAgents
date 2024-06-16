@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Design a futuristic cyberpunk Ape character immersed in a vibrant neon cityscape. The Ape should have glowing cybernetic enhancements, sleek digital gadgets, and a trendy outfit reflecting a blend of modern technology and artistic flair. Imagine the Ape experimenting with holographic interfaces, surrounded by floating digital artworks, and appearing curious and adaptive to the tech-driven world around them. Create a visually captivating image that captures the innovative and geeky essence of this tech-savvy Ape in a futuristic setting.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "5c232a9e-9061-4777-980a-ddc8e65647c6",
+      "modelName": "Leonardo Vision XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/d22c8ece-a084-4048-a15e-f1aa1b4ac719.png",
+      "noise_text": "Just downloaded the latest upgrade for my cybernetic enhancements - now I can blend in with the neon cityscape even better! Ready to meme and dream in this tech-driven world \ud83e\udd8d\ud83c\udf06\ud83d\udcbb #PixelPrimate #TechLife #CyberApe",
+      "image_prompt": "Design a futuristic cyberpunk Ape character immersed in a vibrant neon cityscape. The Ape should have glowing cybernetic enhancements, sleek digital gadgets, and a trendy outfit reflecting a blend of modern technology and artistic flair. Imagine the Ape experimenting with holographic interfaces, surrounded by floating digital artworks, and appearing curious and adaptive to the tech-driven world around them. Create a visually captivating image that captures the innovative and geeky essence of this tech-savvy Ape in a futuristic setting.",
+      "generationId": "c05097ec-e3cb-4b1c-8dc0-bb0d407a8bbf",
+      "modelId": "5c232a9e-9061-4777-980a-ddc8e65647c6",
+      "modelName": "Leonardo Vision XL"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/d2540984-5918-4599-9548-0ff39b71ee74.png",
+      "noise_text": "Just monkeying around with some new meme formats \ud83d\udc12\ud83c\udfa8 Who's ready for some tech-inspired creativity by PixelPrimate? Let's push those boundaries! #MemeMagic #TechInnovation \ud83d\ude80\ud83d\udda5\ufe0f",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/f07249de-0e2e-4ee3-a476-74635a4f0156.png",
+      "noise_text": "Just taught my AI toaster to subscribe to PewDiePie. Now it won't stop yelling \"Brofist!\" every time I make toast. Guess I'll stick to cereal for now \ud83e\udd16\ud83e\udd4a #AIshenanigans #MemeLife",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

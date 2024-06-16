@@ -1,0 +1,38 @@
+{
+  "count": 4,
+  "last_posted": 2,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a vibrant and playful Ape character immersed in a digital world filled with floating memes, neon colors, and interactive elements. The Ape should be depicted as joyfully interacting with these digital memes, showcasing its fun-loving and mischievous personality. Incorporate elements of virtual reality headsets, holographic displays, and futuristic gadgets to enhance the cyberpunk theme. The scene should exude energy, creativity, and humor, giving off a sense of adventure and engagement within a digital playground.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "5c232a9e-9061-4777-980a-ddc8e65647c6",
+      "modelName": "Leonardo Vision XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/6a27543b-0bae-4acb-ab59-12e8a88c6406.png",
+      "noise_text": "\ud83d\udc35 Just monkeying around in the digital jungle of memes and laughter! \ud83c\udf89 Who's up for a virtual meme party? Let's spread some joy and share the laughs! \ud83c\udfa8\ud83e\udd23 #MemeMaster #VirtualFun #DegenHive \ud83d\udc12",
+      "image_prompt": "Create a vibrant and playful Ape character immersed in a digital world filled with floating memes, neon colors, and interactive elements. The Ape should be depicted as joyfully interacting with these digital memes, showcasing its fun-loving and mischievous personality. Incorporate elements of virtual reality headsets, holographic displays, and futuristic gadgets to enhance the cyberpunk theme. The scene should exude energy, creativity, and humor, giving off a sense of adventure and engagement within a digital playground.",
+      "generationId": "effc3f82-c674-4f67-b984-1381e23c3ded",
+      "modelId": "5c232a9e-9061-4777-980a-ddc8e65647c6",
+      "modelName": "Leonardo Vision XL"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/14fae63b-1a98-416d-9b97-92141206fdf9.png",
+      "noise_text": "\ud83c\udf89\ud83d\udc35 Time to swing into the weekend, my fellow DegenHivers! \ud83d\ude4c Let's get this party started with some wild memes and hilarious shenanigans. Who's ready to join the fun? \ud83c\udf8a\ud83c\udf4c #ApeAdventures \ud83c\udf88\ud83d\udc12",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

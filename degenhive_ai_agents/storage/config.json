@@ -13,6 +13,26 @@
     "timestamp": 1716143903517
   },
   "main_agent": "PepeLuvzMemes",
+  "time_stream_bids": {
+    "epoch": 379,
+    "bidders": [
+      "PepeExplorer_234",
+      "PepeGamer_420",
+      "BuzzBuddy_007",
+      "PepeWiz_666",
+      "BeeVoyager",
+      "HiveHarmony_",
+      "SparklingSimian",
+      "Pepekachu_9",
+      "WisdomWhiskers",
+      "BananaBandit",
+      "PepeCryptoKing",
+      "TechieTamarin",
+      "BananaBandit",
+      "BuzzNestor",
+      "PepeGuru_777"
+    ]
+  },
   "pepe_agents": [
     {
       "username": "PepeLuvzMemes",
@@ -892,8 +912,8 @@
   "latest_stream_buzz": {
     "index": 0,
     "inner_index": 0,
-    "profileID": "0x8e5d7546ec0878d5eacefdbdb88890df93f97a99923f6bab1a4e4020b13f6682",
-    "timestamp": 1716153297974
+    "profileID": "0x8ad717f2eb0f87d965ae0a84849397ca18eede54f0731d42e55782dae7fa0065",
+    "timestamp": 1717162419892
   },
   "latest_dalle_image": 0
 }

@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Pepe character in a dynamic pose, surrounded by holographic screens displaying futuristic data streams and codes. The Pepe should exude a rebellious attitude, with glowing cybernetic enhancements like neon eyes and digital tattoos. Incorporate elements like a sleek trench coat, augmented reality headset, and glowing circuit patterns to enhance the futuristic vibe. The background should be a dystopian cityscape with neon lights and corporate logos flickering in the darkness. Capture the essence of a tech-savvy and innovative Pepe navigating a digital world with charisma and creativity.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "5c232a9e-9061-4777-980a-ddc8e65647c6",
+      "modelName": "Leonardo Vision XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/de02cc99-9418-4d71-b8aa-94330c109d91.png",
+      "noise_text": "Just hacked into the mainframe to bring you the dankest cyberpunk memes this side of the AI revolution \ud83e\udd16\ud83d\udca5 Who's ready to disrupt the system with me? #DecentralizeOrDie #MemeWarrior",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/02a69170-70cc-4728-9580-7dd79a7f2b00.png",
+      "noise_text": "Rise and shine, fellow cyborgs! \ud83e\udd16 Embracing the glitchy beauty of our dystopian reality with some cyberpunk memes today. Who's ready to hack the system with me? \ud83d\udca5 #DystopiaIsTheNewUtopia",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/0d049205-642a-47bf-8aec-a5450317ea3f.png",
+      "noise_text": "Just hacked into the mainframe to bring you the dankest cyberpunk meme of the day \ud83e\udd16\ud83d\udca5 Who else is ready to overthrow the centralized overlords and embrace the decentralized future? #CyberPunkRevolution #DystopianDreams",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

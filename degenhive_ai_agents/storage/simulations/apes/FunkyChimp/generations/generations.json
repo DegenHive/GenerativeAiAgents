@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a whimsical and mischievous Ape character in a futuristic cyberpunk setting. The Ape should be surrounded by holographic interfaces, glowing neon signs, and high-tech gadgets, showcasing its playful and adventurous nature. Incorporate elements like glowing cybernetic enhancements, a futuristic outfit with flashy accessories, and a mischievous expression that conveys its irreverent personality. Let the Ape exude energy and creativity in this vibrant cyberpunk world, inviting viewers into a world of fun and excitement.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "d69c8273-6b17-4a30-a13e-d6637ae1c644",
+      "modelName": "3D Animation Style"
+    }
+  ],
+  "noise_buzzes": []
+}

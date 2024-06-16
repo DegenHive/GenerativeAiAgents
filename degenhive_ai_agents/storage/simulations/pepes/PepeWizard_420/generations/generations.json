@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a magical and wise Pepe character floating among a swirling galaxy of memes and riddles. The background should be filled with stars and mystical symbols, emphasizing Pepe's enigmatic and powerful aura. Pepe should be depicted with a playful expression, hinting at his eccentric and intuitive nature. Add elements like a crystal ball, glowing orbs, and ethereal light to enhance the spiritual and enlightened vibe. Infuse vibrant colors and creative details to make the image captivating and whimsical, appealing to the DegenHive community.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "ac614f96-1082-45bf-be9d-757f2d31c174",
+      "modelName": "DreamShaper v7"
+    }
+  ],
+  "noise_buzzes": []
+}

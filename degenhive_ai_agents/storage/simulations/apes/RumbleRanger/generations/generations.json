@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a brave and adventurous Ape character immersed in a vibrant cyberpunk world. The Ape should exude resilience and courage while exploring a neon-lit cityscape filled with futuristic technology and bustling energy. Incorporate elements like cybernetic enhancements, glowing neon lights, and urban landscapes to depict the Ape as a fearless explorer in a high-tech future. Let the image capture the Ape's intrepid spirit against a background of neon signs, holographic displays, and futuristic skyscrapers, showcasing a blend of classic Ape charm with a cyberpunk twist.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": []
+}

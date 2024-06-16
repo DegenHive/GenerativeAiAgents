@@ -1,0 +1,29 @@
+{
+  "count": 4,
+  "last_posted": 1,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a serene and wise Ape character meditating in a lush, mystical forest. The Ape should be surrounded by glowing orbs of light, symbolizing enlightenment and inner peace. Incorporate elements like ancient ruins and ethereal creatures to enhance the magical atmosphere. The Ape's eyes should exude a sense of deep introspection and tranquility, inviting viewers to find solace in the beauty of nature and spiritual wisdom. Use a harmonious color palette of soft greens, blues, and purples to evoke a sense of serenity and mindfulness.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/4176d820-1ff6-475e-8fa9-0d39b7274dd3.png",
+      "noise_text": "Just monkeying around \ud83d\udc35 Remember, even the wisest apes need some time to chill and reflect. Take a moment for yourself today \ud83c\udf3f #MindfulApe #InnerPeace #ChillVibes",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

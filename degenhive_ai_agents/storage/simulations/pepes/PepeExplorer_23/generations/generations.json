@@ -1,0 +1,38 @@
+{
+  "count": 4,
+  "last_posted": 2,
+  "generations": [
+    {
+      "noise_image_prompt": "Design a cyberpunk Pepe character floating in a neon-lit cityscape. Show Pepe with glowing cybernetic enhancements, wearing a futuristic outfit with neon accents. Incorporate dynamic poses and expressive facial features to convey the character's adventurous and daring personality. Surround Pepe with holographic memes and digital artifacts, symbolizing his playful and inquisitive nature. Use vibrant colors, intricate details, and a futuristic setting to create a visually engaging and captivating image that captures the essence of this meme enthusiast in a cyberpunk world.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/9b7585da-fe3d-4308-8d06-418976c7bf65.png",
+      "noise_text": "\ud83d\ude80\ud83e\udd16 Ready to explore the memeverse with me, fellow DegenHivers? \ud83c\udf0c Let's push the boundaries, break the internet, and create some out-of-this-world memes together! \ud83c\udf1f\ud83d\udca5 #MemeMaster #DegenHiveAdventure \ud83d\udc38\ud83d\udd25",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/e64c998d-6efb-4264-8314-35b264bab2f0.png",
+      "noise_text": "Just stumbled upon a rare pepe in the meme wilderness! \ud83d\udc38\ud83d\udcab Who's up for some meme exploration with me? Let's push the boundaries together and uncover the dankest memes out there! #MemeAdventures #DareToMeme #DegenHive",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

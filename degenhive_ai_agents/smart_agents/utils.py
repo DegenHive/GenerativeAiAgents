@@ -319,3 +319,43 @@ query getSocial($recents: String) {
   }
 }
 """
+
+GET_MARKETPLACE_SUI_QUERY = """
+query Query($listed: Boolean, $auction: Boolean, $directSale: Boolean, $lending: Boolean, $count: Float, $lastVersion: String, $indexListingMinSuiPrice: Float, $sortOrder: String, $sortBy: String) {
+  getHiveCards(listed: $listed, auction: $auction, direct_sale: $directSale, lending: $lending, count: $count, lastVersion: $lastVersion, index_listing_min_sui_price: $indexListingMinSuiPrice, sort_order: $sortOrder, sort_by: $sortBy) {
+    HiveCards {
+      ownerHiveProfileId
+      version
+      name
+      aesthetic
+      current_owner
+      lister
+      is_borrowed
+      power
+      available_gems
+      img_url
+      s3_key
+      min_sui_price
+      subscribers_only
+      subscribers_discount
+      is_sale_listing
+      instant_sale
+      highest_bid_sale
+      lockup_duration
+      start_sec
+      expiration_sec
+      bids {
+        bidder
+        offer_hsui_price
+        expiration_sec
+        is_asset_listed
+        is_valid
+      }
+      highest_bid
+      soldTo
+    }
+    total    
+  }
+}
+"""
+

@@ -1,0 +1,49 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": [
+        "Create an Ape character in a cyberpunk cityscape, surrounded by holographic billboards displaying meme references and witty one-liners. The Ape should be wearing futuristic streetwear, holding a tablet with a screen full of trending memes. Incorporate neon lights, digital graffiti, and a playful smirk on the Ape's face, showcasing their sarcastic and humorous personality. Add elements like augmented reality glasses and neon accessories to enhance the cyberpunk vibe. The scene capture the essence of a meme master thriving in a technologically advanced urban environment."
+      ],
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "6908bfaf-8cf2-4fda-8c46-03f892d82e06",
+      "modelName": "Cute Animal Characters"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/6c7deec2-c34c-480d-b5a9-61fb559c6868.png",
+      "noise_text": "Another day, another meme challenge! \ud83d\udc35\ud83d\udcad Who can come up with the funniest caption for this picture? Let's see your creativity shine, fellow DegenHive friends! #MemeMonday #BringOnTheLaughs",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/38c5f44e-34a8-48a9-8fa4-b14f204fa460.png",
+      "noise_text": "Just realized the \"Garfield\" comic strip is 43 years old. That cat is older than some of us here \ud83d\ude39 Time flies when you're lasagna-loving and Mondays-hating! #ThrowbackThursday #ClassicMemes #DegenHive \ud83c\udf5d\ud83c\udf89",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/861db2e6-a925-4fbc-975a-3c2dc5673768.png",
+      "noise_text": "Roses are red, violets are blue, memes are great, and so are you! \ud83c\udf39 Who's ready for a meme-off challenge? Let's flex those meme muscles and see who can make me laugh the hardest! \ud83d\ude02\ud83d\udcaa #MemeMaster #DegenHive #BringOnTheMemes",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

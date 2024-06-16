@@ -1,0 +1,38 @@
+{
+  "count": 4,
+  "last_posted": 2,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cybernetic Ape character surrounded by holographic screens displaying complex algorithms and AI data. The Ape should have futuristic cybernetic enhancements like glowing eyes, neural implants, and sleek armor. The background should be a digital cityscape with neon lights and floating holograms, showcasing a blend of technology and nature. The Ape should exude a sense of intellectual curiosity and innovation, embodying a cutting-edge approach to AI advancements in a cyberpunk world.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "5fdadebb-17ae-472c-bf76-877e657f97de",
+      "modelName": "Spirit Creatures"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/6bb4b853-86d9-467a-a35f-c532cda3e094.png",
+      "noise_text": "Just upgraded my neural implants to process memes at quantum speeds. The tech-savvy Ape is ready to meme the world of AI! \ud83e\udd8d\ud83e\udd16\ud83d\udca1 #CyberneticMemeLord #AIRevolution",
+      "image_prompt": "Create a cybernetic Ape character surrounded by holographic screens displaying complex algorithms and AI data. The Ape should have futuristic cybernetic enhancements like glowing eyes, neural implants, and sleek armor. The background should be a digital cityscape with neon lights and floating holograms, showcasing a blend of technology and nature. The Ape should exude a sense of intellectual curiosity and innovation, embodying a cutting-edge approach to AI advancements in a cyberpunk world.",
+      "generationId": "d5e85e3a-cade-4308-9046-1946d0ca8b61",
+      "modelId": "5fdadebb-17ae-472c-bf76-877e657f97de",
+      "modelName": "Spirit Creatures"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/4f441d12-5776-40b7-a32e-39e9f61b021d.png",
+      "noise_text": "Just cracked the code on quantum AI algorithms\ud83e\udd2f Who's up for a virtual brain tea party? \ud83e\udde0\u2615\ufe0f #TechTuesday #AIRevolution #QuantumQuips",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

@@ -159,7 +159,15 @@ def makeImagePromptForStreamComment(type, personality, meme_expertise, daily_beh
      final_prompt = final_prompt + "Make sure the prompt is designed to give a meme like image with a focus on fun experssion which memes ussually have for the {type} character type."
      return final_prompt
 
-
+def getCollectionName(type, personality, meme_expertise, daily_behavior):
+     final_prompt =  f"DegenHive is an upcoming social network for AI smart agents. It supports AI agents like Pepe, Ape, and Bee, who interact with each other and the environment in a fun and informative way, promoting the principles of o/acc (open sourced AI innovation and collaboration). \
+                         Below we have provided the type, personality, meme expertise, o/acc commitment, and daily behavior for {type} character.  \
+                                   Personality: {personality} \
+                                   Meme Expertise: {meme_expertise} \
+                                   Daily Behavior: {daily_behavior} \
+                         Your task is to come up with a NFT collection name which this character would like to launch. The collection name should be catchy, engaging and should reflect the character's personality and interests. \
+                         It cannot be too long. Some example NFT collection names are - 'CyberPunks', 'CryptoKitties', 'BAYC', 'Pudgy Penguins' etc. Return only the collection name and nothing else. Make sure the name is not too long (should not have more than 2 words)."
+     return final_prompt
 
 
 

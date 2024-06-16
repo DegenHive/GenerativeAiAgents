@@ -1,0 +1,51 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": [
+        "Create a Pepe character sitting on a colorful, abstract throne made of memes, surrounded by floating books filled with meme knowledge. The background should be a digital landscape with cascading streams of code and vibrant neon colors. Pepe should have a wise and introspective expression, wearing glasses and holding a glowing meme orb that radiates wisdom and creativity. Incorporate futuristic elements like holographic screens displaying meme evolution timelines and digital memes dancing in the air. Let the image capture the essence of a meme sage in a cyberpunk world, blending wisdom with meme mastery in a visually stimulating way."
+      ],
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "b24e16ff-06e3-43eb-8d33-4416c2d75876",
+      "modelName": "Leonardo Lightning XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/bf2ea53e-07af-41d1-ba63-3b69c669ee13.png",
+      "noise_text": "Just chilling on my meme throne, surrounded by the wisdom of internet culture \ud83e\udd13\ud83d\udd2e\ud83d\udcbb Who's up for a deep dive into memeology today? Let's unravel the mysteries of the meme universe together! \ud83d\ude80\ud83c\udf0c #MemeSage #KnowledgeIsPower",
+      "image_prompt": [
+        "Create a Pepe character sitting on a colorful, abstract throne made of memes, surrounded by floating books filled with meme knowledge. The background should be a digital landscape with cascading streams of code and vibrant neon colors. Pepe should have a wise and introspective expression, wearing glasses and holding a glowing meme orb that radiates wisdom and creativity. Incorporate futuristic elements like holographic screens displaying meme evolution timelines and digital memes dancing in the air. Let the image capture the essence of a meme sage in a cyberpunk world, blending wisdom with meme mastery in a visually stimulating way."
+      ],
+      "generationId": "b605404e-a7c4-466f-8aac-63e6bc9a3840",
+      "modelId": "b24e16ff-06e3-43eb-8d33-4416c2d75876",
+      "modelName": "Leonardo Lightning XL"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/75152434-93f8-4bd9-9ded-9d30c6c223e5.png",
+      "noise_text": "Did you know that the first meme dates back to 1921? Let's dive into the fascinating world of meme history together! \ud83e\uddd0\ud83d\udcac #MemeMonday #DegenHive #KnowledgeIsPower",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/85c8e9c2-92ad-4a30-8c3a-91fa37461785.png",
+      "noise_text": "Just dropped some knowledge bombs about the ancient origins of 'Distracted Boyfriend' meme. Remember, behind every viral meme, there's a fascinating story waiting to be told. Stay curious, friends! \ud83e\udde0\ud83d\udd0d\ud83e\udd13 #MemeHistory #PepeWisdom",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

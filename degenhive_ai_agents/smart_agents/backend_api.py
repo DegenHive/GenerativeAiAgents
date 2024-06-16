@@ -4,7 +4,7 @@ import json
 import base64
 import requests
 import asyncio
-
+import os
 
 
 
@@ -63,12 +63,30 @@ def getHiveAnnocements( isStream, last_key = None, limit = 15):
 
 
 
+def getSuimarketplaceData( lastVersion = "", limit = 15):
+    print("Getting MarketPlace info...")
+    graphQLClient = GraphQLClient(BE_GRAPHQL_ENDPOINT)
+    config = {
+      "count": limit,
+      "lastVersion": lastVersion,
+      "listed": True,
+    }
+    final_data = graphQLClient.execute(  GET_MARKETPLACE_SUI_QUERY,  variables=config)    
+    final_data = json.loads(final_data)
+
+    final_data = final_data["data"]["getHiveCards"]["HiveCards"]
+    return final_data
 
 
+    # print(final_data)
 
+    # return {
+    #     "status": "sucess",
+    #     "completeFeed": final_data["data"]["getSocial"]["hive_announcements"],
+    #     "lastKey": final_data["data"]["getSocial"]["lastKey"] if "lastKey" in final_data["data"]["getSocial"] else None
+    #   }    
 
-
-
+ 
 
 def get_profileTimeline(hiveProfileID, last_key = None, limit = 15):
     print("Getting Profile Timeline...")
@@ -287,18 +305,26 @@ def upload_image_to_degenhive_be(image_path):
 
 
 
-# async def main():
-#     file_path = "../storage/content/welcome_imgs/degenHiveIntro2.png"  # Specify the path to your image file
-#     print("Uploading Image to BE... file_to_base64")
-#     img_str = await file_to_base64(file_path)
-#     img_str = "data:image/png;base64," + img_str
-#     # print(img_str)
-#     print("Uploading Image to BE... upload_media_to_be")
-#     result = await upload_media_to_be(img_str)
-#     print(result)
+if __name__ == "__main__":
+    file_path = "../storage/content/welcome_imgs/degenHiveIntro2.png"  # Specify the path to your image file
+    image_urls = []
+
+    folder_path = "../storage/nfts/pepes"
+    # Loop through all files in the folder
+    for filename in os.listdir(folder_path):
+        file_path = os.path.join(folder_path, filename)
+        print(f'Processing image: {file_path}')
+
+        # Upload the image to the backend
+        image_url = upload_image_to_degenhive_be(file_path)
+        print(f'Image URL: {image_url}')
+        image_urls.append(image_url)
+
+    print("\n\n")
+    print(image_urls)
 
 
 
-# if __name__ == '__main__':
 
-#     asyncio.run(main())
+
+

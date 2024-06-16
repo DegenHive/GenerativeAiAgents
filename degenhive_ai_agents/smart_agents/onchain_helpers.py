@@ -447,6 +447,7 @@ def getSuiBalanceForAddress(rpc_url, private_key_hex_string, user_address):
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)    
         sui_objs = suiClient.get_gas(address=user_address)
         sui_objs = sui_objs.result_data.to_dict()["data"]
+        # print(sui_objs)
         total_balance = 0
         for obj in sui_objs:
             total_balance += int(obj["balance"])
@@ -454,6 +455,123 @@ def getSuiBalanceForAddress(rpc_url, private_key_hex_string, user_address):
     except Exception as e:
         print(f"Error getting SUI balance: {e}")
         return None
+
+
+"""
+Make bid for a Hive Profile
+"""
+def madeBidForTsAuction(rpc_url, private_key_hex_string, protocol_config, userProfileID, add_to_bid, new_buzz_cost_in_hive, access_type, collection_name):    
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+    spendableSui, use_gas_object = getSpendableSui(suiClient, txBlock, int(add_to_bid))
+            
+    txBlock.move_call(
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::add_bid_for_streamer_buzzes",
+        arguments=[ObjectID(CLOCK),
+                   ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                   ObjectID(protocol_config["HIVE_VAULT"]),
+                   ObjectID(protocol_config["BEE_CAP"]),
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                   ObjectID(userProfileID),
+                   spendableSui,
+                    SuiU64(add_to_bid),
+                    SuiU64(new_buzz_cost_in_hive),
+                    SuiU8(access_type),
+                    SuiString(collection_name)
+            ],
+            type_arguments=[SUI_TYPE],
+        )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute( gas_budget="10000000", use_gas_object=use_gas_object))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Bid for Time Stream Auction made successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error making Bid for Time Stream Auction: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else:
+        print(f"Simulation failed for making bid on time strema auctions Time Stream Auction")
+        return False
+
+
+
+"""
+Claim BEE tokens for HiveChronicle engagement
+"""
+def claim_bees_for_farmingTx(rpc_url, private_key_hex_string, protocol_config, type_, userAddress, userProfileID, add_to_bid, new_buzz_cost_in_hive, access_type, collection_name):
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+            
+    txBlock.move_call(
+        target=f"{protocol_config["HIVE_ENTRY_PACKAGE"]}::hive_chronicles::claim_bees_for_farming",
+        arguments=[
+                   ObjectID(protocol_config["HIVE_CHRONICLES_VAULT"]),
+                   ObjectID(userProfileID),
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"]),
+                   ObjectID(protocol_config["BEE_CAP"])            ],
+            type_arguments=[],
+        )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"BEE tokens claimed for HiveChronicle engagement successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error claiming BEE tokens for HiveChronicle engagement: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else:
+        print(f"Simulation failed for claiming BEE tokens for HiveChronicle engagement")
+        return False
+
+
+"""
+Claim HIVE and BEE tokens for time-stream rewards
+"""
+def claim_time_stream_rewardsTx(rpc_url, private_key_hex_string, protocol_config, userProfileID):
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)     
+    txBlock = SyncTransaction(client=suiClient)
+            
+    txBlock.move_call(
+        target=f"{protocol_config["TWO_TOKEN_AMM_PACKAGE"]}::bee_trade::claim_stream_rewards_withdraw_bid",
+        arguments=[
+                     ObjectID(CLOCK),
+                   ObjectID(protocol_config["PROFILE_MAPPING_STORE"]),
+                   ObjectID(protocol_config["HIVE_MANAGER"]),
+                   ObjectID(protocol_config["HIVE_VAULT"]),
+                   ObjectID(userProfileID),
+                   ObjectID(protocol_config["BEE_CAP"]),            
+                   ObjectID(protocol_config["BEE_TOKEN_POLICY"])
+                ],
+            type_arguments=[ SUI_TYPE ],
+        )
+
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute())
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Time Stream rewards claimed successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error claiming Time Stream rewards: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else:
+        print(f"Simulation failed for claiming Time Stream rewards")
+        return False
+
+
 
 
 """
@@ -1215,6 +1333,140 @@ def increment_timeStream_part_2(rpc_url, private_key_hex_string, protocol_config
 
 
 
+
+
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+#  ----- x---- HiveKiosk -::- Kraft Helper functions -----x ------
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+# --------------------- x -----------------------------------
+
+def update_traits_in_hive_kiosk(rpc_url, private_key_hex_string, protocol_config, creator_profile, collection_name, traits, img_url) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)
+    txBlock.move_call(
+        target=f"{protocol_config["HIVEPROFILE_PACKAGE"]}::hive_profile::update_traits_in_hive_kiosk",
+        arguments=[     ObjectID(creator_profile),
+                        SuiString(collection_name),
+                        SuiString(traits),
+                        SuiString(img_url)            
+                    ],
+            type_arguments=[SUI_TYPE],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Traits set successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error setting Traits: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else: 
+        print(f"Simulation failed")
+        return False
+
+
+
+def insert_assets_in_kiosk(rpc_url, private_key_hex_string, protocol_config, creator_profile, collection_name, prompts_list, url_list, names_list, payload) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    if (payload):
+        txBlock = payload
+    else:
+        txBlock = SyncTransaction(client=suiClient)    
+    
+    txBlock.move_call(
+        target=f"{protocol_config["HIVEPROFILE_PACKAGE"]}::hive_profile::insert_assets_in_kiosk",
+        arguments=[     ObjectID(creator_profile),
+                        SuiString(collection_name),
+                        SuiString(prompts_list),
+                        SuiString(url_list), SuiString(names_list)             
+                    ],
+            type_arguments=[SUI_TYPE],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Assets added successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error adding assets: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else: 
+        print(f"Simulation failed")
+        return False
+
+
+
+def update_pricing_and_access_for_kiosk(rpc_url, private_key_hex_string, protocol_config, creator_profile, collection_name, base_price, curve_a, kraft_access, discount_access, discount) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)    
+    
+    txBlock.move_call(
+        target=f"{protocol_config["HIVEPROFILE_PACKAGE"]}::hive_profile::update_pricing_and_access_for_kiosk",
+        arguments=[     ObjectID(creator_profile),
+                        SuiString(collection_name),
+                        SuiString(base_price),
+                        SuiString(curve_a), SuiString(kraft_access), SuiString(discount_access), SuiString(discount)             
+                    ],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Pricing and access set successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error setting pricing: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else: 
+        print(f"Simulation failed")
+        return False
+
+
+def initialize_public_kraft(rpc_url, private_key_hex_string, protocol_config, creator_profile, collection_name, start_time, per_user_limit) :
+    suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
+    txBlock = SyncTransaction(client=suiClient)    
+    
+    txBlock.move_call(
+        target=f"{protocol_config["HIVEPROFILE_PACKAGE"]}::hive_profile::initialize_public_kraft",
+        arguments=[     ObjectID(creator_profile),
+                        SuiString(collection_name),
+                        SuiString(start_time),
+                        SuiString(per_user_limit)          
+                    ],
+        )
+    simulation_response, txBlock = simulate_tx(txBlock)
+    if (simulation_response):
+        print(f"Simulation successful")
+        exec_result = handle_result(txBlock.execute(gas_budget="10000000"))
+        exec_result = exec_result.to_json()
+        exec_result = json.loads(exec_result)
+        if (exec_result["effects"]["status"]["status"] == "success"):
+            color_print(f"Public krafting set successfuly: {exec_result["digest"]}", GREEN)
+            return True
+        else:
+            color_print(f"Error setting Public krafting: {exec_result["effects"]["status"]["error"]}", RED)
+            return False
+    else: 
+        print(f"Simulation failed")
+        return False
+
+
+
+
  
 # async def objects_joined(client: SuiClient, txb: SuiTransactionAsync) -> Tuple[SuiTransactionAsync, dict]:
 #     # weakness: if a coin identifier is A::B::C, C must be unique for a type of coin (each coin has a different symbol). else this fails.
@@ -1403,8 +1655,8 @@ def getHiveProfileInfo(rpc_url, private_key_hex_string, hiveProfileID ) :
         suiClient = getSuiSyncClient(rpc_url, private_key_hex_string)
         hiveProfile = (suiClient.get_object(hiveProfileID))
         hiveProfile = hiveProfile.result_data.to_dict()["content"]["fields"]
-        print(f"hiveProfile username: {hiveProfile["username"] }")
-        print(f"hiveProfile bio: {hiveProfile["bio"] }")
+        # print(f"hiveProfile username: {hiveProfile["username"] }")
+        # print(f"hiveProfile bio: {hiveProfile["bio"] }")
         return hiveProfile
     except Exception as e:
         color_print(f"onchain_helpers/getHiveProfileInfo: Error -  {e}", RED)

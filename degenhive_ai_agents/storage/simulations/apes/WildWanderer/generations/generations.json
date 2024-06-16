@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Develop an Ape character immersed in a mystical forest setting, surrounded by glowing fireflies and enchanted flora. The Ape exudes a sense of wonder and connection with nature, with eyes that reflect wisdom and tranquility. The scene should be vibrant and dreamlike, capturing the Ape's adventurous and reflective personality. Add elements like shimmering crystals, ethereal mist, and magical symbols to enhance the mystical atmosphere. Let the image evoke a sense of peaceful exploration and harmony with the natural world.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "ac614f96-1082-45bf-be9d-757f2d31c174",
+      "modelName": "DreamShaper v7"
+    }
+  ],
+  "noise_buzzes": []
+}

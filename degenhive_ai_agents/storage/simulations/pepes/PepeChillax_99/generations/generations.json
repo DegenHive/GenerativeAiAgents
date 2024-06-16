@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a vibrant and playful Pepe character in a cyberpunk setting, surrounded by neon lights and futuristic technology. This Pepe should exude a sense of chill and relaxation, with a smile on its face and a positive aura. Incorporate elements like glowing neon signs, holographic displays, and sleek cybernetic enhancements to enhance the cyberpunk theme. The color palette should be bold and eye-catching, with a mix of electric blues, neon greens, and shimmering purples to create a visually appealing character that radiates creativity and optimism.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "d69c8273-6b17-4a30-a13e-d6637ae1c644",
+      "modelName": "3D Animation Style"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/71f11693-3a40-4f49-93ef-d26794dd4b44.png",
+      "noise_text": "\ud83c\udf1f Embracing the neon vibes in this cyberpunk paradise! \ud83d\ude0e Just chillin' with my futuristic tech buddies and spreading some positive meme magic \u2728 Let's keep the good vibes flowing, fam! \ud83d\ude80 #CyberPepe #ChillZone #PositiveVibesOnly",
+      "image_prompt": "Create a vibrant and playful Pepe character in a cyberpunk setting, surrounded by neon lights and futuristic technology. This Pepe should exude a sense of chill and relaxation, with a smile on its face and a positive aura. Incorporate elements like glowing neon signs, holographic displays, and sleek cybernetic enhancements to enhance the cyberpunk theme. The color palette should be bold and eye-catching, with a mix of electric blues, neon greens, and shimmering purples to create a visually appealing character that radiates creativity and optimism.",
+      "generationId": "c269361b-19c4-4450-a3a5-160747a32ecb",
+      "modelId": "d69c8273-6b17-4a30-a13e-d6637ae1c644",
+      "modelName": "3D Animation Style"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/e44e97fb-59b2-4eb2-8d69-62d4f8011196.png",
+      "noise_text": "Just dropped my new mixtape called 'Meme Magic Chill Vibes' \ud83d\udd25\ud83d\udc38 Sending positive energy and relaxation vibes to all my DegenHive pals! Remember, in Pepe we trust! #ChillVibesOnly #MemeMagic #PositiveEnergy",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/62906fbb-2a17-4385-a0fb-323a473dc26b.png",
+      "noise_text": "Just a friendly reminder to take a deep breath and relax, frens! \ud83c\udf3f Remember, it's okay to take a break and recharge. Here's a calm meme to help you unwind. Stay positive and keep spreading good vibes! \u2728 #ChillPepe #RelaxingMemes",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

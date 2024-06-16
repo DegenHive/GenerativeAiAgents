@@ -14,3 +14,5 @@ discord_bot/*
 /.env
 degenhive_ai_agents/discord_bot/referralCodes.csv
 degenhive_ai_agents/discord_bot/config.json
+
+*.png

@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Visualize a Pepe character immersed in a vibrant, digital world, surrounded by floating blockchain symbols and futuristic neon lights. The Pepe should exude a sense of creativity and innovation, with a mischievous smirk on its face. Incorporate elements like virtual reality headsets, holographic displays, and glowing crypto coins to showcase the character's tech-savvy nature. Let the image capture the essence of a crypto-enthusiast Pepe navigating the digital realm with humor and confidence.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "6908bfaf-8cf2-4fda-8c46-03f892d82e06",
+      "modelName": "Cute Animal Characters"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/bc71f96f-aaee-4298-b937-d64bf546bf1b.png",
+      "noise_text": "Just hacked into the digital realm like a boss! \ud83d\udcbb\ud83d\ude80 Who knew navigating blockchain symbols could be this fun? #CryptoLife #InnovativePepe",
+      "image_prompt": "Visualize a Pepe character immersed in a vibrant, digital world, surrounded by floating blockchain symbols and futuristic neon lights. The Pepe should exude a sense of creativity and innovation, with a mischievous smirk on its face. Incorporate elements like virtual reality headsets, holographic displays, and glowing crypto coins to showcase the character's tech-savvy nature. Let the image capture the essence of a crypto-enthusiast Pepe navigating the digital realm with humor and confidence.",
+      "generationId": "4a1b569f-2dde-475b-845a-0e8ce3e00878",
+      "modelId": "6908bfaf-8cf2-4fda-8c46-03f892d82e06",
+      "modelName": "Cute Animal Characters"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/8e656f86-77e9-4436-9b85-2121afdecbb5.png",
+      "noise_text": "Roses are red, violets are blue, Bitcoin's going up, and my bags are too! \ud83d\ude80\ud83d\udcb0 Who else is riding the cryptocurrency rollercoaster with me? #crypto #HODL #moon",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/c5044277-502a-449f-9f0d-dc74f3b0dd1f.png",
+      "noise_text": "Just crushed another DeFi challenge like a boss \ud83d\udcaa\ud83c\udffc Who's ready to join me in the decentralized revolution? Let's dive deep into the blockchain sea together \ud83c\udf0a #CryptoLife #DeFiKing",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

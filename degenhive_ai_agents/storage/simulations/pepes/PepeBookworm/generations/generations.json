@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Pepe character with a book in hand, standing in a neon-lit cityscape background. The Pepe should exude a blend of intellectual charm and futuristic flair, wearing sleek cyberpunk attire. Incorporate holographic book pages floating around Pepe, symbolizing the fusion of knowledge and technology. Add neon signs with literary quotes in the background to emphasize the character's love for books and memes. The color scheme should be vibrant and bold, reflecting the character's analytical and creative personality.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": []
+}

@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Ape character standing confidently on a neon-lit cityscape background. The Ape should exude intelligence and adaptability, wearing futuristic attire with glowing accents. Incorporate digital enhancements like augmented reality glasses displaying market data. The Ape's expression should be calm yet insightful, reflecting its strategic mindset. Add elements of urban graffiti and holographic displays to enhance the cyberpunk vibe. This image should capture the essence of a technologically advanced Ape navigating the digital world with ease.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "50c4f43b-f086-4838-bcac-820406244cec",
+      "modelName": "Cute Characters"
+    }
+  ],
+  "noise_buzzes": []
+}

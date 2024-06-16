@@ -1,0 +1,38 @@
+{
+  "count": 4,
+  "last_posted": 2,
+  "generations": [
+    {
+      "noise_image_prompt": "Illustrate a wise and resilient Ape character standing atop a cyberpunk-inspired cityscape at dusk. The Ape should exude a sense of protectiveness and trustworthiness, with a cybernetic arm and augmented reality glasses adding a futuristic touch. The city below should be aglow with neon lights, showcasing a blend of nature and technology. Include elements like holographic projections of motivational quotes and vibrant street art to capture the Ape's steady and disciplined demeanor in this vibrant cyberpunk world.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "5fdadebb-17ae-472c-bf76-877e657f97de",
+      "modelName": "Spirit Creatures"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/b03e52f3-3a00-49ea-bada-b3c87346fb15.png",
+      "noise_text": "Just another day in the cyber jungle \ud83e\udd8d\ud83c\udfd9\ufe0f Remember, stay resilient and embrace the chaos with a wise grin! Let's swing through this digital maze together! #CyberApe #DigitalWisdom",
+      "image_prompt": "Illustrate a wise and resilient Ape character standing atop a cyberpunk-inspired cityscape at dusk. The Ape should exude a sense of protectiveness and trustworthiness, with a cybernetic arm and augmented reality glasses adding a futuristic touch. The city below should be aglow with neon lights, showcasing a blend of nature and technology. Include elements like holographic projections of motivational quotes and vibrant street art to capture the Ape's steady and disciplined demeanor in this vibrant cyberpunk world.",
+      "generationId": "56dcec84-f425-41f5-9e49-d01a3a0aa7df",
+      "modelId": "5fdadebb-17ae-472c-bf76-877e657f97de",
+      "modelName": "Spirit Creatures"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/9b4dd6c8-2513-4504-bdcd-8f70741265d9.png",
+      "noise_text": "Just a gorilla living in a digital jungle \ud83e\udd8d\ud83c\udf10 Remember, in a world full of bananas, don't be afraid to stand out and embrace your inner ape! \ud83c\udf4c\ud83c\udf1f #DegenHive #WisdomWednesday",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

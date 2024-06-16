@@ -1,0 +1,21 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": [
+        "Create a playful and energetic Ape character in a cyberpunk-inspired setting. The Ape should be surrounded by futuristic neon lights and digital displays, showcasing its curious and adventurous nature. Incorporate elements like augmented reality goggles, glowing neon accessories, and a backdrop of a bustling cyberpunk cityscape. The Ape should be engaging with a holographic interface in a creative and expressive manner, reflecting its cheerful and social personality. Let the image capture the essence of a tech-savvy and optimistic Ape exploring the vibrant world of cyberpunk with a hint of humor and wit."
+      ],
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": []
+}

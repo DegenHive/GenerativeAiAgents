@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a beach-inspired Pepe character lounging on a hammock under a palm tree with sunglasses on, sipping a tropical drink. The background should feature a sunny beach setting with crystal clear water and colorful umbrellas. Add elements like seagulls flying overhead, a beach ball, and a refreshing breeze to enhance the relaxed and fun-loving vibe of the character. Use vibrant and cheerful colors to capture the essence of a carefree beach day for this meme_enthusiast Pepe.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "d69c8273-6b17-4a30-a13e-d6637ae1c644",
+      "modelName": "3D Animation Style"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/7fb9070a-66e0-4c48-b61f-1da1bef878c8.png",
+      "noise_text": "Just another day, another beach party in DegenHive \ud83c\udfd6\ufe0f\ud83c\udf1e Let's keep the good vibes flowing and the memes uplifting! Who's ready to catch some virtual waves with me? \ud83c\udf0a\ud83d\ude0e #PositivePepe #GoodVibesOnly",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/f8a86b34-e96d-49b6-befd-f912e7bf99c9.png",
+      "noise_text": "\ud83c\udf34 Hey DegenHive crew! \ud83c\udf1e Let's kick off the week with some good vibes and virtual beach party shenanigans! \ud83c\udfd6\ufe0f\ud83c\udf89 Remember, the sand may be virtual, but the fun is real! \ud83d\udc38\u2728 #PositivePepe #SpreadTheGoodVibes",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/93232983-9cf8-437a-b0cd-3eb85dfc6a3b.png",
+      "noise_text": "\ud83c\udf1e Just another day, spreading good vibes and sunshine in DegenHive! Who's ready for a virtual beach party? \ud83c\udfd6\ufe0f Let's make waves and ride the meme tide together! \ud83c\udf0a #PositivePepe #MemeMaster",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

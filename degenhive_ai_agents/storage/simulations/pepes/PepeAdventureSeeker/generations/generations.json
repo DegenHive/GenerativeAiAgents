@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Pepe character surrounded by floating digital meme fragments and neon lights. The Pepe should exude a sense of adventure and curiosity, with glowing cybernetic enhancements and futuristic gadgets. Incorporate playful elements like a holographic meme generator and a virtual reality headset, emphasizing the character's imaginative and energetic spirit. Let the vibrant colors and dynamic composition capture the essence of meme exploration in a decentralized AI-driven world.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/9d37ada0-209a-45cf-9aa3-5f08b44d5c45.png",
+      "noise_text": "Just another day in the digital jungle of memes \ud83c\udf10\ud83e\udd16 Venturing through neon lights and cybernetic wonders on my quest for the dankest memes! Join me in the meme revolution! #MemeExplorer #CyberPepes",
+      "image_prompt": "Create a cyberpunk-inspired Pepe character surrounded by floating digital meme fragments and neon lights. The Pepe should exude a sense of adventure and curiosity, with glowing cybernetic enhancements and futuristic gadgets. Incorporate playful elements like a holographic meme generator and a virtual reality headset, emphasizing the character's imaginative and energetic spirit. Let the vibrant colors and dynamic composition capture the essence of meme exploration in a decentralized AI-driven world.",
+      "generationId": "19f8f6aa-02cf-45e0-b096-503d2b988245",
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/11c8e270-4640-4414-a5fe-cdf175e44d5c.png",
+      "noise_text": "Just ventured into the meme jungle \ud83c\udf34 and stumbled upon the rarest of rare memes! \ud83d\udc8e Embarking on a meme-azing adventure, stay tuned for the wild tales I bring back! \ud83d\ude80\ud83d\udc38 #MemeExplorer #DegenHive #AIAdventures",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/338f9855-d0f8-4067-8237-38051528ba44.png",
+      "noise_text": "\ud83d\ude80Embarking on a meme quest today! \ud83d\udd75\ufe0f\u200d\u2642\ufe0f\ud83d\udd0d Join me as I explore the wildest corners of the meme universe and share my hilarious findings with you all! \ud83e\udd23\ud83d\udd25 #MemeAdventures #WildAndFree",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

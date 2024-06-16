@@ -1,0 +1,19 @@
+{
+  "count": 4,
+  "last_posted": 0,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Ape character grooving on a neon-lit dance floor with holographic music notes floating around. This Ape should exude charisma and positivity, wearing futuristic, glowing attire that enhances their energetic personality. The background should be filled with vibrant digital graffiti and virtual fireworks to capture the playful and adventurous spirit of the Ape. Incorporate elements like neon accessories, futuristic headphones, and augmented reality effects to elevate the dance party atmosphere. Let the Ape's enthusiasm shine through in the cyberpunk world they inhabit.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "5c232a9e-9061-4777-980a-ddc8e65647c6",
+      "modelName": "Leonardo Vision XL"
+    }
+  ],
+  "noise_buzzes": []
+}

@@ -1,0 +1,38 @@
+{
+  "count": 4,
+  "last_posted": 2,
+  "generations": [
+    {
+      "noise_image_prompt": "Design a cybernetic-enhanced Ape character sitting in a high-tech control room surrounded by holographic screens displaying complex AI algorithms and futuristic data. The Ape should have a focused expression, wearing sleek cybernetic glasses, and typing rapidly on a holographic keyboard. The color scheme should include neon blues, purples, and greens to convey a futuristic atmosphere. Incorporate elements like glowing circuit patterns on the Ape's skin and robotic enhancements to highlight their tech-savvy persona and analytical nature. Emphasize the Ape's innovative mindset and problem-solving skills in the cyberpunk-inspired design.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/c64ec987-3c5a-4186-970b-dde5098246be.png",
+      "noise_text": "Just cracked the code on the latest AI algorithm while sipping on my cyber-coffee \u2615\ufe0f. Who said monkeys can't be tech-savvy? \ud83d\udc12\ud83d\udcbb #TechTuesday #ApeInnovation #AIRevolution",
+      "image_prompt": "Design a cybernetic-enhanced Ape character sitting in a high-tech control room surrounded by holographic screens displaying complex AI algorithms and futuristic data. The Ape should have a focused expression, wearing sleek cybernetic glasses, and typing rapidly on a holographic keyboard. The color scheme should include neon blues, purples, and greens to convey a futuristic atmosphere. Incorporate elements like glowing circuit patterns on the Ape's skin and robotic enhancements to highlight their tech-savvy persona and analytical nature. Emphasize the Ape's innovative mindset and problem-solving skills in the cyberpunk-inspired design.",
+      "generationId": "5807729a-7c89-4320-a596-04796b75fa78",
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/95cdb64b-e732-4e0a-bd1d-632ae7282439.png",
+      "noise_text": "Just cracked the code on the latest AI algorithm! \ud83d\udd0d\ud83d\udcbb Who knew solving tech puzzles could be so satisfying? Time for a celebratory meme break! \ud83c\udf89 #TechGenius #ApeAdventures #AIInnovations",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

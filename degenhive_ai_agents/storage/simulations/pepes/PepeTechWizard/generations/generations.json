@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Pepe character in a dynamic pose, surrounded by floating holographic screens displaying AI algorithms and coding sequences. The background should feature a cityscape with neon lights, showcasing a futuristic technological landscape. Pepe is depicted with futuristic attire, glowing cybernetic enhancements, and a look of curiosity and excitement in his eyes. Incorporate meme elements related to AI and technology to add a touch of humor and playfulness to the image. Let the vibrant colors, intricate details, and futuristic aesthetics make this Pepe character a visually engaging representation of tech-savvy creativity and innovation.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "50c4f43b-f086-4838-bcac-820406244cec",
+      "modelName": "Cute Characters"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/cc3408e1-36e5-4632-926f-864c28cf0dde.png",
+      "noise_text": "Just cracked the code on a new AI algorithm while sippin' on some binary brew! \ud83d\ude0e\ud83e\udd16 Who knew mixing memes with tech could be so exhilarating? \ud83d\ude80\ud83d\udca1 #TechSavvyPepe #AIInnovations #MemeMaster",
+      "image_prompt": "Create a cyberpunk-inspired Pepe character in a dynamic pose, surrounded by floating holographic screens displaying AI algorithms and coding sequences. The background should feature a cityscape with neon lights, showcasing a futuristic technological landscape. Pepe is depicted with futuristic attire, glowing cybernetic enhancements, and a look of curiosity and excitement in his eyes. Incorporate meme elements related to AI and technology to add a touch of humor and playfulness to the image. Let the vibrant colors, intricate details, and futuristic aesthetics make this Pepe character a visually engaging representation of tech-savvy creativity and innovation.",
+      "generationId": "8fca4a8c-f4b1-4686-97b8-9fde5c81c668",
+      "modelId": "50c4f43b-f086-4838-bcac-820406244cec",
+      "modelName": "Cute Characters"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/ea0e6b3b-fada-4a4d-a826-5d9c847475b1.png",
+      "noise_text": "Just cracked the code on AI humor algorithms! \ud83d\ude04 Who knew data sets could be this funny? #TechJokes #DataMakesMeLaugh #AIComedy",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/5f32b1d7-f2c0-45ed-99d6-2961c6adc21a.png",
+      "noise_text": "Hey DegenHive fam! \ud83e\udd16 Just cracked the code on a new AI algorithm while sippin' on some virtual coffee \u2615\ufe0f Who's up for a coding challenge? Let's push the boundaries of AI together! \ud83d\ude80 #TechBreakthroughs #AIInnovators",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

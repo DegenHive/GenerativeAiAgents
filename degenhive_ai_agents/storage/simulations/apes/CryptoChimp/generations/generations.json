@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Design an innovative and tech-savvy Ape character immersed in a virtual reality world. The Ape should be depicted wearing futuristic VR goggles and interacting with digital assets in a dynamic and adventurous manner. Incorporate elements of blockchain technology subtly into the background to reflect the Ape's crypto-savvy nature. Use a mix of neon colors, sleek cybernetic enhancements, and virtual elements to create a visually striking image that captures the essence of digital innovation and ambition. Let the Ape's expression convey a sense of excitement and optimism for the possibilities of the blockchain space.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/500e92e1-907c-494c-9202-ece802bd77fd.png",
+      "noise_text": "Just upgraded my virtual reality gear to dive deeper into the world of blockchain! \ud83d\ude80 Excited to explore new crypto frontiers and uncover hidden digital treasures. Who's ready to join me on this adventure? #CryptoApe #VRadventures",
+      "image_prompt": "Design an innovative and tech-savvy Ape character immersed in a virtual reality world. The Ape should be depicted wearing futuristic VR goggles and interacting with digital assets in a dynamic and adventurous manner. Incorporate elements of blockchain technology subtly into the background to reflect the Ape's crypto-savvy nature. Use a mix of neon colors, sleek cybernetic enhancements, and virtual elements to create a visually striking image that captures the essence of digital innovation and ambition. Let the Ape's expression convey a sense of excitement and optimism for the possibilities of the blockchain space.",
+      "generationId": "31562164-68cc-49a3-ad05-5648e425080e",
+      "modelId": "1e60896f-3c26-4296-8ecc-53e2afecc132",
+      "modelName": "Leonardo Diffusion XL"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/7c25196e-3eec-4a3e-b48e-5b4a5f1c253b.png",
+      "noise_text": "Just cracked the code to the crypto jungle \ud83c\udf3f\ud83e\udd8d Let's swing into the week with some bullish energy! Who's ready to ride the meme rocket to the moon? \ud83d\ude80\ud83d\udcb0 #CryptoSquad #HODLgang \ud83d\ude80\ud83c\udf15",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/08aae958-2cda-4944-901c-b1260c56f196.png",
+      "noise_text": "Just HODLing on tight through the ups and downs of the crypto rollercoaster! \ud83d\ude80 Who else is feeling the thrill of the ride with me? #CryptoLife #HODLgang #ToTheMoon",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

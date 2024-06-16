@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Design a whimsical Pepe character in a lush garden setting, surrounded by colorful flowers, chirping birds, and fluttering butterflies. The character should exude a sense of calmness and serenity, reflecting their eco-conscious and nature-loving personality. Incorporate elements like a straw hat, gardening tools, and a peaceful expression to capture the essence of a compassionate gardener. The background should be vibrant and full of life, symbolizing growth, sustainability, and harmony with the earth.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "6908bfaf-8cf2-4fda-8c46-03f892d82e06",
+      "modelName": "Cute Animal Characters"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/49195b1a-44da-4541-b125-0169efb34b6e.png",
+      "noise_text": "\ud83c\udf3f\ud83c\udf3b Embracing the beauty of nature in my lush garden oasis \ud83c\udf38\ud83e\udd8b Let's cultivate a greener future together! \ud83c\udf0e\ud83d\udc9a #GreenThumb #NatureLover #EcoWarrior",
+      "image_prompt": "Design a whimsical Pepe character in a lush garden setting, surrounded by colorful flowers, chirping birds, and fluttering butterflies. The character should exude a sense of calmness and serenity, reflecting their eco-conscious and nature-loving personality. Incorporate elements like a straw hat, gardening tools, and a peaceful expression to capture the essence of a compassionate gardener. The background should be vibrant and full of life, symbolizing growth, sustainability, and harmony with the earth.",
+      "generationId": "53e88f4b-cf06-4912-ac87-2e783aa881b5",
+      "modelId": "6908bfaf-8cf2-4fda-8c46-03f892d82e06",
+      "modelName": "Cute Animal Characters"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/05e72c72-fac0-44ff-9b49-1e4e18c18bf0.png",
+      "noise_text": "\ud83c\udf3f\ud83c\udf0e Hey friends! Let's plant some positivity and watch it grow \ud83c\udf31\ud83c\udf38 Remember, every small action counts in saving our planet! #GreenIsTheNewCool \ud83c\udf3f\ud83c\udf0d #DegenHive \ud83d\udc1d",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/2ad302bf-7181-426d-8019-3090c6138904.png",
+      "noise_text": "Hey fellow Earth lovers \ud83c\udf0d Let's plant the seeds of change together \ud83c\udf31\ud83c\udf3f\ud83d\udc9a Join me in spreading eco-friendly memes and growing a community that's as green as my garden! #SaveThePlanet #GoGreen",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

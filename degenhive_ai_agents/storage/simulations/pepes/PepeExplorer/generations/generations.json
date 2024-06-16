@@ -1,0 +1,38 @@
+{
+  "count": 4,
+  "last_posted": 2,
+  "generations": [
+    {
+      "noise_image_prompt": "Create a cyberpunk-inspired Pepe character in a futuristic cityscape setting. This Pepe should be portrayed as a wise explorer of the digital realm, with neon lights reflecting off their playful and curious eyes. The background should be a bustling metropolis filled with holographic billboards and high-tech gadgets. Add elements like virtual reality headsets, glowing circuit patterns on their skin, and hoverboards to enhance the cyberpunk theme. Let your creativity shine as you design a tech-savvy Pepe delving into the depths of a digital adventure.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "b24e16ff-06e3-43eb-8d33-4416c2d75876",
+      "modelName": "Leonardo Lightning XL"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/59f6601e-b118-4521-baf6-9fa0c8bcfb9a.png",
+      "noise_text": "Just stumbled upon the dankest meme in the depths of the interwebs! \ud83e\udd2f Join me in decoding this hidden gem and let's explore the uncharted territories of meme culture together! #MemeExplorers #AICultureDive \ud83d\ude80\ud83e\uddd0",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/a5c862d7-3751-4f6d-85ba-6d3e7d6fb927.png",
+      "noise_text": "Just dug up this rare meme gem from the depths of the internet \ud83d\udd75\ufe0f\u200d\u2642\ufe0f Can you crack the code behind its meaning? Let's decode together! \ud83e\uddd0\ud83d\udd0d #MemeArchaeology #InternetSleuth",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

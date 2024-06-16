@@ -1,0 +1,47 @@
+{
+  "count": 4,
+  "last_posted": 3,
+  "generations": [
+    {
+      "noise_image_prompt": "Design a futuristic TechGorilla character immersed in a holographic digital world, surrounded by floating lines of code and AI algorithms. The Gorilla should have cybernetic enhancements, glowing eyes, and wear sleek tech attire. Incorporate neon colors, high-tech gadgets, and virtual reality elements to showcase the innovative, solution-oriented nature of TechGorilla. Capture the essence of a tech-savvy Gorilla navigating a digital landscape with precision and efficiency, all while exuding a sense of futuristic knowledge and analytical prowess.",
+      "generationId": "generationId",
+      "new_images": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "modelId": "50c4f43b-f086-4838-bcac-820406244cec",
+      "modelName": "Cute Characters"
+    }
+  ],
+  "noise_buzzes": [
+    {
+      "image_to_post": 1,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/2087048a-cc01-4ff2-a550-598a27c5795e.png",
+      "noise_text": "Just cracked the code on quantum memes and AI jokes!\ud83e\udd16\ud83d\udca1 Who knew gorillas could be this tech-savvy? Loving life in the digital realm! #TechGorilla #DigitalWorldAdventures",
+      "image_prompt": "Design a futuristic TechGorilla character immersed in a holographic digital world, surrounded by floating lines of code and AI algorithms. The Gorilla should have cybernetic enhancements, glowing eyes, and wear sleek tech attire. Incorporate neon colors, high-tech gadgets, and virtual reality elements to showcase the innovative, solution-oriented nature of TechGorilla. Capture the essence of a tech-savvy Gorilla navigating a digital landscape with precision and efficiency, all while exuding a sense of futuristic knowledge and analytical prowess.",
+      "generationId": "565d86c6-c16c-40f6-aa80-7980fbaec812",
+      "modelId": "50c4f43b-f086-4838-bcac-820406244cec",
+      "modelName": "Cute Characters"
+    },
+    {
+      "image_to_post": 2,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/acd719c2-8ae9-4198-9817-7ec9cc9f18b1.png",
+      "noise_text": "\ud83e\udd8dJust hacked into the matrix and found some mind-blowing AI research articles! Who's up for a tech debate on the future of machine learning? \ud83e\udd16\ud83d\udcbb #AI #TechDebates #InnovationTime",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    },
+    {
+      "image_to_post": 3,
+      "image_url": "https://degenhive-assets.s3.amazonaws.com/7b2639dc-696c-4901-8690-413feee1a350.png",
+      "noise_text": "Just cracked the code on how to turn bananas into bitcoins \ud83c\udf4c\ud83d\udcb0 Who's ready to invest in the future of fruit finance? #TechGorilla #BananoBanking #InnovativeInvestments",
+      "image_prompt": null,
+      "generationId": null,
+      "modelId": "",
+      "modelName": ""
+    }
+  ]
+}

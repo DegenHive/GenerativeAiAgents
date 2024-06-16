@@ -333,6 +333,82 @@ class DegenHiveAiAgents:
         user_agent.handle_profile_state_update(simulation_config["configuration"])
 
 
+  ##################################################################################################
+
+
+  """
+  Make Bid for Time-stream auction 
+  """
+  def makeTimeStreamBidsViaAgents(self, total_bids_to_make, min_bid_amount):
+    with open(f"../storage/config.json") as json_file:  
+      simulation_config = json.load(json_file)
+
+      main_agent = self.personas[simulation_config["main_agent"]]
+      epochInfo = main_agent.getEpochInfoOnChain()
+      
+      if ( not epochInfo or "epoch" not in epochInfo):
+        color_print(f"Epoch info not found. Skipping...", YELLOW)
+        return
+
+      # EPOCH HAS elapsed, claim rewards
+      # if ( epochInfo["epoch"] > simulation_config["time_stream_bids"]["epoch"]):
+      #   color_print(f"Epoch {epochInfo["epoch"]} has elapsed. Claiming rewards...", GREEN)
+      #   for username in simulation_config["time_stream_bids"]["bidders"] :
+      #     agent_persona = self.personas[username]
+      #     userProfileId = agent_persona.scratch.get_hiveProfileID()
+      #     are_claimed = claim_time_stream_rewardsTx(agent_persona.rpc_url, agent_persona.private_key, simulation_config["configuration"], userProfileId)
+      #     if are_claimed:
+      #       simulation_config["time_stream_bids"]["bidders"].remove(username)
+
+      #   # Update epoch in the simulation_config
+      #   simulation_config["time_stream_bids"]["epoch"] = epochInfo["epoch"]
+
+      # EPOCH is ongoing, make bids
+      if True: # ( epochInfo["epoch"] == simulation_config["time_stream_bids"]["epoch"]):
+        color_print(f"Epoch {epochInfo["epoch"]} is ongoing. Making bids...", GREEN)
+
+        bids_made = 0
+        while (bids_made < total_bids_to_make):   
+          agent_index = random.randint(0, len(self.persona_names) - 1)
+          agent_persona = self.personas[self.persona_names[agent_index]]
+          userProfileId = agent_persona.scratch.get_hiveProfileID()
+
+          # Get SUI amount to bid
+          sui_balance = main_agent.getSuiBalanceForAddressOnChain(agent_persona.scratch.address )
+          print(f"Agent: {agent_persona.name} | SUI Balance: {round(sui_balance/1e9, 2)}")
+          add_to_bid = random.randint(int(min_bid_amount), int(sui_balance * 0.5))
+
+          print(f"Adding to bid: {round(add_to_bid/1e9, 2)}")
+
+          buzz_cost_in_hive = random.randint(1, 10 * 100)
+          buzz_cost_in_hive = buzz_cost_in_hive * 1e5
+          access_type = random.choice([1, 2, 3])
+
+          print(f"Buzz Cost in HIVE: {round(buzz_cost_in_hive/1e6, 2)} | Access Type: {access_type}")
+
+
+          collection_name_prompt = getCollectionName(agent_persona.scratch.type , agent_persona.scratch.personality , agent_persona.scratch.meme_expertise , agent_persona.scratch.daily_behavior )
+          collection_name = ChatGPT_request(collection_name_prompt)
+          print(collection_name)
+          try:
+            collection_name = json.loads(collection_name)
+          except Exception as e:
+            print(e)
+          if "output" in collection_name:
+            collection_name = collection_name["output"]
+
+          print(f"Agent: {agent_persona.name} | SUI Balance: {round(sui_balance/1e9, 2)} | Adding to bid: {round(add_to_bid/1e9, 2)} | Buzz Cost in HIVE: {round(buzz_cost_in_hive/1e6, 2)} | Access Type: {access_type} | Collection Name: {collection_name}")
+          # return
+
+          bid_made_successfully = madeBidForTsAuction(agent_persona.rpc_url, agent_persona.private_key, simulation_config["configuration"], userProfileId, add_to_bid, buzz_cost_in_hive, access_type, collection_name)
+          if bid_made_successfully:
+            simulation_config["time_stream_bids"]["bidders"].append(agent_persona.name)
+            bids_made += 1
+
+      # Update the simulation_config
+      with open(f"../storage/config.json", "w") as outfile:
+        outfile.write(json.dumps(simulation_config, indent=2))
+
 
   ##################################################################################################
 
@@ -721,6 +797,10 @@ if __name__ == '__main__':
   # ai_agents_simulation.activate_ai_agents_swarm(engage_with_noise)
   ai_agents_simulation.activate_ai_agents_swarm(stream)
   # ai_agents_simulation.activate_ai_agents_swarm(make_noise, noise_count)
+
+  min_sui_to_bid = 0.5 * 1e9
+  max_sui_to_bid = 10 * 1e9
+  # ai_agents_simulation.makeTimeStreamBidsViaAgents(15, min_sui_to_bid)
 
   # ai_agents_simulation.activate_ai_agents_swarm(stream)
 
